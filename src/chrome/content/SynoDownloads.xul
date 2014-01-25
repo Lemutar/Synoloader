@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://SynoLoader/skin/SynoDownloads.css" type="text/css"?>
+
+
+
+<window
+    id="SynoLoader-downloads-window"
+    title="SynoLoader Downloads"
+    orient="horizontal"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  
+  <script src="downloadmanager.js"/> 
+  <richlistbox  id="Syno-List" flex="1" height="150" class="SynoLoader-List">
+  </richlistbox>
+
+</window>
+
+

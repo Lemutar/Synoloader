@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://SynoLoader/skin/overlay.css" type="text/css"?>
+<!DOCTYPE overlay SYSTEM "chrome://SynoLoader/locale/overlay.dtd">
+<overlay id="SynoLoader-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script src="ff-overlay.js"/>
+
+	<keyset>
+	  <key id="sample-key" modifiers="control shift" key="B"/>
+	</keyset>
+  
+  <menupopup id="menu_ToolsPopup">
+  		<menuitem label="SynoLoader Downloads"  
+  		accesskey="S" 
+  		key="sample-key"
+  		oncommand="SynoLoader.onMenuItemDownloads(event);"/>
+  </menupopup>
+
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="SynoLoader-strings" src="chrome://SynoLoader/locale/overlay.properties"/>
+  </stringbundleset>
+
+  <popup id="contentAreaContextMenu" >
+    <menuitem id="context-SynoLoader" label="&SynoLoaderContext.label;"
+              accesskey="&SynoLoaderContext.accesskey;"
+              insertafter="context-stop"
+              oncommand="SynoLoader.onMenuItemCommand(event)"/>
+  </popup>
+  <popup id="contentAreaContextMenu">
+    <menuitem id="context-SynoLoader-link" label="&SynoLoaderContext.linklabel;"
+              accesskey="&SynoLoaderContext.linkaccesskey;"
+              insertafter="context-SynoLoader"
+              oncommand="SynoLoader.onMenuItemLinkCommand(event)"/>
+  </popup>
+
+
+
+</overlay>
+
+

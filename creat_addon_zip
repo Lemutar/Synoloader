@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# pull the svn files
+cd src
+rm test.xpi
+rm /home/lemutar/.mozilla/firefox/test/extensions/lemutar@gmail.com/* -rf
+cp ./* /home/lemutar/.mozilla/firefox/test/extensions/lemutar@gmail.com/ -rf
+zip -9 -r test.xpi .
+
+cd ..
+./fire-test-runner --named-profile=test ./test/ 
