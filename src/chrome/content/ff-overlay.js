@@ -30,7 +30,7 @@ this.UpdateListPanel = function()
  {
         panel.removeChild(panel.firstChild);
 	var title = document.createElement('label');
-        title.setAttribute('value', "No Connection, \n please set correct Preferces");
+        title.setAttribute('value', "No Connection, please set correct Preferces");
         title.setAttribute('onclick', "window.openDialog(\"chrome://SynoLoader/content/options.xul\", \"modifyheadersDialog\", \"resizable,dialog,centerscreen,modal\", this);");
         title.setAttribute('class', "text-link");
         title.setAttribute('id', "synoloader_toolbar_label_id");
@@ -39,7 +39,7 @@ this.UpdateListPanel = function()
  }
  else
  {
-   if(title)
+   if(title && title.getAttribute('value') == "No Connection, please set correct Preferces" )
    {
    	panel.removeChild(panel.firstChild);
 	var title = document.createElement('label');
