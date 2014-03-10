@@ -114,7 +114,7 @@ function toggleProtocolHandler(branch, name)
 	if (register)
 	{
 		consoleService.logStringMessage("Synoloader: enabling");
-		if (!protocolHandler.registered)
+		if (!protocolHandler.registered  && !manager.isCIDRegistered(proto.classID))
 			manager.registerFactory(proto.classID,
 							proto.classDescription,
 							proto.contractID,

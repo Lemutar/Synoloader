@@ -35,7 +35,6 @@
 	  </menupopup>
     </menulist>
     <checkbox label="Show 'Send Link' Notification" preference="show_not"/>
-    <checkbox label="Show DownloadManager after 'Send Link' " preference="start_dlm"/>
     <checkbox label="Show Debug Information" preference="show_dgb"/>
     <checkbox label="Use magnet link protocol" preference="use_magnet" id="Synoloader.use_magnet"/>
  

@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet href="chrome://SynoLoader/skin/overlay.css" type="text/css"?>
+<?xml-stylesheet href="chrome://SynoLoader/skin/toolbar.css" type="text/css"?>
+<?xml-stylesheet href="chrome://SynoLoader/skin/SynoDownloads.css" type="text/css"?>
 <!DOCTYPE overlay SYSTEM "chrome://SynoLoader/locale/overlay.dtd">
 <overlay id="SynoLoader-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="ff-overlay.js"/>
 
-	<keyset>
-	  <key id="sample-key" modifiers="control shift" key="B"/>
-	</keyset>
-  
+<toolbarpalette id="BrowserToolbarPalette">
+  <toolbarbutton id="synoloader_toolbar_id"  class="toolbarbutton-1 chromeclass-toolbar-additional custombutton"
+   label="Synoloader" tooltiptext="Synology Download"
+   type="panel">
+ 	<panel id="synoloader_toolbar_panel_id"  type="arrow" onpopuphidden="SynoLoader.onToolBarDownloadInfoHidden(event);"  onpopupshowing="SynoLoader.onToolBarDownloadInfo(event);">
+	     <hbox  align="start" class="SynoLoader_Item_hbox">
+             	<label value="Loading..."/>
+	     </hbox>
+        </panel>
+  </toolbarbutton>
+</toolbarpalette>
+
+  <keyset>
+     <key id="sample-key" modifiers="control shift" key="E"/>
+  </keyset>
+
   <menupopup id="menu_ToolsPopup">
   		<menuitem label="SynoLoader Downloads"  
   		accesskey="S" 
@@ -31,6 +44,7 @@
               insertafter="context-SynoLoader"
               oncommand="SynoLoader.onMenuItemLinkCommand(event)"/>
   </popup>
+
 
 
 

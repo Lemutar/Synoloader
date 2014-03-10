@@ -1,0 +1,7 @@
+/*  skin/toolbar-button.css  */
+#synoloader_toolbar_id{
+      list-style-image: url("chrome://Synoloader/skin/synoloader.png");
+    }
+toolbar[iconsize="small"] #synoloader_toolbar_id{
+      list-style-image: url("chrome://Synoloader/skin/synoloader_small.png");
+    }

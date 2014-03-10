@@ -61,7 +61,6 @@ SynoLoaderDMS = {
 					if(response.success==true)
 					{
 						SynoLoaderDMS.Notification.show("Send Link", link);
-						SynoLoaderDMS.Notification.showDownlaodManager();
 					}
 					else
 					{

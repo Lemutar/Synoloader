@@ -30,11 +30,3 @@ Notification.show = function(title,text)
 	}
 };
 
-Notification.showDownlaodManager = function()
-{
-	if(this.start_dlm)
-	{
-		var win = ww.openWindow(null, "chrome://SynoLoader/content/SynoDownloads.xul","SynoLoader Downloads", "chrome,centerscreen,width=500,height=600", null);
-	}
-};
- 
