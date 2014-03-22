@@ -8,60 +8,53 @@ Components.utils.import("resource://SynoLoader/DSM3.js",SynoLoader);
 
 this.firstRun = function(extensions)
 {
-    let extension = extensions.get("lemutar@gmail.com");
-    if (extension.firstRun || extension.version == "1.00") {
-	var toolbar = document.getElementById("nav-bar");
-        var before = null;
-        toolbar.insertItem("synoloader_toolbar_id", before);
-        toolbar.setAttribute("currentset", toolbar.currentSet);
-        document.persist(toolbar.id, "currentset");
-    }
+  let firstRunPref = "extensions.SynoLoader.firstRunDone";
+
+  if (!Application.prefs.getValue(firstRunPref, false)) 
+  {
+    Application.prefs.setValue(firstRunPref, true);
+    var toolbar = document.getElementById("nav-bar");
+    var before = null;
+    toolbar.insertItem("synoloader_toolbar_id", before);
+    toolbar.setAttribute("currentset", toolbar.currentSet);
+    document.persist(toolbar.id, "currentset");
+  }
 };
+
+
 
 this.UpdateListPanel = function()
 {
- var mediator = Components.classes['@mozilla.org/appshell/window-mediator;1']
-          .getService(Components.interfaces.nsIWindowMediator);
- var document = mediator.getMostRecentWindow("navigator:browser").document;
- var list = document.getElementById('synoloader_toolbar_panel_list_id');
- var panel = document.getElementById('synoloader_toolbar_panel_id');
- var title = document.getElementById('synoloader_toolbar_label_id');
- if(SynoLoader.SynoLoaderDMS.syno_download_station.is_connect==false)
- {
-        panel.removeChild(panel.firstChild);
-	var title = document.createElement('label');
-        title.setAttribute('value', "No Connection, please set correct Preferces");
-        title.setAttribute('onclick', "window.openDialog(\"chrome://SynoLoader/content/options.xul\", \"modifyheadersDialog\", \"resizable,dialog,centerscreen,modal\", this);");
-        title.setAttribute('class', "text-link");
-        title.setAttribute('id', "synoloader_toolbar_label_id");
-        panel.appendChild(title);
-	
- }
- else
- {
-   if(title && title.getAttribute('value') == "No Connection, please set correct Preferces" )
-   {
-   	panel.removeChild(panel.firstChild);
-	var title = document.createElement('label');
-	title.setAttribute('value', "Loading...");
-	panel.appendChild(title);
-   }
-   SynoLoader.SynoLoaderDMS.syno_download_station.protocoll.task_action(function(response)
+	var mediator = Components.classes['@mozilla.org/appshell/window-mediator;1']
+	  .getService(Components.interfaces.nsIWindowMediator);
+	var document = mediator.getMostRecentWindow("navigator:browser").document;
+	var list = document.getElementById('synoloader_toolbar_panel_list_id');
+	var panel = document.getElementById('synoloader_toolbar_panel_id');
+	var title = document.getElementById('synoloader_toolbar_label_id');
+
+	if(title && title.getAttribute('value') == "No Connection, please set correct Preferces" )
+	{
+		panel.removeChild(panel.firstChild);
+		var title = document.createElement('label');
+		title.setAttribute('value', "Loading...");
+		panel.appendChild(title);
+	}
+	SynoLoader.SynoLoaderDMS.syno_download_station.protocoll.task_action(function(response)
 	{	
 	if(response.success==true)
 	{
 		var loaded_list = SynoLoader.SynoLoaderDMS.syno_download_station.protocoll.calcItems(response.items);
-                if(title)
+		if(title)
 		{
 			panel.removeChild(title);
-                }
+		}
 		if(!list)
 		{
 			panel.removeChild(panel.firstChild);
 			var list = document.createElement('richlistbox');
-                        panel.appendChild(list);   
+		        panel.appendChild(list);   
 			list.setAttribute("id","synoloader_toolbar_panel_list_id");
- 
+
 		}
 		var count = list.itemCount;
 		while(count-- > 0)
@@ -76,19 +69,19 @@ this.UpdateListPanel = function()
 
 		if (list.itemCount == 0)
 		{
-                        panel.removeChild(panel.firstChild);
+		        panel.removeChild(panel.firstChild);
 			var title = document.createElement('label');
-                        title.setAttribute('value', "No active Downloads");
-                        title.setAttribute('id', "synoloader_toolbar_label_id");
-                        panel.appendChild(title);
+		        title.setAttribute('value', "No active Downloads");
+		        title.setAttribute('id', "synoloader_toolbar_label_id");
+		        panel.appendChild(title);
 		}
-			
+		
 	}
-        
+
 
 	},
 	'getall'); 
- }
+
  panel.moveTo( -1, -1 );	
 };
 
@@ -101,6 +94,7 @@ this.onLoad= function()
     var doc = mediator.getMostRecentWindow("navigator:browser").document;
     if(SynoLoader.SynoLoaderDMS.syno_download_station.initialized==false)
     {
+          this.SynoLoaderDMS.syno_download_station.initialized = true;
 	  if (Application.extensions)
 	  {
 	    	this.firstRun(Application.extensions);
@@ -162,7 +156,7 @@ this.onLoad= function()
 	   this.SynoLoaderDMS.Util.show_log=this.prefs.getBoolPref('show_dgb');
 	   this.SynoLoaderDMS.syno_download_station.url=this.prefs.getCharPref('url');
 	   this.SynoLoaderDMS.syno_download_station.connect_to_nas("");
-	   this.SynoLoaderDMS.syno_download_station.initialized = true;
+	   
 	   
 	   }
    };
@@ -219,11 +213,52 @@ this.onMenuItemCommand= function(event) {
 
 
 this.onToolBarDownloadInfo = function(event) {
-	
-                SynoLoader.UpdateListPanel();
+		
+	var doUpdate = false;
+	var mediator = Components.classes['@mozilla.org/appshell/window-mediator;1']
+	  .getService(Components.interfaces.nsIWindowMediator);
+	var document = mediator.getMostRecentWindow("navigator:browser").document;
+	var list = document.getElementById('synoloader_toolbar_panel_list_id');
+	var panel = document.getElementById('synoloader_toolbar_panel_id');
+	var title = document.getElementById('synoloader_toolbar_label_id');
+
+	if(SynoLoader.SynoLoaderDMS.syno_download_station.is_connect==false)
+	{
+
+	SynoLoader.SynoLoaderDMS.syno_download_station.protocoll.conect(function(response)
+		{
+		if(!response.success)
+		{
+		      	panel.removeChild(panel.firstChild);
+			var title = document.createElement('label');
+			title.setAttribute('value', "No Connection, please set correct Preferces");
+			title.addEventListener("click", function(){window.openDialog("chrome://SynoLoader/content/options.xul", "modifyheadersDialog", "resizable,dialog,centerscreen,modal", this);}, false);
+			title.setAttribute('class', "text-link");
+			title.setAttribute('id', "synoloader_toolbar_label_id");
+			panel.appendChild(title);
+		}
+		else
+		{
+		 	doUpdate = true;
+		}
+
+		});
+
+
+	}
+	else
+	{
+	        doUpdate = true;
+	}
+
+	if(doUpdate)
+	{
+		SynoLoader.UpdateListPanel();
 		SynoLoader.UpdateListPanelInterval = setInterval(function(){SynoLoader.UpdateListPanel();},1000);
-    
+	}
+
 };
+
 
 this.onToolBarDownloadInfoHidden = function(event) {
   clearInterval(SynoLoader.UpdateListPanelInterval);  
@@ -241,18 +276,6 @@ this.showFirefoxContextMenu = function(event) {
 
 };
 
-
-  this.shutdown= function()
-  {
-
-
-	window.removeEventListener("load", function (e) { SynoLoader.onLoad(); }, false);
-	window.removeEventListener("unload", function(e) { SynoLoader.shutdown(); }, false);
-  	document.getElementById("contentAreaContextMenu")
-        .removeEventListener("popupshowing", function (e){ SynoLoader.showFirefoxContextMenu(e); }, false);
-  };
-
-
  
 
   this.onToolbarButtonCommand= function(e) {
@@ -262,7 +285,6 @@ this.showFirefoxContextMenu = function(event) {
 
 
 window.addEventListener("load", function (e) { SynoLoader.onLoad(); }, false);
-window.addEventListener("unload", function(e) { SynoLoader.shutdown(); }, false);
 
 }).apply(SynoLoader);
 

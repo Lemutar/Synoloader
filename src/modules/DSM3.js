@@ -19,6 +19,7 @@ SynoLoaderDMS = {
 			this.username = "";
 			this.initialized=false;
 			this.is_connect = false;
+                        this.connect_error = false;
 			this.list = [];
 			this.protocoll = "undefined"; 
 
@@ -51,7 +52,10 @@ SynoLoaderDMS = {
 				this.protocoll.password = this.password;
 				this.protocoll.username = this.username;
                                 this.protocoll.base_url = this.url;
-		       		this.protocoll.conect(function(response){SynoLoaderDMS.syno_download_station.is_connect=response.success;});
+		       		this.protocoll.conect(function(response)
+							{
+								SynoLoaderDMS.syno_download_station.is_connect=response.success;
+							});
 			}; 	
 		
 			this.transfer_to_nas = function(link)

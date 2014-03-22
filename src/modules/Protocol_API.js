@@ -7,13 +7,7 @@ var Protocol = function (base_url,timeout,user_name,password)
  var return_protocol = function (){};
  return_protocol.connect_id =""
  return_protocol.base_url = base_url;
-/*
-     var conect_request = Request(return_protocol.base_url + '/webapi/auth.cgi',
-				'api=SYNO.API.Auth&version=1&method=login&account=" + encodeURIComponent(return_protocol.username) + "&passwd=" + encodeURIComponent(return_protocol.password) + "&session=SynoLoader&format=cookie",
 
-2&method=login&account=admin&passwd=12345&session=
-DownloadStation&format=sid
-*/
 
  return_protocol.Connect_Time = 0;
  return_protocol.ed2k_download_folder = "home";
