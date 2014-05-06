@@ -1,0 +1,4 @@
+Synoloader
+==========
+
+Firfox addon
