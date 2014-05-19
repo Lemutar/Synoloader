@@ -8,5 +8,9 @@
     "grunt-contrib-watch": ">=0.3.1",
     "grunt-jsbeautifier": "^0.2.7",
     "qunitjs": ">=1.14.0"
+  },
+  "scripts": {
+  "test": "grunt test"
   }
+ 
 }
