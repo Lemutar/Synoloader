@@ -12,5 +12,4 @@
   "scripts": {
   "test": "grunt test"
   }
- 
 }
