@@ -1,9 +1,12 @@
 language: javascript
 
+
+addons:
+  firefox: "29.0"
+  
+  
 before_script:
-   - sudo apt-get update -qq
    - sudo apt-get install -qq pulseaudio
-   - sudo apt-get --reinstall install firefox
    - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
    - "export DISPLAY=:99.0"
    - sh -e /etc/init.d/xvfb start
