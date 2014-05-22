@@ -1,6 +1,7 @@
 language: javascript
 
 before_script:
+   - sudo apt-get update -qq
    - sudo apt-get install -qq pulseaudio
    - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
    - "export DISPLAY=:99.0"
