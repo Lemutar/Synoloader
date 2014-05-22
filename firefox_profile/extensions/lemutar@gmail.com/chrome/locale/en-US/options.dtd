@@ -1,0 +1,10 @@
+<!ENTITY prefwindow.title "SynoLoader preferences">
+<!ENTITY pane1.title "SynoLoader preferences">
+<!ENTITY url.label "Enter the Url of your NAS Bsp. 'http://yourNas.com:5000'">
+<!ENTITY url.accesskey "">
+<!ENTITY username.label "Enter your username">
+<!ENTITY username.accesskey "">
+<!ENTITY password.label "Enter your password">
+<!ENTITY password.accesskey "">
+<!ENTITY emule_downloadfolder.label "Enter the Name of your download folder">
+<!ENTITY emule_downloadfolder.accesskey "">
