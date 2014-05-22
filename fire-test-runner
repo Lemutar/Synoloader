@@ -318,7 +318,8 @@ rescue SystemCallError
   if n_retried <= options.n_retries
     command = [options.firefox,
                "-uxu-start-server",
-               "-uxu-listen-port", options.port.to_s]
+               "-uxu-listen-port", options.port.to_s,
+               "-uxu-log" , "./test_result.json"]
     command += ["-p", options.named_profile] if options.named_profile
     command += ["-profile", options.profile] if options.profile
     command += ["-no-remote"] if options.named_profile or options.profile
