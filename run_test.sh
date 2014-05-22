@@ -7,6 +7,6 @@ rm /lemutar@gmail.com/* -rf
 cp ./* ../firefox_profile/extensions/lemutar@gmail.com/ -rf
 
 cd ..
-firefox -uxu-start-server -uxu-listen-port 4444 -profile firefox_profile -no-remote -uxu-testcase "./test" -uxu-log ./test_result.json
+./fire-test-runner --profile="firefox_profile" --quit --close-main-windows ./test/ 
 node uxu2junit.js
 
