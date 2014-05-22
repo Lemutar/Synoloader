@@ -4,12 +4,11 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-qunit": ">=0.2.1",
     "grunt-contrib-watch": ">=0.3.1",
     "grunt-jsbeautifier": "^0.2.7",
-    "qunitjs": ">=1.14.0"
+    "xmlbuilder":">=0.4.2"
   },
   "scripts": {
-  "test": "grunt test"
+    "test": "./run_test.sh"
   }
 }
