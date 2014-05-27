@@ -1,19 +1,27 @@
 language: javascript
 
-
 addons:
   firefox: "29.0"
   
-  
+env:
+  global:
+    - DISPLAY=":99.0"
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq language-pack-ja
+  - sudo apt-get install -qq pulseaudio
+  # for travis/travis-cookbooks #155
+  - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
+
 before_script:
-   - sudo apt-get install -qq pulseaudio
-   - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
-   - "export DISPLAY=:99.0"
-   - sh -e /etc/init.d/xvfb start
- 
+  - sh -e /etc/init.d/xvfb start
+
 script:
-  - ./run_test.sh
-  
+  - LC_ALL=ja_JP.UTF-8 ./run-test.sh 
+
 after_script:
   - firefox --version
   - sh -e /etc/init.d/xvfb stop
+
+
