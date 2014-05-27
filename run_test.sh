@@ -3,7 +3,7 @@
 # pull the svn files
 cd src
 
-rm /lemutar@gmail.com/* -rf
+rm ../firefox_profile/extensions/lemutar@gmail.com/* -rf
 cp ./* ../firefox_profile/extensions/lemutar@gmail.com/ -rf
 
 cd ..
