@@ -18,7 +18,7 @@ before_script:
   - sh -e /etc/init.d/xvfb start
 
 script:
-  - LC_ALL=ja_JP.UTF-8 ./run-test.sh 
+  - LC_ALL=ja_JP.UTF-8 run_test.sh
 
 after_script:
   - firefox --version
