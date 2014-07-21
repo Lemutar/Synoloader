@@ -84,26 +84,12 @@ Components.utils.import("resource://SynoLoader/DSM3.js", SynoLoader);
                 Application.getExtensions(this.firstRun);
             }
 
-            Components.utils.import("resource://SynoLoader/magnetHandler.js");
+
             document.getElementById("contentAreaContextMenu")
                 .addEventListener("popupshowing", function(e) {
                     SynoLoader.showFirefoxContextMenu(e);
                 }, false);
 
-            SynoLoader.httpResponseObserver = SynoLoader.SynoLoaderDMS.Util.createObserver();
-            SynoLoader.httpResponseObserver.observe = function(aSubject, aTopic, aData) {
-                if (aTopic == 'magnet-on-open-uri') {
-                    var aURI = aSubject.QueryInterface(Components.interfaces.nsIURI);
-                    if (!aURI) return;
-                    var uriText = aURI.spec;
-                    SynoLoader.SynoLoaderDMS.syno_download_station.transfer_to_nas(uriText);
-                }
-            };
-
-            var observerService = Components.classes["@mozilla.org/observer-service;1"]
-                .getService(Components.interfaces.nsIObserverService);
-
-            observerService.addObserver(SynoLoader.httpResponseObserver, "magnet-on-open-uri", false);
             // initialization code
             this.strings = doc.getElementById("SynoLoader-strings");
 

@@ -6,7 +6,11 @@
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-watch": ">=0.3.1",
     "grunt-jsbeautifier": "^0.2.7",
-    "xmlbuilder":">=0.4.2"
+    "grunt-istanbul":"~0.3.0",
+    "grunt-env":">=0.3.1",
+    "grunt-shell":"0.7.0",
+    "xmlbuilder":">=0.4.2",
+    "istanbul": "~0.1.24"
   },
   "scripts": {
     "test": "./run_test.sh"

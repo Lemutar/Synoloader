@@ -1,51 +1,23 @@
 Generated File. Do not edit.
 
 [HEADER]
-Version:0.16:$
+Version:0.17:$
 Arch:x86_64-gcc3:$
 
 [PLUGINS]
-libgnome-shell-browser-plugin.so:$
-/usr/lib/mozilla/plugins/libgnome-shell-browser-plugin.so:$
-:$
-1400185697000:0:0:$
-This plugin provides integration with Gnome Shell for live extension enabling and disabling. It can be used only by extensions.gnome.org:$
-Gnome Shell Integration:$
-1
-0:application/x-gnome-shell-integration:Gnome Shell Integration Dummy Content-Type::$
 libflashplayer.so:$
 /usr/lib/mozilla/plugins/libflashplayer.so:$
-11.2.202.359:$
-1400052265000:0:0:$
+11.2.202.394:$
+1404832077000:0:0:0:$
 Shockwave Flash 11.2 r202:$
 Shockwave Flash:$
 2
 0:application/x-shockwave-flash:Shockwave Flash:swf:$
 1:application/futuresplash:FutureSplash Player:spl:$
-libtotem-gmp-plugin.so:$
-/usr/lib/mozilla/plugins/libtotem-gmp-plugin.so:$
-:$
-1399316118000:0:0:$
-The <a href="http://www.gnome.org/">Videos</a> 3.12.1 plugin handles video and audio streams.:$
-Windows Media Player Plug-in 10 (compatible; Videos):$
-13
-0:application/x-mplayer2:AVI video:avi, wma, wmv:$
-1:video/x-ms-asf-plugin:ASF video:asf, wmv:$
-2:video/x-msvideo:AVI video:asf, wmv:$
-3:video/x-ms-asf:ASF video:asf:$
-4:video/x-ms-wmv:Windows Media video:wmv:$
-5:video/x-wmv:Windows Media video:wmv:$
-6:video/x-ms-wvx:Windows Media video:wmv:$
-7:video/x-ms-wm:Windows Media video:wmv:$
-8:video/x-ms-wmp:Windows Media video:wmv:$
-9:application/x-ms-wms:Windows Media video:wms:$
-10:application/x-ms-wmp:Windows Media video:wmp:$
-11:application/asx:Microsoft ASX playlist:asx:$
-12:audio/x-ms-wma:Windows Media audio:wma:$
 libtotem-narrowspace-plugin.so:$
 /usr/lib/mozilla/plugins/libtotem-narrowspace-plugin.so:$
 :$
-1399316118000:0:0:$
+1401227288000:0:0:0:$
 The <a href="http://www.gnome.org/">Videos</a> 3.12.1 plugin handles video and audio streams.:$
 QuickTime Plug-in 7.6.6:$
 6
@@ -55,10 +27,18 @@ QuickTime Plug-in 7.6.6:$
 3:image/x-quicktime:Macintosh Quickdraw/PICT drawing:pict, pict1, pict2:$
 4:video/x-m4v:MPEG-4 video:m4v:$
 5:application/vnd.apple.mpegurl:HTTP Live Streaming playlist:m3u8:$
+libtotem-mully-plugin.so:$
+/usr/lib/mozilla/plugins/libtotem-mully-plugin.so:$
+:$
+1401227288000:0:0:0:$
+DivX Web Player version 1.4.0.233:$
+DivX® Web Player:$
+1
+0:video/divx:AVI video:divx:$
 libtotem-cone-plugin.so:$
 /usr/lib/mozilla/plugins/libtotem-cone-plugin.so:$
 :$
-1399316118000:0:0:$
+1401227288000:0:0:0:$
 The <a href="http://www.gnome.org/">Videos</a> 3.12.1 plugin handles video and audio streams.:$
 VLC Multimedia Plugin (compatible Videos 3.12.1):$
 23
@@ -85,23 +65,43 @@ VLC Multimedia Plugin (compatible Videos 3.12.1):$
 20:video/webm:WebM video:webm:$
 21:application/x-totem-plugin:Videos multimedia plugin::$
 22:audio/midi:MIDI audio:mid, midi:$
-libtotem-mully-plugin.so:$
-/usr/lib/mozilla/plugins/libtotem-mully-plugin.so:$
+libtotem-gmp-plugin.so:$
+/usr/lib/mozilla/plugins/libtotem-gmp-plugin.so:$
 :$
-1399316118000:0:0:$
-DivX Web Player version 1.4.0.233:$
-DivX® Web Player:$
-1
-0:video/divx:AVI video:divx:$
+1401227288000:0:0:0:$
+The <a href="http://www.gnome.org/">Videos</a> 3.12.1 plugin handles video and audio streams.:$
+Windows Media Player Plug-in 10 (compatible; Videos):$
+13
+0:application/x-mplayer2:AVI video:avi, wma, wmv:$
+1:video/x-ms-asf-plugin:ASF video:asf, wmv:$
+2:video/x-msvideo:AVI video:asf, wmv:$
+3:video/x-ms-asf:ASF video:asf:$
+4:video/x-ms-wmv:Windows Media video:wmv:$
+5:video/x-wmv:Windows Media video:wmv:$
+6:video/x-ms-wvx:Windows Media video:wmv:$
+7:video/x-ms-wm:Windows Media video:wmv:$
+8:video/x-ms-wmp:Windows Media video:wmv:$
+9:application/x-ms-wms:Windows Media video:wms:$
+10:application/x-ms-wmp:Windows Media video:wmp:$
+11:application/asx:Microsoft ASX playlist:asx:$
+12:audio/x-ms-wma:Windows Media audio:wma:$
 librhythmbox-itms-detection-plugin.so:$
 /usr/lib/mozilla/plugins/librhythmbox-itms-detection-plugin.so:$
 :$
-1397489934000:0:0:$
+1401177614000:0:0:0:$
 This plug-in detects the presence of iTunes when opening iTunes Store URLs in a web page with Firefox.:$
 iTunes Application Detector:$
 1
 0:application/itunes-plugin:::$
+libgnome-shell-browser-plugin.so:$
+/usr/lib/mozilla/plugins/libgnome-shell-browser-plugin.so:$
+:$
+1400185697000:0:0:0:$
+This plugin provides integration with Gnome Shell for live extension enabling and disabling. It can be used only by extensions.gnome.org:$
+Gnome Shell Integration:$
+1
+0:application/x-gnome-shell-integration:Gnome Shell Integration Dummy Content-Type::$
 
 [INVALID]
 /usr/lib/mozilla/plugins/libtotem-vegas-plugin.so:$
-1399316118000:$
+1401227288000:$

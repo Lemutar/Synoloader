@@ -8,7 +8,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
     return_protocol.base_url = base_url;
 
 
-
+    return_protocol.version= 0;
     return_protocol.Connect_Time = 0;
     return_protocol.ed2k_download_folder = "home";
     return_protocol.password = password;
@@ -156,6 +156,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
             var richlistitems = [];
             items.forEach(function(item) {
                 var richlistitem = document.createElement('richlistitem');
+                richlistitem.download_task_id = item.id;
                 var vbox = document.createElement('vbox');
                 var hbox = document.createElement('hbox');
                 var title = document.createElement('label');

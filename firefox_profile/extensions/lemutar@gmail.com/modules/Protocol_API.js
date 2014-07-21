@@ -2,14 +2,95 @@ var EXPORTED_SYMBOLS = ["Protocol"];
 Components.utils.import("resource://SynoLoader/Request.js");
 Components.utils.import("resource://SynoLoader/Util.js");
 
+
+
+function set_auth_api_error_text(error_code,response) {
+    set_common_error_text(error_code,response);
+    switch (error_code) {
+        case 400:
+            response.error_text = "No such account or incorrect password";
+            break;
+        case 401:
+            response.error_text = "Account disabled";
+            break;
+        case 402:
+            response.error_text = "Permission denied";
+            break;
+        case 403:
+            response.error_text = "2-step verification code required";
+            break;
+        case 404:
+            response.error_text = "Failed to authenticate 2-step verification code";
+            break;
+    }
+}
+
+
+function set_download_api_error_text(error_code,response) {
+    set_common_error_text(error_code,response);
+    switch (error_code) {
+        case 400:
+            response.error_text = "File upload failed";
+            break;
+        case 401:
+            response.error_text = "Max number of tasks reached";
+            break;
+        case 402:
+            response.error_text = "Destination denied";
+            break;
+        case 403:
+            response.error_text = "Destination does not exist";
+            break;
+        case 404:
+            response.error_text = "Invalid task id";
+            break;
+        case 405:
+            response.error_text = "Invalid task action";
+            break;
+        case 406:
+            response.error_text = "No default destination";
+            break;
+    }
+}
+
+function set_common_error_text(error_code,response) {
+    switch (error_code) {
+        case 100:
+            response.error_text = "Unknown error";
+            break;
+        case 101:
+            response.error_text = "Invalid parameter";
+            break;
+        case 102:
+            response.error_text = "The requested API does not exist";
+            break;
+        case 103:
+            response.error_text = "The requested method does not exist";
+            break;
+        case 104:
+            response.error_text = "The requested version does not support the functionality";
+            break;
+        case 105:
+            response.error_text = "The logged in session does not have permission";
+            break;
+        case 106:
+            response.error_text = "Session timeout";
+            break;
+        case 107:
+            response.error_text = "Session interrupted by duplicate login";
+            break;
+    }
+}
+
+
 var Protocol = function(base_url, timeout, user_name, password) {
     var return_protocol = function() {};
     return_protocol.connect_id = "";
     return_protocol.base_url = base_url;
 
-
+    return_protocol.version = 1;
+    
     return_protocol.Connect_Time = 0;
-    return_protocol.ed2k_download_folder = "home";
     return_protocol.ed2k_download_folder = "home";
     return_protocol.password = password;
     return_protocol.username = user_name;
@@ -29,29 +110,12 @@ var Protocol = function(base_url, timeout, user_name, password) {
                     Util.log(response.text);
 
                     if (response.json.success === true) {
-                        conect_response.id = response.json.id;
+                        conect_response.id = response.json.data.sid;
                         conect_response.success = true;
                         return_protocol.connect_id = response.json.data.sid;
                         return_protocol.Connect_Time = Date.now();
                     } else {
-                        conect_response.success = false;
-                        switch (response.json.error.code) {
-                            case 400:
-                                conect_response.error_text = "No such account or incorrect password";
-                                break;
-                            case 401:
-                                conect_response.error_text = "Account disabled";
-                                break;
-                            case 402:
-                                conect_response.error_text = "Permission denied";
-                                break;
-                            case 403:
-                                conect_response.error_text = "2-step verification code required";
-                                break;
-                            case 404:
-                                conect_response.error_text = "Failed to authenticate 2-step verification code";
-                                break;
-                        }
+                        set_auth_api_error_text(response.json.error.code,conect_response);
                     }
 
                 }
@@ -62,7 +126,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
 
     };
 
-
+    
     return_protocol.task_action = function(callback, task_action, parameter) {
         var task_action_response = {
             success: false,
@@ -87,13 +151,19 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             if (response.status != 200) {
                                 task_action_response.error_text = response.statusText;
                             } else {
+                                
+                                if (response.json.success === false)
+                                {
+                                    set_download_api_error_text(response.json.error.code,task_action_response);
+                                } 
+                                
                                 Util.log(response.text);
                                 task_action_response.success = response.json.success;
                                 task_action_response.items = response.json.data.tasks;
                             }
                             callback(task_action_response);
                         });
-                    Util.log("try to getall to : " + return_protocol.base_url + return_protocol.connect_id);
+                    Util.log("try to getall to : " + return_protocol.base_url);
                     task_action_request.get();
 
                     break;
@@ -107,6 +177,10 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             if (response.status != 200) {
                                 task_action_response.error_text = response.statusText;
                             } else {
+                                if (response.json.success === false)
+                                {
+                                    set_download_api_error_text(response.json.error.code,task_action_response);
+                                }
                                 Util.log(response.text);
                                 task_action_response.success = response.json.success;
                             }
@@ -115,8 +189,37 @@ var Protocol = function(base_url, timeout, user_name, password) {
                         });
                     Util.log("try to addurl to : " + return_protocol.base_url);
                     task_action_request.post();
+                    break;
+                
+                case 'add_file':
+                    Util.log("try to add file to " + parameter);
+                    
+                    var formData = Components.classes["@mozilla.org/files/formdata;1"].createInstance(Components.interfaces.nsIDOMFormData);
+                    formData.append("api", "SYNO.DownloadStation.Task");
+                    formData.append("version", "1");
+                    formData.append("method", "create");
+                    formData.append("file", File(parameter));
+                    formData.append("sid", encodeURIComponent(return_protocol.connect_id));
+                    
+                    task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
+                        formData,
+                        timeout,
+                        function(response) {
+                            if (response.status != 200) {
+                                task_action_response.error_text = response.statusText;
+                            } else {
+                                if (response.json.success === false)
+                                {
+                                    set_download_api_error_text(response.json.error.code,task_action_response);
+                                }
+                                Util.log(response.text);
+                                task_action_response.success = response.json.success;
+                            }
+                            callback(task_action_response);
 
-
+                        });
+                    
+                    task_action_request.post();
                     break;
 
                 case 'delete':
@@ -128,6 +231,10 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             if (response.status != 200) {
                                 task_action_response.error_text = response.statusText;
                             } else {
+                                if (response.json.success === false)
+                                {
+                                    set_download_api_error_text(response.json.error.code,task_action_response);
+                                }
                                 Util.log(response.text);
                                 task_action_response.success = response.json.success;
                             }
@@ -145,6 +252,10 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             if (response.status != 200) {
                                 task_action_response.error_text = response.statusText;
                             } else {
+                                if (response.json.success === false)
+                                {
+                                    set_download_api_error_text(response.json.error.code,task_action_response);
+                                }
                                 Util.log(response.text);
                                 task_action_response.success = response.json.success;
                             }
@@ -162,6 +273,10 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             if (response.status != 200) {
                                 task_action_response.error_text = response.statusText;
                             } else {
+                                if (response.json.success === false)
+                                {
+                                    set_download_api_error_text(response.json.error.code,task_action_response);
+                                }
                                 Util.log(response.text);
                                 task_action_response.success = response.json.success;
                             }
@@ -202,6 +317,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
             var richlistitems = [];
             items.forEach(function(item) {
                 var richlistitem = document.createElement('richlistitem');
+                richlistitem.setAttribute('download_task_id', item.id);
                 var vbox = document.createElement('vbox');
                 var hbox = document.createElement('hbox');
                 var title = document.createElement('label');
@@ -237,7 +353,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 title.setAttribute('crop', "center");
                 title.setAttribute('class', "SynoLoader_Item_title");
 
-                label.setAttribute('value', item.status + " - " + this.fileSizeSI(item.additional.transfer.size_downloaded) + " of " + this.fileSizeSI(item.size) + " - " + item.progress.toFixed(2) + "%");
+                label.setAttribute('value', item.status + " - " + return_protocol.fileSizeSI(item.additional.transfer.size_downloaded) + " of " + return_protocol.fileSizeSI(item.size) + " - " + item.progress.toFixed(2) + "%");
                 label.setAttribute('id', "syno-label" + item.id);
                 label.setAttribute('crop', "center");
 
@@ -263,8 +379,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
             return richlistitems;
         };
 
-
-
+       
     };
 
     return return_protocol;

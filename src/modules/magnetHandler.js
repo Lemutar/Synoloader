@@ -1,8 +1,11 @@
 /* This js module doesn't export anything, it's meant to handle the protocol registration/unregistration */
 var EXPORTED_SYMBOLS = [];
+Components.utils.import("resource://SynoLoader/Util.js");
+Components.utils.import("resource://SynoLoader/DMS3.js");
 
 Cc = Components.classes;
 Ci = Components.interfaces;
+
 
 var manager = Components.manager.QueryInterface(Ci.nsIComponentRegistrar);
 
@@ -95,14 +98,14 @@ function toggleProtocolHandler(branch, name) {
 
     var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
         .getService(Components.interfaces.nsIConsoleService);
-    consoleService.logStringMessage("Synoloader: attempting to register protocol");
+    Util.log("Synoloader: attempting to register protocol");
 
     try {
         var protocolHandler = magnetProtocol;
         var proto = protocolHandler.prototype;
 
         if (register) {
-            consoleService.logStringMessage("Synoloader: enabling");
+            Util.log("Synoloader: enabling");
             if (!protocolHandler.registered && !manager.isCIDRegistered(proto.classID))
                 manager.registerFactory(proto.classID,
                     proto.classDescription,
@@ -111,13 +114,13 @@ function toggleProtocolHandler(branch, name) {
 
             protocolHandler.registered = true;
         } else {
-            consoleService.logStringMessage("Synoloader: disabling");
+            Util.log("Synoloader: disabling");
             if (protocolHandler.registered)
                 manager.unregisterFactory(proto.classID, proto._xpcom_factory);
             protocolHandler.registered = false;
         }
     } catch (e) {
-        consoleService.logStringMessage("Synoloader: error " + e);
+        Util.log("Synoloader: error " + e);
     }
 
 }
@@ -128,3 +131,13 @@ var magnetProtocol = Magnet_ProtocolWrapper();
 // Listen for changes in the preferences and register the protocols as needed.
 var preferencesListener = new PrefListener("extensions.SynoLoader.", toggleProtocolHandler);
 preferencesListener.register();
+
+SynoLoader.httpResponseObserver = SynoLoader.SynoLoader_DownloadManager.Util.createObserver();
+SynoLoader.httpResponseObserver.observe = function(aSubject, aTopic, aData) {
+    if (aTopic == 'magnet-on-open-uri') {
+        var aURI = aSubject.QueryInterface(Components.interfaces.nsIURI);
+        if (!aURI) return;
+        var uriText = aURI.spec;
+        SynoLoader.SynoLoader_DownloadManager.transfer_to_nas(uriText);
+    }
+};

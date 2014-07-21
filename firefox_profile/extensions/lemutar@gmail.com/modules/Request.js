@@ -50,11 +50,10 @@ var Request = function(url, parameter, timeout, callback) {
         }
 
     };
+    
 
     return_request.post = function() {
         return_request.http_request.open('POST', url, true);
-        return_request.http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        return_request.http_request.setRequestHeader("Content-length", parameter.length);
         return_request.http_request.send(parameter);
 
     };

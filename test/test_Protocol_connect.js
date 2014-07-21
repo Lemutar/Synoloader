@@ -37,7 +37,7 @@ function test_Protocol_connect_succsed_mock() {
  mytest.conect(setdone);
 
 
- utils.wait(200);
+ utils.wait(500);
  assert.equals(true,myresponse.success);
  assert.equals("G.OzcP8kl19EU",myresponse.id);
 }
@@ -59,7 +59,7 @@ function test_Protocol_connect_wrong_password_mock() {
  mytest.conect(setdone);
 
 
- utils.wait(200);
+ utils.wait(500);
  assert.equals(false,myresponse.success);
  assert.equals('wrong password',myresponse.error_text);
 }
@@ -80,7 +80,7 @@ function test_Protocol_connect_wrong_user_mock() {
  mytest.conect(setdone);
 
 
- utils.wait(200);
+ utils.wait(500);
  assert.equals(false,myresponse.success);
  assert.equals('unknown user',myresponse.error_text);
 }
@@ -122,7 +122,7 @@ function test_Protocol_connect_error404_mock() {
  mytest.conect(setdone);
 
 
- utils.wait(200);
+ utils.wait(500);
  assert.equals(false,myresponse.success);
  assert.equals('Not Found',myresponse.error_text);
 }

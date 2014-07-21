@@ -18,16 +18,63 @@ module.exports = function(grunt) {
         },
         jsbeautifier: {
             files: ['Gruntfile.js', 'src/**/*.js']
+        },
+    env: {
+      coverage: {
+        APP_DIR_FOR_CODE_COVERAGE: './firefox_profile/extensions/lemutar@gmail.com/'
+      }
+    },
+    instrument: {
+      files: 'firefox_profile/extensions/lemutar@gmail.com/modules/*.js',
+      options: {
+        lazy: true,
+        basePath: './'
+      }
+    },
+    shell: {                                // Task
+        runtest: {                      // Target
+            command: [
+                        'ruby fire-test-runner --profile="firefox_profile" --quit --close-main-windows ./test/ '
+                        ].join('&&')
+            
+
+
+
+
         }
+    },
+    storeCoverage: {
+      options: {
+        dir: 'test/coverage/reports'
+      }
+    },
+    makeReport: {
+      src: 'test/coverage/reports/**/*.json',
+      options: {
+        type: 'lcov',
+        dir: 'test/coverage/reports',
+        print: 'detail'
+      }
+    }
     });
 
 
-    grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-jsbeautifier');
+    grunt.loadNpmTasks('grunt-env');
+    grunt.loadNpmTasks('grunt-istanbul');
+    grunt.loadNpmTasks('grunt-shell');
 
-    grunt.registerTask('test', [ 'qunit']);
+    grunt.registerTask('coverage', ['env:coverage', 'instrument', 'shell:runtest',
+    'storeCoverage', 'makeReport']);
 
     grunt.registerTask('default', ['jsbeautifier', 'jshint','qunit']);
 
 };
+
+
+
+
+
+
+
