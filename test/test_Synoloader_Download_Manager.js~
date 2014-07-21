@@ -1,0 +1,44 @@
+
+
+utils.include( utils.baseURL + "../src/modules/DMS3.js"); 
+
+
+function setUp() {
+  
+}
+
+function tearDown() {
+   utils.tearDownHttpServer(4445);
+}
+
+function startUp()
+{
+ 
+}
+
+function shutDown()
+{
+}
+
+
+
+test_Protocol_task_action_add_fail_100_mock.description = 'test_Protocol_task_action_add_fail_100_mock';
+test_Protocol_task_action_add_fail_100_mock.priority    = 'must';
+function test_Protocol_task_action_add_fail_100_mock() {
+
+ var server = utils.setUpHttpServer(4445, "../fixtures");
+
+
+ utils.writeTo("{ \"data\" :{\"sid\" : \"ohOCjwhHhwghw\"},\"success\": true }" , "../fixtures/connect.txt" );
+ server.expect("/webapi/auth.cgi", 200, '/connect.txt'); 
+ SynoLoaderDMS.syno_download_station.protocoll = 2;
+ SynoLoaderDMS.syno_download_station.connect_to_nas('http://localhost:4445');
+
+ utils.wait(50);
+ assert.equals(false,addurl_response.success);
+ assert.equals("Unknown error",addurl_response.error_text);
+}
+
+
+
+
