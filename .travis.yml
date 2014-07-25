@@ -7,10 +7,8 @@ before_script:
  
 script:
   - sleep 3
-  - firefox -profile ./firefox_profile -no-remote -uxu-testcase "./test" &
-  - sleep 10
-  - killall firefox
-  
+  - ./run_test.sh
+
 after_script:
   - firefox --version
   - sh -e /etc/init.d/xvfb stop
