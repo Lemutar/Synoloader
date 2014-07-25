@@ -42,7 +42,7 @@ function test_Protocol_DownloadManager_transfer_to_nas_torrent_file() {
  NotificationMock.expect('show', ["Send Torent file to NAS","http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent"], null);
  SynoLoader_DownloadManager.Notification = NotificationMock;
  SynoLoader_DownloadManager.transfer_to_nas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");
- utils.wait(5000);
+ utils.wait(10000);
 
 
 }
@@ -58,7 +58,7 @@ function test_Protocol_DownloadManager_transfer_to_nas_link() {
  NotificationMock.expect('show', ["Send link","http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso"], null);
  SynoLoader_DownloadManager.Notification = NotificationMock;
  SynoLoader_DownloadManager.transfer_to_nas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso");
- utils.wait(5000);
+ utils.wait(10000);
 
 
 }
@@ -73,7 +73,7 @@ function test_Protocol_DownloadManager_transfer_to_nas_torrent_file_old() {
  NotificationMock.expect('show', ["Send link","http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent"], null);
  SynoLoader_DownloadManager.Notification = NotificationMock;
  SynoLoader_DownloadManager.transfer_to_nas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");
- utils.wait(5000);
+ utils.wait(10000);
 
 
 }

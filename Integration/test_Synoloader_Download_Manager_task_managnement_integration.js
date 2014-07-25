@@ -15,7 +15,7 @@ function setUp()
 function tearDown() {
    
    SynoLoader_DownloadManager.delete_all();
-   utils.wait(4000);
+   utils.wait(5000);
 
 }
 
@@ -38,10 +38,10 @@ function test_Protocol_DownloadManager_load_download_list() {
  SynoLoader_DownloadManager.set_protocol("2");
  SynoLoader_DownloadManager.Util.show_log=true;
  SynoLoader_DownloadManager.transfer_to_nas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");
- utils.wait(6000);
+ utils.wait(10000);
  var download_items={};
  SynoLoader_DownloadManager.load_download_list(function(items){download_items=items});
- utils.wait(5000);
+ utils.wait(10000);
  assert.equals(download_items.length,1);
 
 }
@@ -54,10 +54,10 @@ function test_Protocol_DownloadManager_load_download_list_old() {
  SynoLoader_DownloadManager.set_protocol("1");
  SynoLoader_DownloadManager.Util.show_log=true;
  SynoLoader_DownloadManager.transfer_to_nas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");
- utils.wait(6000);
+ utils.wait(10000);
  var download_items={};
  SynoLoader_DownloadManager.load_download_list(function(items){download_items=items});
- utils.wait(5000);
+ utils.wait(10000);
  assert.equals(download_items.length,1);
 
 }

@@ -18,12 +18,6 @@
 </toolbarpalette>
 
 
-
-  <menupopup id="menu_ToolsPopup">
-  		<menuitem label="SynoLoader Downloads"  
-  		oncommand="SynoLoader.onMenuItemDownloads(event);"/>
-  </menupopup>
-
   <stringbundleset id="stringbundleset">
     <stringbundle id="synoloader_strings" src="chrome://SynoLoader/locale/overlay.properties"/>
   </stringbundleset>

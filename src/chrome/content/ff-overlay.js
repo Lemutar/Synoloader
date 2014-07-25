@@ -1,5 +1,5 @@
 var SynoLoader = {};
-Components.utils.import("resource://SynoLoader/DSM3.js", SynoLoader);
+Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
 
 
 (function() {
@@ -33,14 +33,19 @@ Components.utils.import("resource://SynoLoader/DSM3.js", SynoLoader);
             title.setAttribute('value', "Loading...");
             panel.appendChild(title);
         }
-        SynoLoader.SynoLoaderDMS.syno_download_station.protocoll.task_action(function(response) {
-                if (response.success === true) {
-                    var loaded_list = SynoLoader.SynoLoaderDMS.syno_download_station.protocoll.calcItems(response.items);
+        
+        SynoLoader.SynoLoader_DownloadManager.load_download_list(function (items) {          
+            items.forEach(function(item) {
+                    var panel = document.getElementById('synoloader_toolbar_panel_id');
+                    var list = document.getElementById('synoloader_toolbar_panel_list_id');
+                    var loaded_list = SynoLoader.SynoLoader_DownloadManager.protocol.calcItems(items);
+                    var title = document.getElementById('synoloader_toolbar_label_id');
                     if (title) {
                         panel.removeChild(title);
                     }
                     if (!list) {
                         panel.removeChild(panel.firstChild);
+                        var list = document.createElement('richlistbox');
                         panel.appendChild(list);
                         list.setAttribute("id", "synoloader_toolbar_panel_list_id");
 
@@ -61,23 +66,15 @@ Components.utils.import("resource://SynoLoader/DSM3.js", SynoLoader);
                         panel.appendChild(title);
                     }
 
-                }
+            });        
 
-
-            },
-            'getall');
+        });
 
         panel.moveTo(-1, -1);
     };
 
     this.onLoad = function() {
 
-        this.strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
-        var mediator = Components.classes['@mozilla.org/appshell/window-mediator;1']
-            .getService(Components.interfaces.nsIWindowMediator);
-        var doc = mediator.getMostRecentWindow("navigator:browser").document;
-        if (SynoLoader.SynoLoaderDMS.syno_download_station.initialized === false) {
-            this.SynoLoaderDMS.syno_download_station.initialized = true;
             if (Application.extensions) {
                 this.firstRun(Application.extensions);
             } else {
@@ -90,80 +87,27 @@ Components.utils.import("resource://SynoLoader/DSM3.js", SynoLoader);
                     SynoLoader.showFirefoxContextMenu(e);
                 }, false);
 
-            // initialization code
-            this.strings = doc.getElementById("SynoLoader-strings");
-
-            this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
-                .getService(Components.interfaces.nsIPrefService)
-                .getBranch("extensions.SynoLoader.");
-
-            this.prefs = Components.classes["@mozilla.org/preferences-service;1"]
-                .getService(Components.interfaces.nsIPrefService)
-                .getBranch("extensions.SynoLoader.");
-
-            this.prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
-            this.prefs.addObserver("", this, false);
-
-            var myLoginManager = Components.classes["@mozilla.org/login-manager;1"].
-            getService(Components.interfaces.nsILoginManager);
-
-            // Find users for the given parameters
-            var logins = myLoginManager.findLogins({}, 'chrome://SynoLoader.Pass', null, 'User Registration');
-            if (logins.length > 0) {
-                this.SynoLoaderDMS.syno_download_station.username = logins[0].username;
-                this.SynoLoaderDMS.syno_download_station.password = logins[0].password;
-            }
-
-
-
-            this.SynoLoaderDMS.syno_download_station.set_protocol(this.prefs.getCharPref('DSM_Verison'));
-            this.SynoLoaderDMS.syno_download_station.window = window;
-            this.SynoLoaderDMS.Notification.show_not = this.prefs.getBoolPref('show_not');
-            this.SynoLoaderDMS.Util.show_log = this.prefs.getBoolPref('show_dgb');
-            this.SynoLoaderDMS.syno_download_station.url = this.prefs.getCharPref('url');
-            this.SynoLoaderDMS.syno_download_station.connect_to_nas("");
-
-
-        }
+        
     };
 
 
-    this.observe = function(subject, topic, data) {
-        if (topic == "nsPref:changed") {
-            switch (data) {
-                case 'url':
-                    this.SynoLoaderDMS.syno_download_station.url = this.prefs.getCharPref('url');
-                    this.SynoLoaderDMS.syno_download_station.connect_to_nas("");
-                    break;
-                case 'show_not':
-                    this.SynoLoaderDMS.Notification.show_not = this.prefs.getBoolPref('show_not');
-                    break;
-                case 'show_dgb':
-                    this.SynoLoaderDMS.Util.show_log = this.prefs.getBoolPref('show_dgb');
-                    break;
-                case 'DSM_Verison':
-                    this.SynoLoaderDMS.syno_download_station.DSMVerison = this.prefs.getCharPref('DSM_Verison');
-                    this.SynoLoaderDMS.syno_download_station.connect_to_nas("");
-                    break;
-            }
-        }
-    };
+
 
 
     this.onMenuItemLinkCommand = function(event) {
-        if (SynoLoader.SynoLoaderDMS.syno_download_station.is_connect === true) {
-            window.open(this.SynoLoaderDMS.syno_download_station.url + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", SynoLoader.strWindowFeatures);
+        if (SynoLoader.SynoLoader_DownloadManager.is_connect === true) {
+            window.open(SynoLoader.SynoLoader_DownloadManager.url + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", SynoLoader.strWindowFeatures);
         } else {
-            this.SynoLoaderDMS.Notification.show("No Connection");
+            this.SynoLoader_DownloadManager.Notification.show("No Connection");
         }
 
     };
 
     this.onMenuItemCommand = function(event) {
-        if (SynoLoader.SynoLoaderDMS.syno_download_station.is_connect === true) {
-            this.SynoLoaderDMS.syno_download_station.transfer_to_nas(gContextMenu.linkURL);
+        if (SynoLoader.SynoLoader_DownloadManager.is_connect === true) {
+            SynoLoader.SynoLoader_DownloadManager.transfer_to_nas(gContextMenu.linkURL);
         } else {
-            this.SynoLoaderDMS.Notification.show("No Connection");
+            SynoLoader.SynoLoader_DownloadManager.Notification.show("No Connection");
         }
 
     };
@@ -171,17 +115,17 @@ Components.utils.import("resource://SynoLoader/DSM3.js", SynoLoader);
 
     this.onToolBarDownloadInfo = function(event) {
 
-        var doUpdate = false;
+        this.doUpdate = false;
         var mediator = Components.classes['@mozilla.org/appshell/window-mediator;1']
             .getService(Components.interfaces.nsIWindowMediator);
         var document = mediator.getMostRecentWindow("navigator:browser").document;
         var list = document.getElementById('synoloader_toolbar_panel_list_id');
         var panel = document.getElementById('synoloader_toolbar_panel_id');
         var title = document.getElementById('synoloader_toolbar_label_id');
+        /*
+        if (SynoLoader.SynoLoader_DownloadManager.is_connect === false) {
 
-        if (SynoLoader.SynoLoaderDMS.syno_download_station.is_connect === false) {
-
-            SynoLoader.SynoLoaderDMS.syno_download_station.protocoll.conect(function(response) {
+            SynoLoader.SynoLoader_DownloadManager..protocoll.conect(function(response) {
                 if (!response.success) {
                     panel.removeChild(panel.firstChild);
                     var title = document.createElement('label');
@@ -198,12 +142,12 @@ Components.utils.import("resource://SynoLoader/DSM3.js", SynoLoader);
 
             });
 
+        */
 
-        } else {
-            doUpdate = true;
-        }
+        this.doUpdate = true;
 
-        if (doUpdate) {
+
+        if (this.doUpdate) {
             SynoLoader.UpdateListPanel();
             SynoLoader.UpdateListPanelInterval = setInterval(function() {
                 SynoLoader.UpdateListPanel();
@@ -214,27 +158,26 @@ Components.utils.import("resource://SynoLoader/DSM3.js", SynoLoader);
 
 
     this.onToolBarDownloadInfoHidden = function(event) {
+        
         clearInterval(SynoLoader.UpdateListPanelInterval);
+        
+    };
+    
+    this.onToolbarButtonCommand = function(e) {
+        
+        this.onMenuItemCommand(e);
+        
     };
 
-
-    this.onMenuItemDownloads = function(event) {
-
-        window.open("chrome://SynoLoader/content/SynoDownloads.xul", "SynoLoader Downloads", "chrome,centerscreen,width=500,height=600");
-    };
 
     this.showFirefoxContextMenu = function(event) {
-        // show or hide the menuitem based on what the context menu is on
+ 
         document.getElementById("context-SynoLoader").hidden = (!gContextMenu.onLink);
 
     };
 
 
 
-    this.onToolbarButtonCommand = function(e) {
-        // just reuse the function above.  you can change this, obviously!
-        this.onMenuItemCommand(e);
-    };
 
 
     window.addEventListener("load", function(e) {

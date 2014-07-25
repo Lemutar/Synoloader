@@ -7,6 +7,6 @@ rm /lemutar@gmail.com/* -rf
 cp ./* ../firefox_profile/extensions/lemutar@gmail.com/ -rf
 
 cd ..
+echo "TESTING"
 ruby fire-test-runner --profile="firefox_profile"  ./test/ 
-#node uxu2junit.js
-#--quit --close-main-windows
+
