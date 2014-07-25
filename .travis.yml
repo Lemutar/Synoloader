@@ -18,7 +18,11 @@ before_script:
   - sh -e /etc/init.d/xvfb start
 
 script:
-  - ./run_test.sh
+  - sleep 3 
+  - "firefox -profile ./firefox_profile -no-remote"
+  - sleep 3
+  - "./run_test.sh"
+
 
 after_script:
   - firefox --version
