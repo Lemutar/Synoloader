@@ -5,7 +5,7 @@ addons:
   
 env:
   global:
-    - DISPLAY=":99.0"
+    - DISPLAY=":88.0"
 
 before_install:
   - sudo apt-get update -qq
