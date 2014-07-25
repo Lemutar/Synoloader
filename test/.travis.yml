@@ -1,13 +1,29 @@
 language: javascript
 
-before_script:
-   - sudo apt-get install -qq pulseaudio
-   - "export DISPLAY=:99.0"
-   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
- 
-script:
-  - ./run_test.sh
+addons:
+  firefox: "29.0"
   
+env:
+  global:
+    - DISPLAY=":88.0"
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq language-pack-ja
+  - sudo apt-get install -qq pulseaudio
+  # for travis/travis-cookbooks #155
+  - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
+
+before_script:
+  - sh -e /etc/init.d/xvfb start
+
+script:
+  - sleep 3 
+  - "./run_test.sh"
+
+
 after_script:
   - firefox --version
   - sh -e /etc/init.d/xvfb stop
+
+
