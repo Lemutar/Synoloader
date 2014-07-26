@@ -9,8 +9,10 @@ mkdir ./firefox_profile/extensions
 mkdir ./firefox_profile/extensions/lemutar@gmail.com
 cp ./src/* ./firefox_profile/extensions/lemutar@gmail.com/ -rf
 cp ./firefox_profile_config/prefs.js ./firefox_profile/prefs.js
+cp ./firefox_profile_config/uxu@clear-code.com ./firefox_profile/extensions/ -rf
 
-cd ..
+
 echo "TESTING"
-#ruby fire-test-runner --port=9999 --wait=20 --profile="firefox_profile"  ./test/ 
+./fire-test-runner --port=9999 --wait=20 --profile="firefox_profile"  ./test/
+
 
