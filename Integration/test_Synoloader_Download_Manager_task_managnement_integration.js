@@ -7,7 +7,7 @@ function setUp()
 {
  SynoLoader_DownloadManager.password = "1234";
  SynoLoader_DownloadManager.username = "synoloader_tester";
- SynoLoader_DownloadManager.url = 'http://192.168.0.201:5050';
+ SynoLoader_DownloadManager.url = 'http://http://z35.no-ip.org:5050';
 
 
 }
@@ -41,7 +41,7 @@ function test_Protocol_DownloadManager_load_download_list() {
  utils.wait(10000);
  var download_items={};
  SynoLoader_DownloadManager.load_download_list(function(items){download_items=items});
- utils.wait(10000);
+ utils.wait(15000);
  assert.equals(download_items.length,1);
 
 }
@@ -57,7 +57,7 @@ function test_Protocol_DownloadManager_load_download_list_old() {
  utils.wait(10000);
  var download_items={};
  SynoLoader_DownloadManager.load_download_list(function(items){download_items=items});
- utils.wait(10000);
+ utils.wait(15000);
  assert.equals(download_items.length,1);
 
 }
