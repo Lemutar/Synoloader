@@ -8,6 +8,7 @@ before_script:
 script:
   - sleep 3
   - ./run_test.sh
+  - ./run_integration_test.sh 
 
 after_script:
   - firefox --version
