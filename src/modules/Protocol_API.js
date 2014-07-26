@@ -4,8 +4,8 @@ Components.utils.import("resource://SynoLoader/Util.js");
 
 
 
-function set_auth_api_error_text(error_code,response) {
-    set_common_error_text(error_code,response);
+function set_auth_api_error_text(error_code, response) {
+    set_common_error_text(error_code, response);
     switch (error_code) {
         case 400:
             response.error_text = "No such account or incorrect password";
@@ -26,8 +26,8 @@ function set_auth_api_error_text(error_code,response) {
 }
 
 
-function set_download_api_error_text(error_code,response) {
-    set_common_error_text(error_code,response);
+function set_download_api_error_text(error_code, response) {
+    set_common_error_text(error_code, response);
     switch (error_code) {
         case 400:
             response.error_text = "File upload failed";
@@ -53,7 +53,7 @@ function set_download_api_error_text(error_code,response) {
     }
 }
 
-function set_common_error_text(error_code,response) {
+function set_common_error_text(error_code, response) {
     switch (error_code) {
         case 100:
             response.error_text = "Unknown error";
@@ -89,7 +89,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
     return_protocol.base_url = base_url;
 
     return_protocol.version = 1;
-    
+
     return_protocol.Connect_Time = 0;
     return_protocol.ed2k_download_folder = "home";
     return_protocol.password = password;
@@ -115,7 +115,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                         return_protocol.connect_id = response.json.data.sid;
                         return_protocol.Connect_Time = Date.now();
                     } else {
-                        set_auth_api_error_text(response.json.error.code,conect_response);
+                        set_auth_api_error_text(response.json.error.code, conect_response);
                     }
 
                 }
@@ -126,7 +126,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
 
     };
 
-    
+
     return_protocol.task_action = function(callback, task_action, parameter) {
         var task_action_response = {
             success: false,
@@ -151,12 +151,11 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             if (response.status != 200) {
                                 task_action_response.error_text = response.statusText;
                             } else {
-                                
-                                if (response.json.success === false)
-                                {
-                                    set_download_api_error_text(response.json.error.code,task_action_response);
-                                } 
-                                
+
+                                if (response.json.success === false) {
+                                    set_download_api_error_text(response.json.error.code, task_action_response);
+                                }
+
                                 Util.log(response.text);
                                 task_action_response.success = response.json.success;
                                 task_action_response.items = response.json.data.tasks;
@@ -177,9 +176,8 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             if (response.status != 200) {
                                 task_action_response.error_text = response.statusText;
                             } else {
-                                if (response.json.success === false)
-                                {
-                                    set_download_api_error_text(response.json.error.code,task_action_response);
+                                if (response.json.success === false) {
+                                    set_download_api_error_text(response.json.error.code, task_action_response);
                                 }
                                 Util.log(response.text);
                                 task_action_response.success = response.json.success;
@@ -190,17 +188,17 @@ var Protocol = function(base_url, timeout, user_name, password) {
                     Util.log("try to addurl to : " + return_protocol.base_url);
                     task_action_request.post();
                     break;
-                
+
                 case 'add_file':
                     Util.log("try to add file to " + parameter);
-                    
+
                     var formData = Components.classes["@mozilla.org/files/formdata;1"].createInstance(Components.interfaces.nsIDOMFormData);
                     formData.append("api", "SYNO.DownloadStation.Task");
                     formData.append("version", "1");
                     formData.append("method", "create");
                     formData.append("file", File(parameter));
                     formData.append("sid", encodeURIComponent(return_protocol.connect_id));
-                    
+
                     task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
                         formData,
                         timeout,
@@ -208,9 +206,8 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             if (response.status != 200) {
                                 task_action_response.error_text = response.statusText;
                             } else {
-                                if (response.json.success === false)
-                                {
-                                    set_download_api_error_text(response.json.error.code,task_action_response);
+                                if (response.json.success === false) {
+                                    set_download_api_error_text(response.json.error.code, task_action_response);
                                 }
                                 Util.log(response.text);
                                 task_action_response.success = response.json.success;
@@ -218,7 +215,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             callback(task_action_response);
 
                         });
-                    
+
                     task_action_request.post();
                     break;
 
@@ -231,9 +228,8 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             if (response.status != 200) {
                                 task_action_response.error_text = response.statusText;
                             } else {
-                                if (response.json.success === false)
-                                {
-                                    set_download_api_error_text(response.json.error.code,task_action_response);
+                                if (response.json.success === false) {
+                                    set_download_api_error_text(response.json.error.code, task_action_response);
                                 }
                                 Util.log(response.text);
                                 task_action_response.success = response.json.success;
@@ -252,9 +248,8 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             if (response.status != 200) {
                                 task_action_response.error_text = response.statusText;
                             } else {
-                                if (response.json.success === false)
-                                {
-                                    set_download_api_error_text(response.json.error.code,task_action_response);
+                                if (response.json.success === false) {
+                                    set_download_api_error_text(response.json.error.code, task_action_response);
                                 }
                                 Util.log(response.text);
                                 task_action_response.success = response.json.success;
@@ -273,9 +268,8 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             if (response.status != 200) {
                                 task_action_response.error_text = response.statusText;
                             } else {
-                                if (response.json.success === false)
-                                {
-                                    set_download_api_error_text(response.json.error.code,task_action_response);
+                                if (response.json.success === false) {
+                                    set_download_api_error_text(response.json.error.code, task_action_response);
                                 }
                                 Util.log(response.text);
                                 task_action_response.success = response.json.success;
@@ -379,7 +373,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
             return richlistitems;
         };
 
-       
+
     };
 
     return return_protocol;

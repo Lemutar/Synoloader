@@ -33,40 +33,40 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
             title.setAttribute('value', "Loading...");
             panel.appendChild(title);
         }
-        
-        SynoLoader.SynoLoader_DownloadManager.load_download_list(function (items) {          
+
+        SynoLoader.SynoLoader_DownloadManager.load_download_list(function(items) {
             items.forEach(function(item) {
-                    var panel = document.getElementById('synoloader_toolbar_panel_id');
-                    var list = document.getElementById('synoloader_toolbar_panel_list_id');
-                    var loaded_list = SynoLoader.SynoLoader_DownloadManager.protocol.calcItems(items);
-                    var title = document.getElementById('synoloader_toolbar_label_id');
-                    if (title) {
-                        panel.removeChild(title);
-                    }
-                    if (!list) {
-                        panel.removeChild(panel.firstChild);
-                        var list = document.createElement('richlistbox');
-                        panel.appendChild(list);
-                        list.setAttribute("id", "synoloader_toolbar_panel_list_id");
+                var panel = document.getElementById('synoloader_toolbar_panel_id');
+                var list = document.getElementById('synoloader_toolbar_panel_list_id');
+                var loaded_list = SynoLoader.SynoLoader_DownloadManager.protocol.calcItems(items);
+                var title = document.getElementById('synoloader_toolbar_label_id');
+                if (title) {
+                    panel.removeChild(title);
+                }
+                if (!list) {
+                    panel.removeChild(panel.firstChild);
+                    list = document.createElement('richlistbox');
+                    panel.appendChild(list);
+                    list.setAttribute("id", "synoloader_toolbar_panel_list_id");
 
-                    }
-                    var count = list.itemCount;
-                    while (count-- > 0) {
-                        list.removeItemAt(count);
-                    }
+                }
+                var count = list.itemCount;
+                while (count-- > 0) {
+                    list.removeItemAt(count);
+                }
 
-                    for (var i in loaded_list) {
-                        list.appendChild(loaded_list[i]);
-                    }
+                for (var i in loaded_list) {
+                    list.appendChild(loaded_list[i]);
+                }
 
-                    if (list.itemCount === 0) {
-                        panel.removeChild(panel.firstChild);
-                        title.setAttribute('value', "No active Downloads");
-                        title.setAttribute('id', "synoloader_toolbar_label_id");
-                        panel.appendChild(title);
-                    }
+                if (list.itemCount === 0) {
+                    panel.removeChild(panel.firstChild);
+                    title.setAttribute('value', "No active Downloads");
+                    title.setAttribute('id', "synoloader_toolbar_label_id");
+                    panel.appendChild(title);
+                }
 
-            });        
+            });
 
         });
 
@@ -75,19 +75,19 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
 
     this.onLoad = function() {
 
-            if (Application.extensions) {
-                this.firstRun(Application.extensions);
-            } else {
-                Application.getExtensions(this.firstRun);
-            }
+        if (Application.extensions) {
+            this.firstRun(Application.extensions);
+        } else {
+            Application.getExtensions(this.firstRun);
+        }
 
 
-            document.getElementById("contentAreaContextMenu")
-                .addEventListener("popupshowing", function(e) {
-                    SynoLoader.showFirefoxContextMenu(e);
-                }, false);
+        document.getElementById("contentAreaContextMenu")
+            .addEventListener("popupshowing", function(e) {
+                SynoLoader.showFirefoxContextMenu(e);
+            }, false);
 
-        
+
     };
 
 
@@ -158,20 +158,20 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
 
 
     this.onToolBarDownloadInfoHidden = function(event) {
-        
+
         clearInterval(SynoLoader.UpdateListPanelInterval);
-        
+
     };
-    
+
     this.onToolbarButtonCommand = function(e) {
-        
+
         this.onMenuItemCommand(e);
-        
+
     };
 
 
     this.showFirefoxContextMenu = function(event) {
- 
+
         document.getElementById("context-SynoLoader").hidden = (!gContextMenu.onLink);
 
     };

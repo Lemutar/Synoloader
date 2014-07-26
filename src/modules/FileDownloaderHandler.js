@@ -7,23 +7,20 @@ if (typeof FileDownloaderHandler == "undefined") {
     var FileDownloaderHandler = {};
 
 
-Components.utils.import("resource://gre/modules/Downloads.jsm");
-Components.utils.import("resource://gre/modules/Task.jsm");
+    Components.utils.import("resource://gre/modules/Downloads.jsm");
+    Components.utils.import("resource://gre/modules/Task.jsm");
 
-(function() {
+    (function() {
 
 
-this.get_file_content = function(source,destination,succeded) {
-    Task.spawn(function () {
-        yield Downloads.fetch(source,destination);   
-    }).then(succeded, Components.utils.reportError);
-};
+        this.get_file_content = function(source, destination, succeded) {
+            Task.spawn(function() {
+                /*jshint moz: true */
+                yield Downloads.fetch(source, destination);
+            }).then(succeded, Components.utils.reportError);
+        };
 
-}).apply(FileDownloaderHandler);
+    }).apply(FileDownloaderHandler);
 
 
 }
-
-
-
-

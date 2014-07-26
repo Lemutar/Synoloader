@@ -164,9 +164,8 @@ function test_Protocol_connect_succsed_itme_mock() {
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester', '1234');
  var setdone_get_all_items = function(response){myresponse=response; };
 
-
- utils.writeTo(
-	 "{\
+/*jshint multistr: true */
+ var file_contend = "{\
 	   \"items\" : [\
 	      {\
 		 \"availablePieces\" : 0,\
@@ -194,8 +193,9 @@ function test_Protocol_connect_succsed_itme_mock() {
 	      }\
 	   ],\
 	   \"success\" : true\
-	}",
-	 "../fixtures/items.txt" );
+	}";
+ 
+ utils.writeTo(file_contend,"../fixtures/items.txt" );
 
  server.expect('/download/download_redirector.cgi', 200, '/items.txt'); 
  mytest.Connect_Time = Date.now();

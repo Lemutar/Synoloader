@@ -50,7 +50,7 @@ var Request = function(url, parameter, timeout, callback) {
         }
 
     };
-    
+
 
     return_request.post = function() {
         return_request.http_request.open('POST', url, true);
