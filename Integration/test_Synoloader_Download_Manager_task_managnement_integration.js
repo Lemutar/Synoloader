@@ -7,7 +7,7 @@ function setUp()
 {
  SynoLoader_DownloadManager.password = "1234";
  SynoLoader_DownloadManager.username = "synoloader_tester";
- SynoLoader_DownloadManager.url = 'http://http://z35.no-ip.org:5050';
+ SynoLoader_DownloadManager.url = 'http://z35.no-ip.org:5050';
 
 
 }
@@ -40,8 +40,8 @@ function test_Protocol_DownloadManager_load_download_list() {
  SynoLoader_DownloadManager.transfer_to_nas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");
  utils.wait(10000);
  var download_items={};
- SynoLoader_DownloadManager.load_download_list(function(items){download_items=items});
- utils.wait(15000);
+ SynoLoader_DownloadManager.load_download_list(function(items){download_items=items},function(items){download_items.length=99});
+ utils.wait(10000);
  assert.equals(download_items.length,1);
 
 }
@@ -56,8 +56,8 @@ function test_Protocol_DownloadManager_load_download_list_old() {
  SynoLoader_DownloadManager.transfer_to_nas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");
  utils.wait(10000);
  var download_items={};
- SynoLoader_DownloadManager.load_download_list(function(items){download_items=items});
- utils.wait(15000);
+ SynoLoader_DownloadManager.load_download_list(function(items){download_items=items},function(items){download_items.length=99});
+ utils.wait(10000);
  assert.equals(download_items.length,1);
 
 }

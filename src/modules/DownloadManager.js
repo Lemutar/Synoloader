@@ -127,11 +127,15 @@ Components.utils.import("resource://SynoLoader/Notification.js", SynoLoader_Down
 
     };
 
-    this.load_download_list = function(manage_items) {
+    this.load_download_list = function(manage_items_success,manage_items_fail) {
         this.protocol.task_action(function(response) {
                 if (response.success === true) {
-                    manage_items(response.items);
-                } 
+                    manage_items_success(response.items);
+                }
+                else
+                {
+                    manage_items_fail(response)
+                }
 
             },
             'getall');
