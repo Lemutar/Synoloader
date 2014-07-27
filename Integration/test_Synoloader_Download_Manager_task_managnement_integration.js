@@ -9,13 +9,12 @@ function setUp()
  SynoLoader_DownloadManager.username = "synoloader_tester";
  SynoLoader_DownloadManager.url = 'http://z35.no-ip.org:5050';
 
-
 }
 
 function tearDown() {
    
-   SynoLoader_DownloadManager.delete_all();
-   utils.wait(5000);
+ SynoLoader_DownloadManager.delete_all();
+ utils.wait(5000);
 
 }
 
@@ -37,14 +36,30 @@ function test_Protocol_DownloadManager_load_download_list() {
 
  SynoLoader_DownloadManager.set_protocol("2");
  SynoLoader_DownloadManager.Util.show_log=true;
- SynoLoader_DownloadManager.transfer_to_nas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");
- utils.wait(10000);
+ 
+ var NotificationMock = new Mock(Notification);
+ var loaded = { value : false };
+ NotificationMock.expect('show', ["Send link","http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso"], null)
+   .andStub(function(title,text){loaded.value = true}).times(1);
+ SynoLoader_DownloadManager.Notification = NotificationMock;
+ 
+ SynoLoader_DownloadManager.transfer_to_nas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso");
+ utils.wait(loaded);
+ 
  var download_items={};
- SynoLoader_DownloadManager.load_download_list(function(items){download_items=items},function(items){download_items.length=99});
- utils.wait(10000);
+ var loaded = { value : false };
+ SynoLoader_DownloadManager.load_download_list(function(items){
+   download_items=items;
+   loaded.value = true;
+   },function(items){
+   download_items.length=99;
+   loaded.value = true;
+   });
+ utils.wait(loaded);
  assert.equals(download_items.length,1);
 
 }
+
 
 test_Protocol_DownloadManager_load_download_list_old.description = 'test_Protocol_DownloadManager_load_download_list_old';
 test_Protocol_DownloadManager_load_download_list_old.priority    = 'must';
@@ -53,11 +68,27 @@ function test_Protocol_DownloadManager_load_download_list_old() {
 
  SynoLoader_DownloadManager.set_protocol("1");
  SynoLoader_DownloadManager.Util.show_log=true;
- SynoLoader_DownloadManager.transfer_to_nas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");
- utils.wait(10000);
+ 
+ var NotificationMock = new Mock(Notification);
+ var loaded = { value : false };
+ NotificationMock.expect('show', ["Send link","http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso"], null)
+   .andStub(function(title,text){loaded.value = true}).times(1);
+ SynoLoader_DownloadManager.Notification = NotificationMock;
+ 
+ SynoLoader_DownloadManager.transfer_to_nas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso");
+ utils.wait(loaded);
+ 
  var download_items={};
- SynoLoader_DownloadManager.load_download_list(function(items){download_items=items},function(items){download_items.length=99});
- utils.wait(10000);
+ var loaded = { value : false };
+ SynoLoader_DownloadManager.load_download_list(function(items){
+   download_items=items;
+   loaded.value = true;
+   },function(items){
+   download_items.length=99;
+   loaded.value = true;
+   });
+ utils.wait(loaded);
  assert.equals(download_items.length,1);
 
 }
+

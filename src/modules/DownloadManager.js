@@ -48,12 +48,12 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                 case "1":
                     SynoLoader_DownloadManager.Util.log("Set Protocol to < DMS 4.1");
                     Components.utils.import("resource://SynoLoader/Protocol.js", SynoLoader_DownloadManager);
-                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url, 5000, this.username, this.password);
+                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url, 20000, this.username, this.password);
                     break;
                 case "2":
                     SynoLoader_DownloadManager.Util.log("Set Protocol to > DMS 4.1");
                     Components.utils.import("resource://SynoLoader/Protocol_API.js", SynoLoader_DownloadManager);
-                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url, 5000, this.username, this.password);
+                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url, 20000, this.username, this.password);
                     break;
             }
 
