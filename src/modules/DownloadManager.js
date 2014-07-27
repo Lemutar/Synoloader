@@ -7,6 +7,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
     Components.utils.import("resource://SynoLoader/FileDownloaderHandler.js", SynoLoader_DownloadManager);
     Components.utils.import("resource://SynoLoader/Util.js", SynoLoader_DownloadManager);
     Components.utils.import("resource://SynoLoader/Notification.js", SynoLoader_DownloadManager);
+    Components.utils.import("resource://SynoLoader/magnetHandler.js", SynoLoader_DownloadManager);
 
 
     (function() {
@@ -26,8 +27,22 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
 
         this.preferences.QueryInterface(Components.interfaces.nsIPrefBranch2);
         this.preferences.addObserver("", this, false);
+        SynoLoader_DownloadManager.url = this.preferences.getCharPref('url');
+        SynoLoader_DownloadManager.Notification.show_not = this.preferences.getBoolPref('show_not');
+        SynoLoader_DownloadManager.Util.show_log = this.preferences.getBoolPref('show_dgb');
+        SynoLoader_DownloadManager.magnetHandler.set_active(SynoLoader_DownloadManager.preferences.getBoolPref('use_magnet'));
 
 
+        var LoginManager = Components.classes["@mozilla.org/login-manager;1"].
+        getService(Components.interfaces.nsILoginManager);
+
+        // Find users for the given parameters
+        var logins = LoginManager.findLogins({}, 'chrome://SynoLoader.Pass', null, 'User Registration');
+        if (logins.length > 0) {
+            SynoLoader_DownloadManager.username = logins[0].username;
+            SynoLoader_DownloadManager.password = logins[0].password;
+        }
+        
         this.set_protocol = function(protocol) {
             switch (protocol) {
                 case "1":
@@ -44,27 +59,16 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
 
         };
 
-        SynoLoader_DownloadManager.url = this.preferences.getCharPref('url');
-        SynoLoader_DownloadManager.Notification.show_not = this.preferences.getBoolPref('show_not');
-        SynoLoader_DownloadManager.Util.show_log = this.preferences.getBoolPref('show_dgb');
+
         this.set_protocol(this.preferences.getCharPref('DSM_Verison'));
 
 
-        var LoginManager = Components.classes["@mozilla.org/login-manager;1"].
-        getService(Components.interfaces.nsILoginManager);
 
-        // Find users for the given parameters
-        var logins = LoginManager.findLogins({}, 'chrome://SynoLoader.Pass', null, 'User Registration');
-        if (logins.length > 0) {
-            SynoLoader_DownloadManager.username = logins[0].username;
-            SynoLoader_DownloadManager.password = logins[0].password;
-        }
 
 
         this.connect_to_nas = function(link) {
-            this.protocol.password = this.password;
-            this.protocol.username = this.username;
-            this.protocol.base_url = this.url;
+            this.protocol.password=this.password;
+            this.protocol.username=this.username;
             this.protocol.conect(function(response) {
                 SynoLoader_DownloadManager.is_connect = response.success;
             });
@@ -148,6 +152,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                 switch (data) {
                     case 'url':
                         SynoLoader_DownloadManager.url = this.preferences.getCharPref('url');
+                        SynoLoader_DownloadManager.set_protocol(SynoLoader_DownloadManager.preferences.getCharPref('DSM_Verison'));
                         break;
                     case 'show_not':
                         SynoLoader_DownloadManager.Notification.show_not = this.preferences.getBoolPref('show_not');
@@ -156,11 +161,33 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                         SynoLoader_DownloadManager.Util.show_log = this.preferences.getBoolPref('show_dgb');
                         break;
                     case 'DSM_Verison':
-                        SynoLoader_DownloadManager.set_protocol(this.preferences.getCharPref('DSM_Verison'));
+                        SynoLoader_DownloadManager.set_protocol(SynoLoader_DownloadManager.preferences.getCharPref('DSM_Verison'));
+                        break;
+                    case 'use_magnet':
+                        SynoLoader_DownloadManager.magnetHandler.set_active(SynoLoader_DownloadManager.preferences.getBoolPref('use_magnet'));
                         break;
                 }
             }
         };
+                
+        this.httpResponseObserver = SynoLoader_DownloadManager.magnetHandler.createObserver();
+        this.httpResponseObserver.observe = function( aSubject, aTopic, aData ) 
+        {
+                SynoLoader_DownloadManager.Util.log("observer");
+                if(aTopic == 'magnet-on-open-uri')
+                {
+                        var aURI = aSubject.QueryInterface(Components.interfaces.nsIURI);
+                        if(!aURI) return;
+                        var uriText = aURI.spec;
+                        SynoLoader_DownloadManager.transfer_to_nas(uriText);
+                }
+        };
+        
+        this.observerService = Components.classes["@mozilla.org/observer-service;1"]
+		.getService(Components.interfaces.nsIObserverService);
+
+	this.observerService.addObserver( SynoLoader_DownloadManager.httpResponseObserver, "magnet-on-open-uri", false);
+	  
 
 
     }).apply(SynoLoader_DownloadManager);
