@@ -10,5 +10,3 @@ Util.log = function(errmsg) {
         this.consoleService.logStringMessage("SynoLoader : " + errmsg);
     }
 };
-
-

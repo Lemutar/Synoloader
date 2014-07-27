@@ -42,7 +42,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
             SynoLoader_DownloadManager.username = logins[0].username;
             SynoLoader_DownloadManager.password = logins[0].password;
         }
-        
+
         this.set_protocol = function(protocol) {
             switch (protocol) {
                 case "1":
@@ -67,8 +67,8 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
 
 
         this.connect_to_nas = function(link) {
-            this.protocol.password=this.password;
-            this.protocol.username=this.username;
+            this.protocol.password = this.password;
+            this.protocol.username = this.username;
             this.protocol.conect(function(response) {
                 SynoLoader_DownloadManager.is_connect = response.success;
             });
@@ -169,25 +169,23 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                 }
             }
         };
-                
-        this.httpResponseObserver = SynoLoader_DownloadManager.magnetHandler.createObserver();
-        this.httpResponseObserver.observe = function( aSubject, aTopic, aData ) 
-        {
-                SynoLoader_DownloadManager.Util.log("observer");
-                if(aTopic == 'magnet-on-open-uri')
-                {
-                        var aURI = aSubject.QueryInterface(Components.interfaces.nsIURI);
-                        if(!aURI) return;
-                        var uriText = aURI.spec;
-                        SynoLoader_DownloadManager.transfer_to_nas(uriText);
-                }
-        };
-        
-        this.observerService = Components.classes["@mozilla.org/observer-service;1"]
-		.getService(Components.interfaces.nsIObserverService);
 
-	this.observerService.addObserver( SynoLoader_DownloadManager.httpResponseObserver, "magnet-on-open-uri", false);
-	  
+        this.httpResponseObserver = SynoLoader_DownloadManager.magnetHandler.createObserver();
+        this.httpResponseObserver.observe = function(aSubject, aTopic, aData) {
+            SynoLoader_DownloadManager.Util.log("observer");
+            if (aTopic == 'magnet-on-open-uri') {
+                var aURI = aSubject.QueryInterface(Components.interfaces.nsIURI);
+                if (!aURI) return;
+                var uriText = aURI.spec;
+                SynoLoader_DownloadManager.transfer_to_nas(uriText);
+            }
+        };
+
+        this.observerService = Components.classes["@mozilla.org/observer-service;1"]
+            .getService(Components.interfaces.nsIObserverService);
+
+        this.observerService.addObserver(SynoLoader_DownloadManager.httpResponseObserver, "magnet-on-open-uri", false);
+
 
 
     }).apply(SynoLoader_DownloadManager);

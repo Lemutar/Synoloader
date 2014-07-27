@@ -35,9 +35,9 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
             panel.appendChild(title);
         }
 
-        
+
         SynoLoader.SynoLoader_DownloadManager.load_download_list(function(items) {
-            
+
             var panel = document.getElementById('synoloader_toolbar_panel_id');
             var list = document.getElementById('synoloader_toolbar_panel_list_id');
             var loaded_list = SynoLoader.SynoLoader_DownloadManager.protocol.calcItems(items);
@@ -61,15 +61,15 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
 
             if (loaded_list.length === 0) {
                 panel.removeChild(panel.firstChild);
-                var title = document.createElement('label');
+                title = document.createElement('label');
                 title.setAttribute('value', "No active Downloads");
                 title.setAttribute('id', "synoloader_toolbar_label_id");
                 panel.appendChild(title);
-                clearInterval(SynoLoader.UpdateListPanelInterval); 
+                clearInterval(SynoLoader.UpdateListPanelInterval);
             }
 
-        },function(response){
-                    
+        }, function(response) {
+
             var panel = document.getElementById('synoloader_toolbar_panel_id');
             panel.removeChild(panel.firstChild);
             var title = document.createElement('label');
@@ -80,7 +80,7 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
             title.setAttribute('class', "text-link");
             title.setAttribute('id', "synoloader_toolbar_label_id");
             panel.appendChild(title);
-            clearInterval(SynoLoader.UpdateListPanelInterval);         
+            clearInterval(SynoLoader.UpdateListPanelInterval);
         });
 
         panel.moveTo(-1, -1);
@@ -127,7 +127,7 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
         SynoLoader.UpdateListPanelInterval = setInterval(function() {
             SynoLoader.UpdateListPanel();
         }, 1000);
-        
+
     };
 
 
@@ -150,7 +150,7 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
 
     };
 
-    
+
     window.addEventListener("load", function(e) {
         SynoLoader.onLoad();
     }, false);
