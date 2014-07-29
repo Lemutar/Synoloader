@@ -1,9 +1,6 @@
 /* This is just an example.  You shouldn't do this. */
 
 
-.SynoLoader_Item {
-  background-color:#F0F0F0;
-}
 
 .SynoLoader_Item_start {
   min-width:30px;
@@ -25,7 +22,8 @@
 }
 
 .SynoLoader_Item_title {
-  width: 100%;
+  width: 500px;
+  text-overflow: ellipsis
 }
 
 

@@ -154,6 +154,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 .getService(Components.interfaces.nsIWindowMediator);
             document = mediator.getMostRecentWindow("navigator:browser").document;
             var richlistitems = [];
+            var background_color_toggel = false;
             items.forEach(function(item) {
                 var richlistitem = document.createElement('richlistitem');
                 richlistitem.download_task_id = item.id;
@@ -226,6 +227,14 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 richlistitem.setAttribute('syono-id', item.id);
                 richlistitem.setAttribute('class', "SynoLoader_Item");
                 richlistitem.appendChild(vbox);
+
+                if (background_color_toggel) {
+                    richlistitem.setAttribute('style', "background-color:#F0F0F0;");
+                    background_color_toggel = false;
+                } else {
+                    richlistitem.setAttribute('style', "");
+                    background_color_toggel = true;
+                }
 
                 richlistitems.push(richlistitem);
             });

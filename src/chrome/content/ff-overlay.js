@@ -21,35 +21,20 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
 
 
     this.UpdateListPanel = function() {
-        var mediator = Components.classes['@mozilla.org/appshell/window-mediator;1']
-            .getService(Components.interfaces.nsIWindowMediator);
-        var document = mediator.getMostRecentWindow("navigator:browser").document;
-        var list = document.getElementById('synoloader_toolbar_panel_list_id');
-        var panel = document.getElementById('synoloader_toolbar_panel_id');
-
-        if (!list) {
-            var title = document.createElement('label');
-            panel.removeChild(panel.firstChild);
+        
+        var title = document.getElementById('synoloader_toolbar_panel_lable_id');
+        if(title.getAttribute("value")!="Loading...")
+        {
             title.setAttribute('value', "Loading...");
-            title.setAttribute('id', "synoloader_toolbar_label_id");
-            panel.appendChild(title);
         }
 
-
         SynoLoader.SynoLoader_DownloadManager.load_download_list(function(items) {
-
             var panel = document.getElementById('synoloader_toolbar_panel_id');
             var list = document.getElementById('synoloader_toolbar_panel_list_id');
+            var hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
+
             var loaded_list = SynoLoader.SynoLoader_DownloadManager.protocol.calcItems(items);
-            var title = document.getElementById('synoloader_toolbar_label_id');
-            if (title) {
-                panel.removeChild(title);
-            }
-            if (!list) {
-                list = document.createElement('richlistbox');
-                panel.appendChild(list);
-                list.setAttribute("id", "synoloader_toolbar_panel_list_id");
-            }
+
             var count = list.itemCount;
             while (count-- > 0) {
                 list.removeItemAt(count);
@@ -60,30 +45,30 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
             }
 
             if (loaded_list.length === 0) {
-                panel.removeChild(panel.firstChild);
-                title = document.createElement('label');
+                hbox_lable.setAttribute('hidden', "false");
+                var title = document.getElementById('synoloader_toolbar_panel_lable_id');
                 title.setAttribute('value', "No active Downloads");
-                title.setAttribute('id', "synoloader_toolbar_label_id");
-                panel.appendChild(title);
                 clearInterval(SynoLoader.UpdateListPanelInterval);
+            } else {
+                hbox_lable.setAttribute('hidden', "true");
             }
+            list.removeItemFromSelection(0);
+            panel.moveTo(-1, -1);
 
         }, function(response) {
-
+            var hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
+            hbox_lable.setAttribute('hidden', "false");
             var panel = document.getElementById('synoloader_toolbar_panel_id');
-            panel.removeChild(panel.firstChild);
-            var title = document.createElement('label');
+            var title = document.getElementById('synoloader_toolbar_panel_lable_id');
             title.setAttribute('value', "No Connection, please set correct Preferces");
-            title.addEventListener("click", function() {
-                window.openDialog("chrome://SynoLoader/content/options.xul", "modifyheadersDialog", "resizable,dialog,centerscreen,modal", this);
-            }, false);
-            title.setAttribute('class', "text-link");
-            title.setAttribute('id', "synoloader_toolbar_label_id");
-            panel.appendChild(title);
             clearInterval(SynoLoader.UpdateListPanelInterval);
+            panel.moveTo(-1, -1);
         });
 
-        panel.moveTo(-1, -1);
+    };
+
+    this.show_options = function() {
+        window.openDialog("chrome://SynoLoader/content/options.xul", "modifyheadersDialog", "resizable,dialog,centerscreen,modal", this);
     };
 
     this.onLoad = function() {

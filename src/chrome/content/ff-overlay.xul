@@ -9,10 +9,34 @@
   <toolbarbutton id="synoloader_toolbar_id"  class="toolbarbutton-1 chromeclass-toolbar-additional custombutton"
    label="Synoloader" tooltiptext="Synology Download"
    type="panel">
- 	<panel id="synoloader_toolbar_panel_id"  type="arrow" onpopuphidden="SynoLoader.onToolBarDownloadInfoHidden(event);"  onpopupshowing="SynoLoader.onToolBarDownloadInfo(event);">
-	     <hbox  align="start" class="SynoLoader_Item_hbox">
-             	<label value="Loading..."/>
-	     </hbox>
+ 	<panel  id="synoloader_toolbar_panel_id" type="arrow" onpopuphidden="SynoLoader.onToolBarDownloadInfoHidden(event);"  onpopupshowing="SynoLoader.onToolBarDownloadInfo(event);">
+	 
+	       <vbox width="500px" >
+		<hbox pack="center" width="500px" height="40px">
+		     <vbox pack="start" width="500px">
+			<label align="start" value="Synoloader" id="synoloader_toolbar_panel_title_id"/>
+		     </vbox>		    
+		</hbox>
+		<separator orient="horizontal" class="groove"/>
+		<hbox  align="start" id="synoloader_toolbar_hbox_id">
+		  <stack>
+		  <richlistbox minheight="300px" id="synoloader_toolbar_panel_list_id">
+		  </richlistbox>
+		    <hbox pack="center" width="500px" height="80px" id="synoloader_toolbar_panel_box_lable_id">
+			 <vbox pack="center" width="500px">
+			    <label align="center" value="Loading..." id="synoloader_toolbar_panel_lable_id"/>
+			 </vbox>		    
+		    </hbox>
+		</stack>
+		</hbox>
+                <separator orient="horizontal" class="groove"/>
+	      
+		<hbox  pack="end">
+		  <vbox pack="end">
+			  <toolbarbutton id="SynoLoader_Setting" oncommand="SynoLoader.show_options();"/>
+		  </vbox>
+		</hbox>
+	     </vbox>
         </panel>
   </toolbarbutton>
 </toolbarpalette>
