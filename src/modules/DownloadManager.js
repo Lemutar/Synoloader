@@ -131,7 +131,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
         this.load_download_list = function(manage_items_success, manage_items_fail) {
             this.protocol.task_action(function(response) {
                     if (response.success === true) {
-                        manage_items_success(response.items);
+                        manage_items_success(SynoLoader_DownloadManager.protocol.calcItems(response.items));
                     } else {
                         manage_items_fail(response);
                     }

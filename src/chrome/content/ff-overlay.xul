@@ -53,9 +53,9 @@
               oncommand="SynoLoader.onMenuItemCommand(event)"/>
   </popup>
   <popup id="contentAreaContextMenu">
-    <menuitem id="synoloader_context-link" label="&SynoLoaderContext.linklabel;"
+    <menuitem id="synoloader_context_link" label="&SynoLoaderContext.linklabel;"
               accesskey="&SynoLoaderContext.linkaccesskey;"
-              insertafter="context-SynoLoader"
+              insertafter="synoloader_context"
               oncommand="SynoLoader.onMenuItemLinkCommand(event)"/>
   </popup>
 

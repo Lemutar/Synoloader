@@ -28,12 +28,10 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
             title.setAttribute('value', "Loading...");
         }
 
-        SynoLoader.SynoLoader_DownloadManager.load_download_list(function(items) {
+        SynoLoader.SynoLoader_DownloadManager.load_download_list(function(loaded_list) {
             var panel = document.getElementById('synoloader_toolbar_panel_id');
             var list = document.getElementById('synoloader_toolbar_panel_list_id');
             var hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
-
-            var loaded_list = SynoLoader.SynoLoader_DownloadManager.protocol.calcItems(items);
 
             var count = list.itemCount;
             while (count-- > 0) {
@@ -131,7 +129,7 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
 
     this.showFirefoxContextMenu = function(event) {
 
-        document.getElementById("context-SynoLoader").hidden = (!gContextMenu.onLink);
+        document.getElementById("synoloader_context").hidden = (!gContextMenu.onLink);
 
     };
 
