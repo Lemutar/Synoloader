@@ -21,17 +21,22 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
 
 
     this.UpdateListPanel = function() {
-        
+
         var title = document.getElementById('synoloader_toolbar_panel_lable_id');
-        if(title.getAttribute("value")!="Loading...")
-        {
+        if (title.getAttribute("value") != "Loading...") {
             title.setAttribute('value', "Loading...");
         }
 
-        SynoLoader.SynoLoader_DownloadManager.load_download_list(function(loaded_list) {
+        SynoLoader.SynoLoader_DownloadManager.load_download_list(function(items) {
             var panel = document.getElementById('synoloader_toolbar_panel_id');
             var list = document.getElementById('synoloader_toolbar_panel_list_id');
             var hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
+            loaded_list = {};
+
+            if (typeof SynoLoader.SynoLoader_DownloadManager.protocol != "undefined") {
+                loaded_list = SynoLoader.SynoLoader_DownloadManager.protocol.calcItems(items);
+            }
+
 
             var count = list.itemCount;
             while (count-- > 0) {
