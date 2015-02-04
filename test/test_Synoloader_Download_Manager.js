@@ -94,7 +94,7 @@ function test_Protocol_DownloadManager_transfer_to_nas_mock() {
 
  SynoLoader_DownloadManager.transfer_to_nas("link");
 
- utils.wait(500);
+ utils.wait(800);
 
 }
 
@@ -120,7 +120,7 @@ function test_Protocol_DownloadManager_transfer_to_nas_torrent_file_mock() {
  SynoLoader_DownloadManager.protocol.connect_id = "122211";
 
  var NotificationMock = new Mock(Notification);
- NotificationMock.expect('show', ["Send Torent file to NAS","http://localhost:4445/test.Torrent"], null);
+ NotificationMock.expect('show', ["Send torrent file to NAS","http://localhost:4445/test.Torrent"], null);
  SynoLoader_DownloadManager.Notification = NotificationMock;
  SynoLoader_DownloadManager.transfer_to_nas("http://localhost:4445/test.Torrent");
 

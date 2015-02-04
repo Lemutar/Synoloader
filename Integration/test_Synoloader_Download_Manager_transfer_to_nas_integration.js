@@ -40,7 +40,7 @@ function test_Protocol_DownloadManager_transfer_to_nas_torrent_file() {
 
  var NotificationMock = new Mock(Notification);
  var loaded = { value : false };
- NotificationMock.expect('show', ["Send Torent file to NAS","http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent"], null)
+ NotificationMock.expect('show', ["Send torrent file to NAS","http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent"], null)
    .andStub(function(title,text){loaded.value = true}).times(1);
  SynoLoader_DownloadManager.Notification = NotificationMock;
  SynoLoader_DownloadManager.transfer_to_nas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");

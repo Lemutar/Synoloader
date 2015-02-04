@@ -89,8 +89,9 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                 SynoLoader_DownloadManager.FileDownloaderHandler.get_file_content(link, file.path,
                     function() {
                         SynoLoader_DownloadManager.protocol.task_action(function(response) {
+                                
                                 if (response.success === true) {
-                                    SynoLoader_DownloadManager.Notification.show("Send Torent file to NAS", link);
+                                    SynoLoader_DownloadManager.Notification.show("Send torrent file to NAS", link);
                                 } else {
                                     SynoLoader_DownloadManager.Notification.show("Send link failed", response.error_text);
                                 }

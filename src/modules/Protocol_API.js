@@ -101,7 +101,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
             error_text: ''
         };
         var conect_request = Request(return_protocol.base_url + '/webapi/auth.cgi',
-            "api=SYNO.API.Auth&version=2&method=login&account=" + encodeURIComponent(return_protocol.username) + "&passwd=" + encodeURIComponent(return_protocol.password) + "&session=Synoloader&format=sid",
+            "api=SYNO.API.Auth&version=2&method=login&account=" + encodeURIComponent(return_protocol.username) + "&passwd=" + encodeURIComponent(return_protocol.password) + "&session=DownloadStation&format=sid",
             timeout,
             function(response) {
                 if (response.status != 200) {
@@ -142,10 +142,11 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 }
             });
         } else {
+            
             switch (task_action) {
                 case 'getall':
                     var task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
-                        'api=SYNO.DownloadStation.Task&version=1&method=list&additional=detail,transfer&sid=' + encodeURIComponent(return_protocol.connect_id),
+                        'api=SYNO.DownloadStation.Task&version=1&method=list&additional=detail,transfer&_sid=' + encodeURIComponent(return_protocol.connect_id),
                         timeout,
                         function(response) {
                             if (response.status != 200) {
@@ -170,7 +171,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 case 'addurl':
                     task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
                         'api=SYNO.DownloadStation.Task&version=1&method=create&uri=' + encodeURIComponent(parameter) +
-                        '&sid=' + encodeURIComponent(return_protocol.connect_id),
+                        '&_sid=' + encodeURIComponent(return_protocol.connect_id),
                         timeout,
                         function(response) {
                             if (response.status != 200) {
@@ -191,13 +192,13 @@ var Protocol = function(base_url, timeout, user_name, password) {
 
                 case 'add_file':
                     Util.log("try to add file to " + parameter);
-
+                    
                     var formData = Components.classes["@mozilla.org/files/formdata;1"].createInstance(Components.interfaces.nsIDOMFormData);
                     formData.append("api", "SYNO.DownloadStation.Task");
                     formData.append("version", "1");
                     formData.append("method", "create");
-                    formData.append("file", File(parameter));
-                    formData.append("sid", encodeURIComponent(return_protocol.connect_id));
+                    formData.append("file", parameter);
+                    formData.append("_sid", encodeURIComponent(return_protocol.connect_id));
 
                     task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
                         formData,
@@ -222,7 +223,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 case 'delete':
                     task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
                         'api=SYNO.DownloadStation.Task&version=1&method=delete&id=' + encodeURIComponent(parameter) +
-                        '&force_complete=false&sid=' + encodeURIComponent(return_protocol.connect_id),
+                        '&force_complete=false&_sid=' + encodeURIComponent(return_protocol.connect_id),
                         timeout,
                         function(response) {
                             if (response.status != 200) {
@@ -242,7 +243,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 case 'resume':
                     task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
                         'api=SYNO.DownloadStation.Task&version=1&method=resume&id=' + encodeURIComponent(parameter) +
-                        '&sid=' + encodeURIComponent(return_protocol.connect_id),
+                        '&_sid=' + encodeURIComponent(return_protocol.connect_id),
                         timeout,
                         function(response) {
                             if (response.status != 200) {
@@ -262,7 +263,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 case 'stop':
                     task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
                         'api=SYNO.DownloadStation.Task&version=1&method=pause&id=' + encodeURIComponent(parameter) +
-                        '&sid=' + encodeURIComponent(return_protocol.connect_id),
+                        '&_sid=' + encodeURIComponent(return_protocol.connect_id),
                         timeout,
                         function(response) {
                             if (response.status != 200) {

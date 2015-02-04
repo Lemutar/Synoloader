@@ -13,7 +13,7 @@ cp ./firefox_profile_config/uxu@clear-code.com ./firefox_profile/extensions/ -rf
 
 
 echo "TESTING"
-./fire-test-runner --port=9999  --profile="firefox_profile"  ./test/ --quit
+./fire-test-runner --port=9999  --profile="firefox_profile"  ./test/ #--quit
 #firefox -profile ./firefox_profile -no-remote
 
 
