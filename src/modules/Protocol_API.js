@@ -1,7 +1,14 @@
 var EXPORTED_SYMBOLS = ["Protocol"];
 Components.utils.import("resource://SynoLoader/Request.js");
 Components.utils.import("resource://SynoLoader/Util.js");
-Components.utils.importGlobalProperties(['File']);
+
+try {
+    Components.utils.importGlobalProperties(['File']);
+}
+catch(err) {
+    Util.log("importGlobalProperties(['File']) fail");
+}
+
 
 
 function set_auth_api_error_text(error_code, response) {

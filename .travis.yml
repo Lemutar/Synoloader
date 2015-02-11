@@ -1,7 +1,7 @@
 language: javascript
 
 addons:
-  firefox: "35.0"
+  firefox: "31.0"
 
 before_script:
    - sudo apt-get install -qq pulseaudio
@@ -10,6 +10,9 @@ before_script:
  
 script:
   - sleep 3
+  - ./run_test.sh
+  - ./run_integration_test.sh 
+  - sudo apt-get install firefox=35.0
   - ./run_test.sh
   - ./run_integration_test.sh 
 

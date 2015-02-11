@@ -1,1 +1,1 @@
-{ "test" :  true }
+my_test
