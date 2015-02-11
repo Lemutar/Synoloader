@@ -10,6 +10,7 @@ script:
   - firefox --version 
   - ./run_test.sh
   - ./run_integration_test.sh
+  - killall firefox
   - sudo apt-get install firefox=35.0.1+build1-0ubuntu0.12.04.1
   - sleep 3
   - firefox --version 
