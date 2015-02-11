@@ -4,25 +4,20 @@ addons:
   firefox: "31.0"
 
 before_script:
-   - sudo apt-get install -qq pulseaudio
    - "export DISPLAY=:99.0"
    - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
  
 script:
   - sleep 3
+  - firefox --version 
+  - ./run_test.sh
+  - ./run_integration_test.sh
+  - sudo apt-get install -qq firefox=35.0.1+build1-0ubuntu0.12.04.1
+  - firefox --version 
   - ./run_test.sh
   - ./run_integration_test.sh 
 
 
-before_script:
-  - sudo apt-get install -qq firefox=35.0
-
-
-script:
-  - sleep 3
-  - ./run_test.sh
-  - ./run_integration_test.sh 
 
 after_script:
-  - firefox --version
   - sh -e /etc/init.d/xvfb stop
