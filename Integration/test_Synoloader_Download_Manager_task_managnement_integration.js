@@ -62,7 +62,7 @@ function test_Protocol_DownloadManager_load_download_list() {
 
 
 test_Protocol_DownloadManager_load_download_list_old.description = 'test_Protocol_DownloadManager_load_download_list_old';
-test_Protocol_DownloadManager_load_download_list_old.priority    = 'must';
+test_Protocol_DownloadManager_load_download_list_old.priority    = 'never';
 function test_Protocol_DownloadManager_load_download_list_old() {
 
 

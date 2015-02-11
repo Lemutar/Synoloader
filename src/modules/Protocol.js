@@ -236,6 +236,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                     background_color_toggel = true;
                 }
 
+
                 richlistitems.push(richlistitem);
             });
             return richlistitems;

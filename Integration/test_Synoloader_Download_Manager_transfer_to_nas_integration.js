@@ -68,7 +68,7 @@ function test_Protocol_DownloadManager_transfer_to_nas_link() {
 }
 
 test_Protocol_DownloadManager_transfer_to_nas_torrent_file_old.description = 'test_Protocol_DownloadManager_transfer_to_nas_torrent_file_old';
-test_Protocol_DownloadManager_transfer_to_nas_torrent_file_old.priority    = 'must';
+test_Protocol_DownloadManager_transfer_to_nas_torrent_file_old.priority    = 'never';
 function test_Protocol_DownloadManager_transfer_to_nas_torrent_file_old() {
 
 

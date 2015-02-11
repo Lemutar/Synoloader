@@ -1,1 +1,1 @@
-{ "errcode" : -2, "login_success" : false , "success" : true }
+{ "data" :{"sid" : "ohOCjwhHhwghw"},"success": true }

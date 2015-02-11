@@ -61,6 +61,7 @@ SynoLoader.SetUserNamePassword = function() {
 };
 
 SynoLoader.init = function() {
+    this.SynoLoader_DownloadManager.connect_to_nas("");
     this.UpdateStatus();
     this.interval = window.setInterval(function() {
         SynoLoader.UpdateStatus();
@@ -69,7 +70,6 @@ SynoLoader.init = function() {
 
 
 SynoLoader.UpdateStatus = function() {
-
     if (true === this.SynoLoader_DownloadManager.is_connect) {
         document.getElementById("SynoLoader_status_image").setAttribute("src", "chrome://SynoLoader/skin/connected.png");
         document.getElementById("SynoLoader_status_lable").value = "connected";
@@ -81,6 +81,7 @@ SynoLoader.UpdateStatus = function() {
 
 
 
-window.addEventListener("load", function(e) {
+window.addEventListener("load", function load(e) {
+    window.removeEventListener("load", load, false); //remove listener, no longer needed
     SynoLoader.init();
 }, false);

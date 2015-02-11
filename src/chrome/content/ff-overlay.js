@@ -83,7 +83,7 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
         }
 
         document.getElementById("contentAreaContextMenu")
-            .addEventListener("popupshowing", function(e) {
+            .addEventListener("popupshowing", function popupshowing(e) {
                 SynoLoader.showFirefoxContextMenu(e);
             }, false);
 
@@ -139,8 +139,10 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
     };
 
 
-    window.addEventListener("load", function(e) {
+    window.addEventListener("load", function load(event) {
+        window.removeEventListener("load", load, false); //remove listener, no longer needed
         SynoLoader.onLoad();
     }, false);
+
 
 }).apply(SynoLoader);

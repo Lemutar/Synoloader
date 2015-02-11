@@ -48,12 +48,12 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                 case "1":
                     SynoLoader_DownloadManager.Util.log("Set Protocol to < DMS 4.1");
                     Components.utils.import("resource://SynoLoader/Protocol.js", SynoLoader_DownloadManager);
-                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url, 20000, this.username, this.password);
+                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url, 50000, this.username, this.password);
                     break;
                 case "2":
                     SynoLoader_DownloadManager.Util.log("Set Protocol to > DMS 4.1");
                     Components.utils.import("resource://SynoLoader/Protocol_API.js", SynoLoader_DownloadManager);
-                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url, 20000, this.username, this.password);
+                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url, 50000, this.username, this.password);
                     break;
             }
 
@@ -89,7 +89,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                 SynoLoader_DownloadManager.FileDownloaderHandler.get_file_content(link, file.path,
                     function() {
                         SynoLoader_DownloadManager.protocol.task_action(function(response) {
-                                
+
                                 if (response.success === true) {
                                     SynoLoader_DownloadManager.Notification.show("Send torrent file to NAS", link);
                                 } else {
@@ -98,7 +98,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
 
                             },
                             'add_file',
-                            file.path);
+                            file);
                     });
             } else {
                 this.protocol.task_action(function(response) {
@@ -125,6 +125,8 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                     SynoLoader_DownloadManager.protocol.task_action(function() {}, 'delete', item.id);
                 });
 
+            }, function(response) {
+                SynoLoader_DownloadManager.Util.log("load_download_list: " + response.error_text);
             });
 
         };

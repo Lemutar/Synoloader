@@ -1,7 +1,7 @@
 var EXPORTED_SYMBOLS = ["Protocol"];
 Components.utils.import("resource://SynoLoader/Request.js");
 Components.utils.import("resource://SynoLoader/Util.js");
-
+Components.utils.importGlobalProperties(['File']);
 
 
 function set_auth_api_error_text(error_code, response) {
@@ -142,7 +142,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 }
             });
         } else {
-            
+
             switch (task_action) {
                 case 'getall':
                     var task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
@@ -191,14 +191,15 @@ var Protocol = function(base_url, timeout, user_name, password) {
                     break;
 
                 case 'add_file':
-                    Util.log("try to add file to " + parameter);
-                    
+                    Util.log("try to add file to " + parameter.path);
+
                     var formData = Components.classes["@mozilla.org/files/formdata;1"].createInstance(Components.interfaces.nsIDOMFormData);
                     formData.append("api", "SYNO.DownloadStation.Task");
                     formData.append("version", "1");
                     formData.append("method", "create");
-                    formData.append("file", parameter);
                     formData.append("_sid", encodeURIComponent(return_protocol.connect_id));
+                    formData.append("file", File(parameter.path));
+                    
 
                     task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
                         formData,
@@ -376,6 +377,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                     richlistitem.setAttribute('style', "");
                     background_color_toggel = true;
                 }
+
 
                 richlistitems.push(richlistitem);
             });
