@@ -12,11 +12,6 @@ script:
   - firefox --version 
   - ./run_test.sh
   - ./run_integration_test.sh
-  - sudo apt-get install -qq firefox=35.0.1+build1-0ubuntu0.12.04.1
-  - firefox --version 
-  - ./run_test.sh
-  - ./run_integration_test.sh 
-
 
 
 after_script:
