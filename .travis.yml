@@ -12,7 +12,7 @@ script:
   - sleep 3
   - ./run_test.sh
   - ./run_integration_test.sh 
-  - sudo apt-get install firefox=35.0
+  - sudo apt-get install -qq firefox=35.0.1
   - ./run_test.sh
   - ./run_integration_test.sh 
 
