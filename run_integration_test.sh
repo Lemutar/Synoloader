@@ -13,5 +13,5 @@ cp ./firefox_profile_config/uxu@clear-code.com ./firefox_profile/extensions/ -rf
 
 
 echo "INTEGRATION TESTING"
-./fire-test-runner --port=9999 --profile="firefox_profile"  ./Integration/ #--quit
+./fire-test-runner --port=9999 --profile="firefox_profile"  ./Integration/ --quit
 
