@@ -26,4 +26,8 @@
   text-overflow: ellipsis
 }
 
+prefpane > .content-box,
+prefwindow > .paneDeckContainer {
+    overflow: visible;
+}
 

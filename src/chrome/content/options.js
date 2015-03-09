@@ -81,6 +81,7 @@ SynoLoader.UpdateStatus = function() {
 
 
 
+
 window.addEventListener("load", function load(e) {
     window.removeEventListener("load", load, false); //remove listener, no longer needed
     SynoLoader.init();

@@ -71,7 +71,7 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
     };
 
     this.show_options = function() {
-        window.openDialog("chrome://SynoLoader/content/options.xul", "modifyheadersDialog", "resizable,dialog,centerscreen,modal", this);
+        window.open("chrome://SynoLoader/content/options.xul", "Preferences", "chrome=yes,toolbar=yes");
     };
 
     this.onLoad = function() {

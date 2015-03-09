@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://SynoLoader/skin/SynoDownloads.css" type="text/css"?>
 <!DOCTYPE prefwindow SYSTEM "chrome://SynoLoader/locale/options.dtd">
-<prefwindow id="SynoLoader-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="&prefwindow.title;">
+<prefwindow id="SynoLoader-preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="&prefwindow.title;" flex="1">
   <script src="options.js"/>
-  <prefpane id="pane1" label="&pane1.title;">
+  <prefpane id="pane1" label="&pane1.title;" flex="1">
     <preferences>
       <preference id="url" name="extensions.SynoLoader.url" type="string"/>
       <preference id="start_dlm" name="extensions.SynoLoader.start_dlm" type="bool"/>
@@ -14,15 +15,16 @@
       <preference id="emule_downloadfolder" name="extensions.SynoLoader.emule_downloadfolder" type="string"/>
     </preferences>
   
+
     <hbox>
-    	<spacer flex="1"/>
-    		<image id="SynoLoader_status_image"  status="not_connect" width='50' height='50'/>
-    	<spacer flex="1"/>
+	<spacer flex="1"/>
+		<image id="SynoLoader_status_image"  status="not_connect" width='50' height='50'/>
+	<spacer flex="1"/>
     </hbox>
     <hbox>
-    	<spacer flex="1"/>
-    		<label  id="SynoLoader_status_lable" control="url">not connect</label>
-    	<spacer flex="1"/>
+	<spacer flex="1"/>
+		<label  id="SynoLoader_status_lable" control="url">not connect</label>
+	<spacer flex="1"/>
     </hbox>
     <spacer  height='20'/>
     <label accesskey="&url.accesskey;" control="url">&url.label;</label>
@@ -37,6 +39,7 @@
     <checkbox label="Show 'Send Link' Notification" preference="show_not"/>
     <checkbox label="Show Debug Information" preference="show_dgb"/>
     <checkbox label="Use magnet link protocol" preference="use_magnet" id="Synoloader.use_magnet"/>
+
  
 </prefpane>
 </prefwindow>

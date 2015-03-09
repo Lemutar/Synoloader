@@ -1,5 +1,7 @@
 language: javascript
 
+addons:
+  firefox: "29.0"
 
 before_script:
    - "export DISPLAY=:99.0"

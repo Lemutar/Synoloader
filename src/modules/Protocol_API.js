@@ -4,8 +4,7 @@ Components.utils.import("resource://SynoLoader/Util.js");
 
 try {
     Components.utils.importGlobalProperties(['File']);
-}
-catch(err) {
+} catch (err) {
     Util.log("importGlobalProperties(['File']) fail");
 }
 
@@ -206,7 +205,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                     formData.append("method", "create");
                     formData.append("_sid", encodeURIComponent(return_protocol.connect_id));
                     formData.append("file", File(parameter.path));
-                    
+
 
                     task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
                         formData,
