@@ -5,6 +5,7 @@ install:
 
 env:
   - Firefox_Version=28.0
+  - Firefox_Version=35.0
   - Firefox_Version=36.0
 
 before_script:
