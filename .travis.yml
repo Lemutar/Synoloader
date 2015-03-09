@@ -1,14 +1,7 @@
 language: javascript
 
-virtualenv:
-    system_site_packages: true
-
-before_install:
-  - virtualenv ~/.venv
-  - source ~/.venv/bin/activate
-
 install:
-  - pip install mozdownload mozinstall
+  - sudo pip install mozdownload mozinstall
 
 env:
   - Firefox_Version=28.0
