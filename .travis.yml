@@ -1,7 +1,7 @@
 language: javascript
 
 addons:
-  firefox: "29.0"
+  firefox: "36.0"
 
 before_script:
    - "export DISPLAY=:99.0"
@@ -12,13 +12,6 @@ script:
   - firefox --version 
   - ./run_test.sh
   - ./run_integration_test.sh
-  - killall firefox
-  - sudo apt-get install firefox=35.0.1+build1-0ubuntu0.12.04.1
-  - sleep 3
-  - firefox --version 
-  - ./run_test.sh
-  - ./run_integration_test.sh
-
 
 after_script:
   - sh -e /etc/init.d/xvfb stop
