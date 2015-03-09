@@ -1,6 +1,7 @@
 language: javascript
 
 install:
+  - pip install .
   - pip install mozdownload mozinstall
 
 env:
