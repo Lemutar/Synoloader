@@ -26,8 +26,8 @@ test_FileDownloader_get_file_content.priority    = 'must';
 function test_FileDownloader_get_file_content() {
 
    var server = utils.setUpHttpServer(4445, "../fixtures");
-   var succeded_called = false;
-   var test_succeded = function(){succeded_called=true;};
+   var loaded = { value : false };
+   var test_succeded = function(){loaded.value = true;};
   
    utils.writeTo("42" , "../fixtures/test_file.txt" );
    server.expect("/test.file", 200, '/test_file.txt'); 
@@ -42,9 +42,11 @@ function test_FileDownloader_get_file_content() {
    file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0666);
    FileDownloaderHandler.get_file_content("http://localhost:4445/test.file",file.path,test_succeded);
   
-   utils.wait(200);
+   utils.wait(loaded);
    assert.equals(utils.readFrom(file.path),"42");
-   assert.equals(succeded_called,true);
 }
+
+
+
 
 

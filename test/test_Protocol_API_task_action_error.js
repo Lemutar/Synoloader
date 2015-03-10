@@ -32,13 +32,14 @@ function test_Protocol_task_action_add_fail_400_mock() {
  testee= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
 
  addurl_response={};
- var addurl_callback = function(response){addurl_response=response; };
+ var loaded = { value : false };
+ var addurl_callback = function(response){addurl_response=response; loaded.value = true;};
  utils.writeTo("{ \"error\" :{\"code\" : 400},\"success\": false }" , "../fixtures/action.txt" );
  server.expect("/webapi/DownloadStation/task.cgi", 200, '/action.txt'); 
  testee.Connect_Time = Date.now();
  testee.task_action(addurl_callback,'addurl','http://www.ubuntu.com/start-download?distro=desktop&bits=64&release=latest'); 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(false,addurl_response.success);
  assert.equals("File upload failed",addurl_response.error_text);
 }
@@ -53,13 +54,14 @@ function test_Protocol_task_action_add_fail_401_mock() {
  testee= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
 
  addurl_response={};
- var addurl_callback = function(response){addurl_response=response; };
+ var loaded = { value : false };
+ var addurl_callback = function(response){addurl_response=response; loaded.value = true;};
  utils.writeTo("{ \"error\" :{\"code\" : 401},\"success\": false }" , "../fixtures/action.txt" );
  server.expect("/webapi/DownloadStation/task.cgi", 200, '/action.txt'); 
  testee.Connect_Time = Date.now();
  testee.task_action(addurl_callback,'addurl','http://www.ubuntu.com/start-download?distro=desktop&bits=64&release=latest'); 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(false,addurl_response.success);
  assert.equals("Max number of tasks reached",addurl_response.error_text);
 }
@@ -75,13 +77,14 @@ function test_Protocol_task_action_add_fail_402_mock() {
  testee= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
 
  addurl_response={};
- var addurl_callback = function(response){addurl_response=response; };
+ var loaded = { value : false };
+ var addurl_callback = function(response){addurl_response=response; loaded.value = true;};
  utils.writeTo("{ \"error\" :{\"code\" : 402},\"success\": false }" , "../fixtures/action.txt" );
  server.expect("/webapi/DownloadStation/task.cgi", 200, '/action.txt'); 
  testee.Connect_Time = Date.now();
  testee.task_action(addurl_callback,'addurl','http://www.ubuntu.com/start-download?distro=desktop&bits=64&release=latest'); 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(false,addurl_response.success);
  assert.equals("Destination denied",addurl_response.error_text);
 }
@@ -96,13 +99,14 @@ function test_Protocol_task_action_add_fail_403_mock() {
  testee= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
 
  addurl_response={};
- var addurl_callback = function(response){addurl_response=response; };
+ var loaded = { value : false };
+ var addurl_callback = function(response){addurl_response=response; loaded.value = true;};
  utils.writeTo("{ \"error\" :{\"code\" : 403},\"success\": false }" , "../fixtures/action.txt" );
  server.expect("/webapi/DownloadStation/task.cgi", 200, '/action.txt'); 
  testee.Connect_Time = Date.now();
  testee.task_action(addurl_callback,'addurl','http://www.ubuntu.com/start-download?distro=desktop&bits=64&release=latest'); 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(false,addurl_response.success);
  assert.equals("Destination does not exist",addurl_response.error_text);
 }
@@ -118,13 +122,14 @@ function test_Protocol_task_action_add_fail_404_mock() {
  testee= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
 
  addurl_response={};
- var addurl_callback = function(response){addurl_response=response; };
+ var loaded = { value : false };
+ var addurl_callback = function(response){addurl_response=response; loaded.value = true;};
  utils.writeTo("{ \"error\" :{\"code\" : 404},\"success\": false }" , "../fixtures/action.txt" );
  server.expect("/webapi/DownloadStation/task.cgi", 200, '/action.txt'); 
  testee.Connect_Time = Date.now();
  testee.task_action(addurl_callback,'addurl','http://www.ubuntu.com/start-download?distro=desktop&bits=64&release=latest'); 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(false,addurl_response.success);
  assert.equals("Invalid task id",addurl_response.error_text);
 }
@@ -140,13 +145,14 @@ function test_Protocol_task_action_add_fail_405_mock() {
  testee= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
 
  addurl_response={};
- var addurl_callback = function(response){addurl_response=response; };
+ var loaded = { value : false };
+ var addurl_callback = function(response){addurl_response=response; loaded.value = true;};
  utils.writeTo("{ \"error\" :{\"code\" : 405},\"success\": false }" , "../fixtures/action.txt" );
  server.expect("/webapi/DownloadStation/task.cgi", 200, '/action.txt'); 
  testee.Connect_Time = Date.now();
  testee.task_action(addurl_callback,'addurl','http://www.ubuntu.com/start-download?distro=desktop&bits=64&release=latest'); 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(false,addurl_response.success);
  assert.equals("Invalid task action",addurl_response.error_text);
 }
@@ -161,13 +167,14 @@ function test_Protocol_task_action_add_fail_406_mock() {
  testee= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
 
  addurl_response={};
- var addurl_callback = function(response){addurl_response=response; };
+ var loaded = { value : false };
+ var addurl_callback = function(response){addurl_response=response; loaded.value = true;};
  utils.writeTo("{ \"error\" :{\"code\" : 406},\"success\": false }" , "../fixtures/action.txt" );
  server.expect("/webapi/DownloadStation/task.cgi", 200, '/action.txt'); 
  testee.Connect_Time = Date.now();
  testee.task_action(addurl_callback,'addurl','http://www.ubuntu.com/start-download?distro=desktop&bits=64&release=latest'); 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(false,addurl_response.success);
  assert.equals("No default destination",addurl_response.error_text);
 }

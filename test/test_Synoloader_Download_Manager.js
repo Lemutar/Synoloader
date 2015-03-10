@@ -1,7 +1,7 @@
 
 
 utils.include( utils.baseURL + "../src/modules/DownloadManager.js");
-
+utils.include( utils.baseURL + "../src/modules/Protocol_API.js"); 
 
 function setUp()
 {
@@ -26,19 +26,21 @@ test_Protocol_DownloadManager_connect_to_nas_mock.description = 'test_Protocol_D
 test_Protocol_DownloadManager_connect_to_nas_mock.priority    = 'must';
 function test_Protocol_DownloadManager_connect_to_nas_mock() {
 
- var server = utils.setUpHttpServer(4445, "../fixtures");
+ var response = {};
+ var loaded = { value : false };
 
-
- utils.writeTo("{ \"data\" :{\"sid\" : \"ohOCjwhHhwghw\"},\"success\": true }" , "../fixtures/connect.txt" );
- server.expect("/webapi/auth.cgi", 200, '/connect.txt'); 
  
  SynoLoader_DownloadManager.password = "1234";
  SynoLoader_DownloadManager.username = "test_user";
  SynoLoader_DownloadManager.url = 'http://localhost:4445';
  SynoLoader_DownloadManager.set_protocol("2");
- SynoLoader_DownloadManager.connect_to_nas();
+ 
 
- utils.wait(500);
+ stube_connect=function(call_back){response.success = true; loaded.value = true;call_back(response);};
+ SynoLoader_DownloadManager.protocol.conect = stube_connect;
+
+ SynoLoader_DownloadManager.connect_to_nas();
+ utils.wait(loaded);
  assert.equals(true,SynoLoader_DownloadManager.is_connect);
 }
 
@@ -49,7 +51,7 @@ test_Protocol_DownloadManager_transfer_to_nas__faild_mock.priority    = 'must';
 function test_Protocol_DownloadManager_transfer_to_nas__faild_mock() {
 
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
+ var loaded = { value : false };
  utils.writeTo("{ \"error\" :{\"code\" : 105},\"success\": false }" , "../fixtures/action.txt" );
  server.expect("/webapi/DownloadStation/task.cgi", 200, '/action.txt'); 
  
@@ -63,12 +65,13 @@ function test_Protocol_DownloadManager_transfer_to_nas__faild_mock() {
 
 
  var NotificationMock = new Mock(Notification);
- NotificationMock.expect('show', ["Send link failed","The logged in session does not have permission"], null);
+ NotificationMock.expect('show', ["Send link failed","The logged in session does not have permission"], null)
+ .andStub(function(title,text){loaded.value = true;}).times(1);
  SynoLoader_DownloadManager.Notification = NotificationMock;
 
  SynoLoader_DownloadManager.transfer_to_nas("link");
 
- utils.wait(500);
+ utils.wait(loaded);
  
 }
 
@@ -77,7 +80,7 @@ test_Protocol_DownloadManager_transfer_to_nas_mock.priority    = 'must';
 function test_Protocol_DownloadManager_transfer_to_nas_mock() {
 
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
+ var loaded = { value : false };
  utils.writeTo("{ \"error\" :{\"code\" : 105},\"success\": true }" , "../fixtures/action.txt" );
  server.expect("/webapi/DownloadStation/task.cgi", 200, '/action.txt'); 
  
@@ -89,12 +92,13 @@ function test_Protocol_DownloadManager_transfer_to_nas_mock() {
  SynoLoader_DownloadManager.protocol.connect_id = "122211";
 
  var NotificationMock = new Mock(Notification);
- NotificationMock.expect('show', ["Send link","link"], null);
+ NotificationMock.expect('show', ["Send link","link"], null)
+ .andStub(function(title,text){loaded.value = true;}).times(1);
  SynoLoader_DownloadManager.Notification = NotificationMock;
 
  SynoLoader_DownloadManager.transfer_to_nas("link");
 
- utils.wait(800);
+ utils.wait(loaded);
 
 }
 
@@ -105,7 +109,7 @@ function test_Protocol_DownloadManager_transfer_to_nas_torrent_file_mock() {
  var server = utils.setUpHttpServer(4445, "../fixtures");
  
  
- 
+ var loaded = { value : false };
  utils.writeTo("42" , "../fixtures/test_torrent.txt" );
  server.expect("/test.Torrent", 200, '/test_torrent.txt'); 
  
@@ -120,11 +124,12 @@ function test_Protocol_DownloadManager_transfer_to_nas_torrent_file_mock() {
  SynoLoader_DownloadManager.protocol.connect_id = "122211";
 
  var NotificationMock = new Mock(Notification);
- NotificationMock.expect('show', ["Send torrent file to NAS","http://localhost:4445/test.Torrent"], null);
+ NotificationMock.expect('show', ["Send torrent file to NAS","http://localhost:4445/test.Torrent"], null)
+ .andStub(function(title,text){loaded.value = true;}).times(1);
  SynoLoader_DownloadManager.Notification = NotificationMock;
  SynoLoader_DownloadManager.transfer_to_nas("http://localhost:4445/test.Torrent");
 
- utils.wait(500);
+ utils.wait(loaded);
 
 }
 

@@ -28,7 +28,8 @@ test_Protocol_connect_succsed_mock.priority    = 'must';
 function test_Protocol_connect_succsed_mock() {
 
  myresponse={};
- var setdone = function(response){myresponse=response; };
+ var loaded = { value : false };
+ var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
  
 
@@ -38,7 +39,7 @@ function test_Protocol_connect_succsed_mock() {
  mytest.conect(setdone);
 
 
- utils.wait(200);
+ utils.wait(loaded);
  assert.equals(true,myresponse.success);
  assert.equals("ohOCjwhHhwghw",myresponse.id);
 }
@@ -50,7 +51,8 @@ test_Protocol_connect_fail_400_mock.priority    = 'must';
 function test_Protocol_connect_fail_400_mock() {
 
  myresponse={};
- var setdone = function(response){myresponse=response; };
+ var loaded = { value : false };
+ var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
  
  
@@ -62,7 +64,7 @@ function test_Protocol_connect_fail_400_mock() {
  mytest.conect(setdone);
 
 
- utils.wait(200);
+ utils.wait(loaded);
  assert.equals(false,myresponse.success);
  assert.equals("No such account or incorrect password",myresponse.error_text);
 }
@@ -72,7 +74,8 @@ test_Protocol_connect_fail_401_mock.priority    = 'must';
 function test_Protocol_connect_fail_401_mock() {
 
  myresponse={};
- var setdone = function(response){myresponse=response; };
+ var loaded = { value : false };
+ var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
  
  
@@ -84,7 +87,7 @@ function test_Protocol_connect_fail_401_mock() {
  mytest.conect(setdone);
 
 
- utils.wait(200);
+ utils.wait(loaded);
  assert.equals(false,myresponse.success);
  assert.equals("Account disabled",myresponse.error_text);
 }
@@ -94,7 +97,8 @@ test_Protocol_connect_fail_402_mock.priority    = 'must';
 function test_Protocol_connect_fail_402_mock() {
 
  myresponse={};
- var setdone = function(response){myresponse=response; };
+ var loaded = { value : false };
+ var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
  
  
@@ -106,7 +110,7 @@ function test_Protocol_connect_fail_402_mock() {
  mytest.conect(setdone);
 
 
- utils.wait(200);
+ utils.wait(loaded);
  assert.equals(false,myresponse.success);
  assert.equals("Permission denied",myresponse.error_text);
 }
@@ -116,7 +120,8 @@ test_Protocol_connect_fail_403_mock.priority    = 'must';
 function test_Protocol_connect_fail_403_mock() {
 
  myresponse={};
- var setdone = function(response){myresponse=response; };
+ var loaded = { value : false };
+ var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
  
  
@@ -128,7 +133,7 @@ function test_Protocol_connect_fail_403_mock() {
  mytest.conect(setdone);
 
 
- utils.wait(200);
+ utils.wait(loaded);
  assert.equals(false,myresponse.success);
  assert.equals("2-step verification code required",myresponse.error_text);
 }
@@ -138,7 +143,8 @@ test_Protocol_connect_fail_404_mock.priority    = 'must';
 function test_Protocol_connect_fail_404_mock() {
 
  myresponse={};
- var setdone = function(response){myresponse=response; };
+ var loaded = { value : false };
+ var setdone = function(response){myresponse=response;loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
  
  
@@ -150,7 +156,7 @@ function test_Protocol_connect_fail_404_mock() {
  mytest.conect(setdone);
 
 
- utils.wait(200);
+ utils.wait(loaded);
  assert.equals(false,myresponse.success);
  assert.equals("Failed to authenticate 2-step verification code",myresponse.error_text);
 }

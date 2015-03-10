@@ -25,7 +25,8 @@ test_Protocol_connect_faild_not_connect_mock.priority    = 'must';
 function test_Protocol_connect_faild_not_connect_mock() {
 
  myresponse={};
- var setdone = function(response){myresponse=response; };
+ var loaded = { value : false };
+ var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
  
  
@@ -42,7 +43,7 @@ function test_Protocol_connect_faild_not_connect_mock() {
  mytest.task_action(setdone,'getall'); 
 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(false,myresponse.success);
  assert.equals('wrong password',myresponse.error_text);
 }
@@ -52,7 +53,8 @@ test_Protocol_connect_succed_not_connect_mock.priority    = 'must';
 function test_Protocol_connect_succed_not_connect_mock() {
 
  myresponse={};
- var setdone = function(response){myresponse=response; };
+ var loaded = { value : false };
+ var setdone = function(response){myresponse=response;loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
  
  
@@ -69,7 +71,7 @@ function test_Protocol_connect_succed_not_connect_mock() {
  mytest.task_action(setdone,'getall'); 
 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(true,myresponse.success);
  assert.equals([],myresponse.items);
 }
@@ -80,7 +82,8 @@ test_Protocol_connect_faild_500_not_connect_mock.priority    = 'must';
 function test_Protocol_connect_faild_500_not_connect_mock() {
 
  myresponse={};
- var setdone = function(response){myresponse=response; };
+ var loaded = { value : false };
+ var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
  
  
@@ -97,7 +100,7 @@ function test_Protocol_connect_faild_500_not_connect_mock() {
  mytest.task_action(setdone,'getall'); 
 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(false,myresponse.success);
  assert.equals('Internal Server Error',myresponse.error_text);
 }
@@ -107,7 +110,8 @@ test_Protocol_connect_faild_404_mock.priority    = 'must';
 function test_Protocol_connect_faild_404_mock() {
 
  myresponse={};
- var setdone = function(response){myresponse=response; };
+ var loaded = { value : false };
+ var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
  
  
@@ -119,7 +123,7 @@ function test_Protocol_connect_faild_404_mock() {
 
 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(false,myresponse.success);
  assert.equals('Not Found',myresponse.error_text);
 }
@@ -135,9 +139,9 @@ function test_Protocol_connect_succsed_mock() {
  myresponse={};
  
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
+ var loaded = { value : false };
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester', '1234');
- var setdone_get_all_items = function(response){myresponse=response; };
+ var setdone_get_all_items = function(response){myresponse=response; loaded.value = true;};
 
  utils.writeTo("{ \"success\" : true , \"items\" : [] }" , "../fixtures/items.txt" );
 
@@ -146,7 +150,7 @@ function test_Protocol_connect_succsed_mock() {
  mytest.task_action(setdone_get_all_items,'getall'); 
 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(true,myresponse.success);
  assert.equals([],myresponse.items);
 }
@@ -158,11 +162,11 @@ test_Protocol_connect_succsed_itme_mock.priority    = 'must';
 function test_Protocol_connect_succsed_itme_mock() {
 
  myresponse={};
- 
+ var loaded = { value : false };
  var server = utils.setUpHttpServer(4445, "../fixtures");
  
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester', '1234');
- var setdone_get_all_items = function(response){myresponse=response; };
+ var setdone_get_all_items = function(response){myresponse=response; loaded.value = true;};
 
 /*jshint multistr: true */
  var file_contend = "{\
@@ -201,7 +205,7 @@ function test_Protocol_connect_succsed_itme_mock() {
  mytest.Connect_Time = Date.now();
  mytest.task_action(setdone_get_all_items,'getall'); 
 
- utils.wait(50);
+ utils.wait(loaded);
  assert.equals(true,myresponse.success);
  assert.equals("ubuntu-12.04.3-desktop-amd64.iso",myresponse.items[0].filename);
 }
@@ -209,69 +213,6 @@ function test_Protocol_connect_succsed_itme_mock() {
 
 
 
-
-
-//integration
-/*
-test_Protocol_get_all_entrys_succsed_43.description = 'test_Protocol_get_all_entrys_succsed_43';
-test_Protocol_get_all_entrys_succsed_43.priority    = 'must';
-function test_Protocol_get_all_entrys_succsed_43() {
- mytest= Protocol('http://192.168.0.200:5000',5000,'synoloader_tester', '1234');
-
-
- connect_response={};
- var setdone = function(response){connect_response=response; };
-
- mytest.conect(setdone);
-
- utils.wait(2000);
- assert.equals(true,connect_response.success);
-
- myresponse={};
- var setdone_get_all_items = function(response){myresponse=response; };
- mytest.task_action(setdone_get_all_items,'getall'); 
-
- utils.wait(2000);
- assert.equals(true,myresponse.success);
- assert.equals([],myresponse.items);
-}
-
-test_Protocol_get_all_entrys_succsed_42.description = 'test_Protocol_get_all_entrys_succsed_42';
-test_Protocol_get_all_entrys_succsed_42.priority    = 'must';
-function test_Protocol_get_all_entrys_succsed_42() {
- mytest= Protocol('http://192.168.0.201:5050',5000,'synoloader_tester', '1234');
-
- connect_response={};
- var setdone = function(response){connect_response=response; };
-
- mytest.conect(setdone);
-
- utils.wait(2000);
- assert.equals(true,connect_response.success);
-
- myresponse={};
- var setdone_get_all_items = function(response){myresponse=response; };
- mytest.task_action(setdone_get_all_items,'getall'); 
-
- utils.wait(5000);
- assert.equals(true,myresponse.success);
- assert.equals([],myresponse.items);
-}
-
-test_Protocol_connect_succsed_42_without_connect.description = 'test_Protocol_get_all_entrys_succsed_42_without_connect';
-test_Protocol_connect_succsed_42_without_connect.priority    = 'must';
-function test_Protocol_connect_succsed_42_without_connect() {
- mytest= Protocol('http://192.168.0.201:5050',5000,'synoloader_tester', '1234');
-
- myresponse={};
- var setdone_get_all_items = function(response){myresponse=response; };
- mytest.task_action(setdone_get_all_items,'getall'); 
-
- utils.wait(5000);
- assert.equals(true,myresponse.success);
- assert.equals([],myresponse.items);
-}
-*/
 
 
 

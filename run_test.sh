@@ -15,8 +15,8 @@ cp ./firefox_profile_config/uxu@clear-code.com ./firefox_profile/extensions/ -rf
 
 echo "TESTING"
 if [ -z "$FirfoxTest" ]; 
-then ./fire-test-runner --port=9999  --profile="firefox_profile"  ./test/ --quit; 
-else ./fire-test-runner --port=9999   --firefox="'$FirfoxTest'" --profile="firefox_profile" ./test/ --quit; 
+then ./fire-test-runner --port=9999  --profile="firefox_profile"  ./test/ ; #--quit; 
+else ./fire-test-runner --port=9999   --firefox="'$FirfoxTest'" --profile="firefox_profile" ./test/ ;#--quit; 
 fi
 
 #firefox -profile ./firefox_profile -no-remote
