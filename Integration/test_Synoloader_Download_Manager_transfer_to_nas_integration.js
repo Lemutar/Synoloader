@@ -7,7 +7,7 @@ function setUp()
 {
  SynoLoader_DownloadManager.password = "1234";
  SynoLoader_DownloadManager.username = "synoloader_tester";
- SynoLoader_DownloadManager.url = 'http://z35.no-ip.org:5050';
+ SynoLoader_DownloadManager.url = 'http://lut001.no-ip.org:5000';
  SynoLoader_DownloadManager.set_protocol("2");
  SynoLoader_DownloadManager.Util.show_log=true;
  
