@@ -1,15 +1,16 @@
 language: javascript
 
 install:
-  - pip install mozdownload mozinstall
+  - sudo pip install mozdownload mozinstall
 
 env:
   - Firefox_Version=28.0
+  - Firefox_Version=35.0
   - Firefox_Version=36.0
 
 before_script:
    - "mozdownload --version=$Firefox_Version --destination=./firefox.tar.bz2 --extension=tar.bz2"
-   - "mozinstall ./firfox.tar.bz2 --destination=./test_browser"
+   - "mozinstall ./firefox.tar.bz2 --destination=./test_browser"
    - "export FirfoxTest=./test_browser/firefox/firefox" 
    - "export DISPLAY=:99.0"
    - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
