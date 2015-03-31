@@ -5,7 +5,7 @@ install:
 
 env:
   - Firefox_Version=28.0
-  - Firefox_Version=36.0
+  - Firefox_Version=37.0
 
 before_script:
    - "mozdownload --version=$Firefox_Version --destination=./firefox.tar.bz2 --extension=tar.bz2"
