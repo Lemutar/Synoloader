@@ -24,7 +24,7 @@ function shutDown()
 }
 
 
-
+/*
 test_Synoloader_QuickConnect_get.description = 'test_Synoloader_QuickConnect_get';
 test_Synoloader_QuickConnect_get.priority    = 'must';
 function test_Synoloader_QuickConnect_get() {
@@ -53,4 +53,4 @@ function test_Synoloader_QuickConnect_get() {
  assert.equals(false,myresponse.success); 
  assert.equals("192.168.0.201",myresponse.ip); 
 }
-
+*/
