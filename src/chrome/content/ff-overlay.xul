@@ -20,7 +20,7 @@
 		<separator orient="horizontal" class="groove"/>
 		<hbox  align="start" id="synoloader_toolbar_hbox_id">
 		  <stack>
-		  <richlistbox minheight="300px" id="synoloader_toolbar_panel_list_id">
+		  <richlistbox minheight="300px" maxheight="500px" id="synoloader_toolbar_panel_list_id">
 		  </richlistbox>
 		    <hbox pack="center" width="500px" height="80px" id="synoloader_toolbar_panel_box_lable_id">
 			 <vbox pack="center" width="500px">
