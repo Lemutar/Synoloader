@@ -6,7 +6,9 @@
   <script src="options.js"/>
   <prefpane id="pane1" label="&pane1.title;" flex="1">
     <preferences>
+      <preference id="protocol" name="extensions.SynoLoader.protocol" type="string"/>
       <preference id="url" name="extensions.SynoLoader.url" type="string"/>
+      <preference id="port" name="extensions.SynoLoader.port" type="string"/>
       <preference id="start_dlm" name="extensions.SynoLoader.start_dlm" type="bool"/>
       <preference id="show_not" name="extensions.SynoLoader.show_not" type="bool"/>
       <preference id="show_dgb" name="extensions.SynoLoader.show_dgb" type="bool"/>
@@ -27,7 +29,13 @@
 	<spacer flex="1"/>
     </hbox>
     <spacer  height='20'/>
+    
+    <radiogroup>
+	<radio id="http" label="http"/>
+	<radio id="https" label="https" selected="true"/>
+    </radiogroup>
     <label accesskey="&url.accesskey;" control="url">&url.label;</label>
+    <textbox id="portIn" preference="port"/>
     <textbox id="urlIn" preference="url"/>
     <button label="Set Username and Password" oncommand="SynoLoader.SetUserNamePassword();"/>
     <menulist preference="DSM_Verison">
