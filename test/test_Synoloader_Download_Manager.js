@@ -133,4 +133,54 @@ function test_Protocol_DownloadManager_transfer_to_nas_torrent_file_mock() {
 
 }
 
+test_DownloadManager_convert_old_url_protocol.description = 'test_DownloadManager_convert_old_url_protocol';
+test_DownloadManager_convert_old_url_protocol.priority    = 'must';
+function test_DownloadManager_convert_old_url_protocol() {
+ var preferences = Components.classes["@mozilla.org/preferences-service;1"]
+     .getService(Components.interfaces.nsIPrefService)
+     .getBranch("extensions.SynoLoader.");
+ preferences.setCharPref('protocol',"test");
+ preferences.setCharPref('host',"");
+ SynoLoader_DownloadManager.convert_old_url("http://localhost");
+ assert.equals("http",preferences.getCharPref('protocol'));
+ assert.equals("localhost",preferences.getCharPref('host'));
+}
 
+test_DownloadManager_not_convert_old_url_protocol.description = 'test_DownloadManager_not_convert_old_url_protocol';
+test_DownloadManager_not_convert_old_url_protocol.priority    = 'must';
+function test_DownloadManager_not_convert_old_url_protocol() {
+ var preferences = Components.classes["@mozilla.org/preferences-service;1"]
+     .getService(Components.interfaces.nsIPrefService)
+     .getBranch("extensions.SynoLoader.");
+ preferences.setCharPref('protocol',"test");
+ preferences.setCharPref('host',"");
+ SynoLoader_DownloadManager.convert_old_url("localhost");
+ assert.equals("test",preferences.getCharPref('protocol'));
+ assert.equals("localhost",preferences.getCharPref('host'));
+}
+
+test_DownloadManager_convert_old_url_port.description = 'test_DownloadManager_not_convert_old_url_port';
+test_DownloadManager_convert_old_url_port.priority    = 'must';
+function test_DownloadManager_convert_old_url_port() {
+ var preferences = Components.classes["@mozilla.org/preferences-service;1"]
+     .getService(Components.interfaces.nsIPrefService)
+     .getBranch("extensions.SynoLoader.");
+ preferences.setCharPref('port',"test");
+ preferences.setCharPref('host',"");
+ SynoLoader_DownloadManager.convert_old_url("http://localhost:4445");
+ assert.equals("4445",preferences.getCharPref('port'));
+ assert.equals("localhost",preferences.getCharPref('host'));
+}
+
+test_DownloadManager_convert_old_url_ip.description = 'test_DownloadManager_convert_old_url_ip';
+test_DownloadManager_convert_old_url_ip.priority    = 'must';
+function test_DownloadManager_convert_old_url_ip() {
+ var preferences = Components.classes["@mozilla.org/preferences-service;1"]
+     .getService(Components.interfaces.nsIPrefService)
+     .getBranch("extensions.SynoLoader.");
+ preferences.setCharPref('port',"test");
+ preferences.setCharPref('host',"");
+ SynoLoader_DownloadManager.convert_old_url("http://192.168.0.201:5050");
+ assert.equals("5050",preferences.getCharPref('port'));
+ assert.equals("192.168.0.201",preferences.getCharPref('host'));
+}

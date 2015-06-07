@@ -1,3 +1,7 @@
+pref("extensions.SynoLoader.protocol", "http");
+pref("extensions.SynoLoader.port", "5000");
+pref("extensions.SynoLoader.host", "");
+pref("extensions.SynoLoader.show_not", true);
 pref("extensions.SynoLoader.show_not", true);
 pref("extensions.SynoLoader.DSM_Verison", "2");
 pref("extensions.SynoLoader.url", "http://");

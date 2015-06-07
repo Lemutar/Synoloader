@@ -6,12 +6,9 @@ module.exports = function(grunt) {
         jshint: {
             files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
             options: {
-                // options here to override JSHint defaults
-                globals: {
-                    moz: true
-                }
+                jshintrc: '.jshintrc' // relative to Gruntfile
+                    // options here to override JSHint defaults
             }
-
         },
         jsbeautifier: {
             files: ['Gruntfile.js', 'src/**/*.js']

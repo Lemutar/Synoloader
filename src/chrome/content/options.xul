@@ -9,15 +9,12 @@
       <preference id="protocol" name="extensions.SynoLoader.protocol" type="string"/>
       <preference id="url" name="extensions.SynoLoader.url" type="string"/>
       <preference id="port" name="extensions.SynoLoader.port" type="string"/>
-      <preference id="start_dlm" name="extensions.SynoLoader.start_dlm" type="bool"/>
+      <preference id="host" name="extensions.SynoLoader.host" type="string"/>
       <preference id="show_not" name="extensions.SynoLoader.show_not" type="bool"/>
       <preference id="show_dgb" name="extensions.SynoLoader.show_dgb" type="bool"/>
       <preference id="use_magnet" name="extensions.SynoLoader.use_magnet" type="bool"/>
       <preference id="DSM_Verison" name="extensions.SynoLoader.DSM_Verison" type="string"/>
-      <preference id="emule_downloadfolder" name="extensions.SynoLoader.emule_downloadfolder" type="string"/>
     </preferences>
-  
-
     <hbox>
 	<spacer flex="1"/>
 		<image id="SynoLoader_status_image"  status="not_connect" width='50' height='50'/>
@@ -29,26 +26,49 @@
 	<spacer flex="1"/>
     </hbox>
     <spacer  height='20'/>
-    
-    <radiogroup>
-	<radio id="http" label="http"/>
-	<radio id="https" label="https" selected="true"/>
-    </radiogroup>
-    <label accesskey="&url.accesskey;" control="url">&url.label;</label>
-    <textbox id="portIn" preference="port"/>
-    <textbox id="urlIn" preference="url"/>
+    <groupbox>
+        <caption label="Connection-details"/>
+        <grid>
+            <columns>
+                <column flex="1"/>
+                <column flex="2"/>
+            </columns>
+            <rows>
+                <row>
+                    <label control="protocol">&protocol.label;</label>
+                    <setting pref="extensions.SynoLoader.protocol" type="radio" title="protocol">
+                        <radiogroup>
+                            <radio id="http" value="http" label="http"/>
+                            <radio id="https" value="https" label="https"/>
+                        </radiogroup>
+                    </setting>
+                </row>
+                <row>
+                    <label control="port">&port.label;</label>
+                    <textbox id="portIn" preference="port"/>
+                </row>
+                <row>
+                    <label control="host">&host.label;</label>
+                    <textbox id="hostIn" preference="host"/>
+                </row>
+                <row>
+                    <label control="host">&dms_version.label;</label>
+                    <menulist preference="DSM_Verison" >
+                        <menupopup>
+                            <menuitem label="DSM Version &lt; 4.1" value="1"/>
+                            <menuitem label="DSM Version &gt;= 4.1" value="2"/>
+                        </menupopup>
+                    </menulist>
+                </row>
+            </rows>
+        </grid>
+    </groupbox>
+
     <button label="Set Username and Password" oncommand="SynoLoader.SetUserNamePassword();"/>
-    <menulist preference="DSM_Verison">
-	  <menupopup>
-	    <menuitem label="DSM Version &lt; 4.1" value="1"/>
-	    <menuitem label="DSM Version &gt;= 4.1" value="2"/>
-	  </menupopup>
-    </menulist>
+
     <checkbox label="Show 'Send Link' Notification" preference="show_not"/>
     <checkbox label="Show Debug Information" preference="show_dgb"/>
     <checkbox label="Use magnet link protocol" preference="use_magnet" id="Synoloader.use_magnet"/>
-
- 
 </prefpane>
 </prefwindow>
 

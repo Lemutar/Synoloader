@@ -4,7 +4,6 @@
 <!DOCTYPE overlay SYSTEM "chrome://SynoLoader/locale/overlay.dtd">
 <overlay id="SynoLoader-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="ff-overlay.js"/>
-
 <toolbarpalette id="BrowserToolbarPalette">
   <toolbarbutton id="synoloader_toolbar_id"  class="toolbarbutton-1 chromeclass-toolbar-additional custombutton"
    label="Synoloader" tooltiptext="Synology Download"
@@ -40,8 +39,6 @@
         </panel>
   </toolbarbutton>
 </toolbarpalette>
-
-
   <stringbundleset id="stringbundleset">
     <stringbundle id="synoloader_strings" src="chrome://SynoLoader/locale/overlay.properties"/>
   </stringbundleset>
@@ -58,10 +55,6 @@
               insertafter="synoloader_context"
               oncommand="SynoLoader.onMenuItemLinkCommand(event)"/>
   </popup>
-
-
-
-
 </overlay>
 
 

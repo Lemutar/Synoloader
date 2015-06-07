@@ -1,10 +1,11 @@
 <!ENTITY prefwindow.title "SynoLoader preferences">
 <!ENTITY pane1.title "SynoLoader preferences">
-<!ENTITY url.label "Enter the Url of your NAS Bsp. 'http://yourNas.com:5000'">
+<!ENTITY protocol.label "Protocol">
+<!ENTITY port.label "Port of the NAS (default 5000):">
+<!ENTITY host.label "Ip or Host or QuickConnectID:">
+<!ENTITY dms_version.label "Set DMS Version:">
 <!ENTITY url.accesskey "">
 <!ENTITY username.label "Enter your username">
 <!ENTITY username.accesskey "">
 <!ENTITY password.label "Enter your password">
 <!ENTITY password.accesskey "">
-<!ENTITY emule_downloadfolder.label "Enter the Name of your download folder">
-<!ENTITY emule_downloadfolder.accesskey "">
