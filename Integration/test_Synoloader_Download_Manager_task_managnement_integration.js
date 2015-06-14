@@ -5,9 +5,10 @@ utils.include( utils.baseURL + "../src/modules/DownloadManager.js");
 
 function setUp()
 {
+
  SynoLoader_DownloadManager.password = "1234";
  SynoLoader_DownloadManager.username = "synoloader_tester";
- SynoLoader_DownloadManager.url = 'http://z35.no-ip.org:5050';
+ SynoLoader_DownloadManager.url_to_connect = 'http://z35.no-ip.org:5050';
 
 }
 
@@ -34,7 +35,7 @@ test_Protocol_DownloadManager_load_download_list.priority    = 'must';
 function test_Protocol_DownloadManager_load_download_list() {
 
 
- SynoLoader_DownloadManager.set_protocol("2");
+ SynoLoader_DownloadManager.set_protocol();
  SynoLoader_DownloadManager.Util.show_log=true;
  
  var NotificationMock = new Mock(Notification);
@@ -66,7 +67,7 @@ test_Protocol_DownloadManager_load_download_list_old.priority    = 'never';
 function test_Protocol_DownloadManager_load_download_list_old() {
 
 
- SynoLoader_DownloadManager.set_protocol("1");
+ SynoLoader_DownloadManager.set_protocol();
  SynoLoader_DownloadManager.Util.show_log=true;
  
  var NotificationMock = new Mock(Notification);

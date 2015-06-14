@@ -14,7 +14,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
 
         const quickConnectRelayTimeOutInMs = 8000;
         const quickConnectLocalTimeOutInMs = 8000;
-
+        this.connecting = false;
         this.password = "";
         this.username = "";
         this.is_connect = false;
@@ -43,8 +43,8 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
 
         this.parse_url = function parse_url(url) {
             var pattern = RegExp("^(.*:)//([A-Za-z0-9\-\.]+)(:[0-9]+)?(.*)$");
-            var matches =  url.match(pattern);
-            if(matches === null) {
+            var matches = url.match(pattern);
+            if (matches === null) {
                 return {
                     protocol: undefined,
                     host: url,
@@ -59,26 +59,41 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
         };
 
         this.convert_old_url = function (url_string) {
-            SynoLoader_DownloadManager.Util.log(this.preferences.getCharPref('host'));
             if (this.preferences.getCharPref('host') === "") {
                 SynoLoader_DownloadManager.Util.log(url_string);
                 var url = this.parse_url(url_string)
-                if(url.protocol !== undefined) {
-                    this.preferences.setCharPref('protocol',url.protocol.replace(":",""));
+                if (url.protocol !== undefined) {
+                    this.preferences.setCharPref('protocol', url.protocol.replace(":", ""));
                 }
 
-                if(url.port !== undefined) {
-                    this.preferences.setCharPref('port',url.port.replace(":",""));
+                if (url.port !== undefined) {
+                    this.preferences.setCharPref('port', url.port.replace(":", ""));
                     SynoLoader_DownloadManager.Util.log(url.port);
                 }
 
-                if(url.host !== undefined) {
-                    this.preferences.setCharPref('host',url.host);
+                if (url.host !== undefined) {
+                    this.preferences.setCharPref('host', url.host);
                 }
             }
         };
 
+        this.set_protocol = function () {
+            switch (this.preferences.getCharPref('DSM_Verison')) {
+                case "1":
+                    SynoLoader_DownloadManager.Util.log("Set Protocol to < DMS 4.1");
+                    Components.utils.import("resource://SynoLoader/Protocol.js", SynoLoader_DownloadManager);
+                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url_to_connect, 50000, SynoLoader_DownloadManager.username, SynoLoader_DownloadManager.password);
+                    break;
+                case "2":
+                    SynoLoader_DownloadManager.Util.log("Set Protocol to > DMS 4.1");
+                    Components.utils.import("resource://SynoLoader/Protocol_API.js", SynoLoader_DownloadManager);
+                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url_to_connect, 50000, SynoLoader_DownloadManager.username, SynoLoader_DownloadManager.password);
+                    break;
+            }
+        };
+
         this.connect_to_nas = function () {
+            SynoLoader_DownloadManager.connecting = true;
             this.convert_old_url(this.preferences.getCharPref('url'));
             var protocol = this.preferences.getCharPref('protocol');
             var port = this.preferences.getCharPref('port');
@@ -88,40 +103,22 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                 quickConnectLocalTimeOutInMs,
                 protocol + "://",
                 port);
-            this.url_to_connect =  protocol + "://"
-            quick_connect.get(host, function(response) {
-                if(response.success) {
-                    url_to_connect +=  response.ip + ":" + port
+            SynoLoader_DownloadManager.url_to_connect = protocol + "://"
+            quick_connect.get(host, function (response) {
+                if (response.success) {
+                    SynoLoader_DownloadManager.url_to_connect += response.ip + ":" + port
                 } else {
-                    url_to_connect +=  host + ":" + port
+                    SynoLoader_DownloadManager.url_to_connect += host + ":" + port
                 }
-                SynoLoader_DownloadManager.Util.log("try to connect to " + url_to_connect);
-                this.set_protocol();
-                this.protocol.password = this.password;
-                this.protocol.username = this.username;
-                this.protocol.conect(function (response) {
+                SynoLoader_DownloadManager.set_protocol();
+                SynoLoader_DownloadManager.protocol.password = SynoLoader_DownloadManager.password;
+                SynoLoader_DownloadManager.protocol.username = SynoLoader_DownloadManager.username;
+                SynoLoader_DownloadManager.protocol.conect(function (response) {
                     SynoLoader_DownloadManager.is_connect = response.success;
+                    SynoLoader_DownloadManager.connecting = false;
                 });
             });
         };
-
-        this.set_protocol = function () {
-            switch (this.preferences.getCharPref('DSM_Verison')) {
-                case "1":
-                    SynoLoader_DownloadManager.Util.log("Set Protocol to < DMS 4.1");
-                    Components.utils.import("resource://SynoLoader/Protocol.js", SynoLoader_DownloadManager);
-                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url_to_connect, 50000, this.username, this.password);
-                    break;
-                case "2":
-                    SynoLoader_DownloadManager.Util.log("Set Protocol to > DMS 4.1");
-                    Components.utils.import("resource://SynoLoader/Protocol_API.js", SynoLoader_DownloadManager);
-                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url_to_connect, 50000, this.username, this.password);
-                    break;
-            }
-        };
-
-        this.connect_to_nas();
-
 
         this.transfer_to_nas = function (link) {
             if (link.toLowerCase().endsWith(".torrent") && SynoLoader_DownloadManager.protocol.version > 0) {
@@ -202,18 +199,11 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
         this.observe = function (subject, topic, data) {
             if (topic == "nsPref:changed") {
                 switch (data) {
-                    case 'url':
-                        SynoLoader_DownloadManager.url = SynoLoader_DownloadManager.preferences.getCharPref('url');
-                        SynoLoader_DownloadManager.set_protocol();
-                        break;
                     case 'show_not':
                         SynoLoader_DownloadManager.Notification.show_not = SynoLoader_DownloadManager.preferences.getBoolPref('show_not');
                         break;
                     case 'show_dgb':
                         SynoLoader_DownloadManager.Util.show_log = SynoLoader_DownloadManager.preferences.getBoolPref('show_dgb');
-                        break;
-                    case 'DSM_Verison':
-                        SynoLoader_DownloadManager.set_protocol();
                         break;
                     case 'use_magnet':
                         SynoLoader_DownloadManager.magnetHandler.set_active(SynoLoader_DownloadManager.preferences.getBoolPref('use_magnet'));

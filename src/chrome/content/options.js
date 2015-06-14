@@ -12,45 +12,70 @@ SynoLoader.SetUserNamePassword = function() {
     this.prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
         .getService(Components.interfaces.nsIPromptService);
 
-    var prompt_username_and_passwrd_ok = this.prompts.promptUsernameAndPassword(window, '', 'Please enter your login for your SynoNas', this.username, this.password, null, {});
-    if (prompt_username_and_passwrd_ok) {
-        this.myLoginInfo = new this.nsLoginInfo('chrome://SynoLoader.Pass',
-            null, 'User Registration',
-            this.username.value, this.password.value, "", "");
-        this.myLoginManager.addLogin(this.myLoginInfo);
+    var username = {
+        value: ""
+    };
+    var password = {
+        value: ""
+    };
+    var check = {
+        value: false
+    };
 
-        this.SynoLoader_DownloadManager.username = this.username.value;
-        this.SynoLoader_DownloadManager.password = this.password.value;
-        this.SynoLoader_DownloadManager.connect_to_nas("");
-    }
     var logins = this.myLoginManager.findLogins({}, 'chrome://SynoLoader.Pass', null, 'User Registration');
-    for (var i = 0; i < logins.length; i++) {
-        if (logins[i].username == this.username) {
-            this.myLoginManager.removeLogin(logins[i]);
-            break;
+    for (var index = 0; index < logins.length; index++) {
+        username = {
+            value: logins[index].username
         }
+        password = {
+            value: logins[index].password
+        }
+        this.myLoginManager.removeLogin(logins[index]);
+    }
+
+    this.prompts.promptUsernameAndPassword(window, '', 'Please enter your login for your SynoNas', username, password, null, {});
+    this.myLoginInfo = new this.nsLoginInfo('chrome://SynoLoader.Pass',
+        null, 'User Registration',
+        username.value, password.value, "", "");
+    this.myLoginManager.addLogin(this.myLoginInfo);
+    this.SynoLoader_DownloadManager.username = username.value;
+    this.SynoLoader_DownloadManager.password = password.value;
+
+};
+
+SynoLoader.checkConnection = function() {
+    if(this.SynoLoader_DownloadManager.connecting === false) {
+        this.SynoLoader_DownloadManager.connect_to_nas();
+        this.UpdateStatus();
     }
 };
 
-SynoLoader.init = function() {
-    this.SynoLoader_DownloadManager.connect_to_nas("");
+SynoLoader.option_init = function() {
+    SynoLoader.was_connecting = false;
+    if(true === this.SynoLoader_DownloadManager.is_connect) {
+        document.getElementById("SynoLoader_check_connection_image").setAttribute('style', "list-style-image: url('chrome://SynoLoader/skin/approval.png')");
+    }
     this.UpdateStatus();
     this.interval = window.setInterval(function() {
         SynoLoader.UpdateStatus();
-    }, 1000);
+    }, 500);
 };
 
 SynoLoader.UpdateStatus = function() {
-    if (true === this.SynoLoader_DownloadManager.is_connect) {
-        document.getElementById("SynoLoader_status_image").setAttribute("src", "chrome://SynoLoader/skin/connected.png");
-        document.getElementById("SynoLoader_status_lable").value = "connected";
-    } else {
-        document.getElementById("SynoLoader_status_image").setAttribute("src", "chrome://SynoLoader/skin/notconnect.png");
-        document.getElementById("SynoLoader_status_lable").value = "not connected";
+    if(this.SynoLoader_DownloadManager.connecting === true) {
+        SynoLoader.was_connecting = true;
+        document.getElementById("SynoLoader_check_connection_image").setAttribute('style', "list-style-image: url('chrome://SynoLoader/skin/hour_glass.png')");
+    } else if (SynoLoader.was_connecting === true) {
+        if(true === this.SynoLoader_DownloadManager.is_connect) {
+            document.getElementById("SynoLoader_check_connection_image").setAttribute('style', "list-style-image: url('chrome://SynoLoader/skin/approval.png')");
+        } else {
+            document.getElementById("SynoLoader_check_connection_image").setAttribute('style', "list-style-image: url('chrome://SynoLoader/skin/cancel.png')");
+        }
     }
 };
 
 window.addEventListener("load", function load(e) {
     window.removeEventListener("load", load, false); //remove listener, no longer needed
-    SynoLoader.init();
+    SynoLoader.option_init();
 }, false);
+

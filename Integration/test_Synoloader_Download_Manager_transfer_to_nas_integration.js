@@ -7,8 +7,8 @@ function setUp()
 {
  SynoLoader_DownloadManager.password = "1234";
  SynoLoader_DownloadManager.username = "synoloader_tester";
- SynoLoader_DownloadManager.url = 'http://z35.no-ip.org:5050';
- SynoLoader_DownloadManager.set_protocol("2");
+ SynoLoader_DownloadManager.url_to_connect = 'http://z35.no-ip.org:5050';
+ SynoLoader_DownloadManager.set_protocol();
  SynoLoader_DownloadManager.Util.show_log=true;
  
 }
@@ -68,7 +68,7 @@ function test_Protocol_DownloadManager_transfer_to_nas_link() {
 }
 
 test_Protocol_DownloadManager_transfer_to_nas_torrent_file_old.description = 'test_Protocol_DownloadManager_transfer_to_nas_torrent_file_old';
-test_Protocol_DownloadManager_transfer_to_nas_torrent_file_old.priority    = 'never';
+test_Protocol_DownloadManager_transfer_to_nas_torrent_file_old.priority    = 'must';
 function test_Protocol_DownloadManager_transfer_to_nas_torrent_file_old() {
 
 

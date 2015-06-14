@@ -1,6 +1,3 @@
-/* This is just an example.  You shouldn't do this. */
-
-
 
 .SynoLoader_Item_start {
   min-width:30px;
@@ -16,7 +13,6 @@
   height: 30px;
 }
 
-
 .SynoLoader_Item_progress {
   height: 30px;
 }
@@ -31,3 +27,6 @@ prefwindow > .paneDeckContainer {
     overflow: visible;
 }
 
+#SynoLoader_check_connection_image[check_status="test"] {
+  list-style-image: url(chrome://SynoLoader/skin/test.png);
+}

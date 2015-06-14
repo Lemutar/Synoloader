@@ -86,8 +86,7 @@ Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
             .addEventListener("popupshowing", function popupshowing(e) {
                 SynoLoader.showFirefoxContextMenu(e);
             }, false);
-
-
+        SynoLoader.SynoLoader_DownloadManager.connect_to_nas();
     };
 
     this.onMenuItemLinkCommand = function(event) {

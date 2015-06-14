@@ -3,6 +3,7 @@
 <!ENTITY protocol.label "Protocol">
 <!ENTITY port.label "Port of the NAS (default 5000):">
 <!ENTITY host.label "Ip or Host or QuickConnectID:">
+<!ENTITY CheckConnection.labe "Check Connection">
 <!ENTITY dms_version.label "Set DMS Version:">
 <!ENTITY url.accesskey "">
 <!ENTITY username.label "Enter your username">

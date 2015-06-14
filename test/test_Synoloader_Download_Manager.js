@@ -21,34 +21,9 @@ function shutDown()
 {
 }
 
-
-test_Protocol_DownloadManager_connect_to_nas_mock.description = 'test_Protocol_DownloadManager_connect_to_nas_mock';
-test_Protocol_DownloadManager_connect_to_nas_mock.priority    = 'must';
-function test_Protocol_DownloadManager_connect_to_nas_mock() {
-
- var response = {};
- var loaded = { value : false };
-
- 
- SynoLoader_DownloadManager.password = "1234";
- SynoLoader_DownloadManager.username = "test_user";
- SynoLoader_DownloadManager.url = 'http://localhost:4445';
- SynoLoader_DownloadManager.set_protocol("2");
- 
-
- stube_connect=function(call_back){response.success = true; loaded.value = true;call_back(response);};
- SynoLoader_DownloadManager.protocol.conect = stube_connect;
-
- SynoLoader_DownloadManager.connect_to_nas();
- utils.wait(loaded);
- assert.equals(true,SynoLoader_DownloadManager.is_connect);
-}
-
-
-
-test_Protocol_DownloadManager_transfer_to_nas__faild_mock.description = 'test_Protocol_DownloadManager_transfer_to_nas__faild_mock';
-test_Protocol_DownloadManager_transfer_to_nas__faild_mock.priority    = 'must';
-function test_Protocol_DownloadManager_transfer_to_nas__faild_mock() {
+test_Protocol_DownloadManager_transfer_to_nas_faild_mock.description = 'test_Protocol_DownloadManager_transfer_to_nas_faild_mock';
+test_Protocol_DownloadManager_transfer_to_nas_faild_mock.priority    = 'must';
+function test_Protocol_DownloadManager_transfer_to_nas_faild_mock() {
 
  var server = utils.setUpHttpServer(4445, "../fixtures");
  var loaded = { value : false };
@@ -57,11 +32,16 @@ function test_Protocol_DownloadManager_transfer_to_nas__faild_mock() {
  
  SynoLoader_DownloadManager.password = "1234";
  SynoLoader_DownloadManager.username = "test_user";
- SynoLoader_DownloadManager.url = 'http://localhost:4445';
- SynoLoader_DownloadManager.set_protocol("2");
+ SynoLoader_DownloadManager.set_protocol();
+ SynoLoader_DownloadManager.protocol.base_url = 'http://localhost:4445';
  SynoLoader_DownloadManager.protocol.Connect_Time = Date.now();
  SynoLoader_DownloadManager.protocol.connect_id = "122211";
 
+ var stube_connect_to_nas = function() {
+
+ }
+
+ SynoLoader_DownloadManager.connect_to_nas =  stube_connect_to_nas;
 
 
  var NotificationMock = new Mock(Notification);
@@ -75,6 +55,7 @@ function test_Protocol_DownloadManager_transfer_to_nas__faild_mock() {
  
 }
 
+
 test_Protocol_DownloadManager_transfer_to_nas_mock.description = 'test_Protocol_DownloadManager_transfer_to_nas_mock';
 test_Protocol_DownloadManager_transfer_to_nas_mock.priority    = 'must';
 function test_Protocol_DownloadManager_transfer_to_nas_mock() {
@@ -86,8 +67,8 @@ function test_Protocol_DownloadManager_transfer_to_nas_mock() {
  
  SynoLoader_DownloadManager.password = "1234";
  SynoLoader_DownloadManager.username = "test_user";
- SynoLoader_DownloadManager.url = 'http://localhost:4445';
- SynoLoader_DownloadManager.set_protocol("2");
+ SynoLoader_DownloadManager.set_protocol();
+ SynoLoader_DownloadManager.protocol.base_url = 'http://localhost:4445';
  SynoLoader_DownloadManager.protocol.Connect_Time = Date.now();
  SynoLoader_DownloadManager.protocol.connect_id = "122211";
 
@@ -118,8 +99,8 @@ function test_Protocol_DownloadManager_transfer_to_nas_torrent_file_mock() {
  
  SynoLoader_DownloadManager.password = "1234";
  SynoLoader_DownloadManager.username = "test_user";
- SynoLoader_DownloadManager.url = 'http://localhost:4445';
- SynoLoader_DownloadManager.set_protocol("2");
+ SynoLoader_DownloadManager.set_protocol();
+ SynoLoader_DownloadManager.protocol.base_url = 'http://localhost:4445';
  SynoLoader_DownloadManager.protocol.Connect_Time = Date.now();
  SynoLoader_DownloadManager.protocol.connect_id = "122211";
 
