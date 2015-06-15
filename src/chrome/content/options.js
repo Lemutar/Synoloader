@@ -26,10 +26,10 @@ SynoLoader.SetUserNamePassword = function() {
     for (var index = 0; index < logins.length; index++) {
         username = {
             value: logins[index].username
-        }
+        };
         password = {
             value: logins[index].password
-        }
+        };
         this.myLoginManager.removeLogin(logins[index]);
     }
 
@@ -44,7 +44,7 @@ SynoLoader.SetUserNamePassword = function() {
 };
 
 SynoLoader.checkConnection = function() {
-    if(this.SynoLoader_DownloadManager.connecting === false) {
+    if (this.SynoLoader_DownloadManager.connecting === false) {
         this.SynoLoader_DownloadManager.connect_to_nas();
         this.UpdateStatus();
     }
@@ -52,7 +52,7 @@ SynoLoader.checkConnection = function() {
 
 SynoLoader.option_init = function() {
     SynoLoader.was_connecting = false;
-    if(true === this.SynoLoader_DownloadManager.is_connect) {
+    if (true === this.SynoLoader_DownloadManager.is_connect) {
         document.getElementById("SynoLoader_check_connection_image").setAttribute('style', "list-style-image: url('chrome://SynoLoader/skin/approval.png')");
     }
     this.UpdateStatus();
@@ -62,11 +62,11 @@ SynoLoader.option_init = function() {
 };
 
 SynoLoader.UpdateStatus = function() {
-    if(this.SynoLoader_DownloadManager.connecting === true) {
+    if (this.SynoLoader_DownloadManager.connecting === true) {
         SynoLoader.was_connecting = true;
         document.getElementById("SynoLoader_check_connection_image").setAttribute('style', "list-style-image: url('chrome://SynoLoader/skin/hour_glass.png')");
     } else if (SynoLoader.was_connecting === true) {
-        if(true === this.SynoLoader_DownloadManager.is_connect) {
+        if (true === this.SynoLoader_DownloadManager.is_connect) {
             document.getElementById("SynoLoader_check_connection_image").setAttribute('style', "list-style-image: url('chrome://SynoLoader/skin/approval.png')");
         } else {
             document.getElementById("SynoLoader_check_connection_image").setAttribute('style', "list-style-image: url('chrome://SynoLoader/skin/cancel.png')");
@@ -78,4 +78,3 @@ window.addEventListener("load", function load(e) {
     window.removeEventListener("load", load, false); //remove listener, no longer needed
     SynoLoader.option_init();
 }, false);
-

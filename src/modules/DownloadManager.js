@@ -10,10 +10,10 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
     Components.utils.import("resource://SynoLoader/magnetHandler.js", SynoLoader_DownloadManager);
     Components.utils.import("resource://SynoLoader/QuickConnect.js", SynoLoader_DownloadManager);
 
-    (function () {
+    (function() {
 
-        const quickConnectRelayTimeOutInMs = 8000;
-        const quickConnectLocalTimeOutInMs = 8000;
+        var quickConnectRelayTimeOutInMs = 8000;
+        var quickConnectLocalTimeOutInMs = 8000;
         this.connecting = false;
         this.password = "";
         this.username = "";
@@ -32,7 +32,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
 
 
         var LoginManager = Components.classes["@mozilla.org/login-manager;1"].
-            getService(Components.interfaces.nsILoginManager);
+        getService(Components.interfaces.nsILoginManager);
 
         // Find users for the given parameters
         var logins = LoginManager.findLogins({}, 'chrome://SynoLoader.Pass', null, 'User Registration');
@@ -58,10 +58,10 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
             };
         };
 
-        this.convert_old_url = function (url_string) {
+        this.convert_old_url = function(url_string) {
             if (this.preferences.getCharPref('host') === "") {
                 SynoLoader_DownloadManager.Util.log(url_string);
-                var url = this.parse_url(url_string)
+                var url = this.parse_url(url_string);
                 if (url.protocol !== undefined) {
                     this.preferences.setCharPref('protocol', url.protocol.replace(":", ""));
                 }
@@ -77,7 +77,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
             }
         };
 
-        this.set_protocol = function () {
+        this.set_protocol = function() {
             switch (this.preferences.getCharPref('DSM_Verison')) {
                 case "1":
                     SynoLoader_DownloadManager.Util.log("Set Protocol to < DMS 4.1");
@@ -92,7 +92,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
             }
         };
 
-        this.connect_to_nas = function () {
+        this.connect_to_nas = function() {
             SynoLoader_DownloadManager.connecting = true;
             this.convert_old_url(this.preferences.getCharPref('url'));
             var protocol = this.preferences.getCharPref('protocol');
@@ -103,24 +103,24 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                 quickConnectLocalTimeOutInMs,
                 protocol + "://",
                 port);
-            SynoLoader_DownloadManager.url_to_connect = protocol + "://"
-            quick_connect.get(host, function (response) {
+            SynoLoader_DownloadManager.url_to_connect = protocol + "://";
+            quick_connect.get(host, function(response) {
                 if (response.success) {
-                    SynoLoader_DownloadManager.url_to_connect += response.ip + ":" + port
+                    SynoLoader_DownloadManager.url_to_connect += response.ip + ":" + port;
                 } else {
-                    SynoLoader_DownloadManager.url_to_connect += host + ":" + port
+                    SynoLoader_DownloadManager.url_to_connect += host + ":" + port;
                 }
                 SynoLoader_DownloadManager.set_protocol();
                 SynoLoader_DownloadManager.protocol.password = SynoLoader_DownloadManager.password;
                 SynoLoader_DownloadManager.protocol.username = SynoLoader_DownloadManager.username;
-                SynoLoader_DownloadManager.protocol.conect(function (response) {
+                SynoLoader_DownloadManager.protocol.conect(function(response) {
                     SynoLoader_DownloadManager.is_connect = response.success;
                     SynoLoader_DownloadManager.connecting = false;
                 });
             });
         };
 
-        this.transfer_to_nas = function (link) {
+        this.transfer_to_nas = function(link) {
             if (link.toLowerCase().endsWith(".torrent") && SynoLoader_DownloadManager.protocol.version > 0) {
                 var file = Components.classes["@mozilla.org/file/directory_service;1"]
                     .getService(Components.interfaces.nsIProperties)
@@ -133,8 +133,8 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                 file.append("synoloader" + uuidString + ".torrent");
                 file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0666);
                 SynoLoader_DownloadManager.FileDownloaderHandler.get_file_content(link, file.path,
-                    function () {
-                        SynoLoader_DownloadManager.protocol.task_action(function (response) {
+                    function() {
+                        SynoLoader_DownloadManager.protocol.task_action(function(response) {
 
                                 if (response.success === true) {
                                     SynoLoader_DownloadManager.Notification.show("Send torrent file to NAS", link);
@@ -147,7 +147,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                             file);
                     });
             } else {
-                this.protocol.task_action(function (response) {
+                this.protocol.task_action(function(response) {
                         if (response.success === true) {
                             SynoLoader_DownloadManager.Notification.show("Send link", link);
                         } else {
@@ -163,23 +163,22 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
 
         };
 
-        this.delete_all = function () {
+        this.delete_all = function() {
             SynoLoader_DownloadManager.Util.log("delete_all");
-            SynoLoader_DownloadManager.load_download_list(function (items) {
-                items.forEach(function (item) {
+            SynoLoader_DownloadManager.load_download_list(function(items) {
+                items.forEach(function(item) {
                     SynoLoader_DownloadManager.Util.log("delete " + item.id);
-                    SynoLoader_DownloadManager.protocol.task_action(function () {
-                    }, 'delete', item.id);
+                    SynoLoader_DownloadManager.protocol.task_action(function() {}, 'delete', item.id);
                 });
 
-            }, function (response) {
+            }, function(response) {
                 SynoLoader_DownloadManager.Util.log("load_download_list: " + response.error_text);
             });
 
         };
 
-        this.load_download_list = function (manage_items_success, manage_items_fail) {
-            this.protocol.task_action(function (response) {
+        this.load_download_list = function(manage_items_success, manage_items_fail) {
+            this.protocol.task_action(function(response) {
                     if (response.success === true) {
                         manage_items_success(response.items);
                     } else {
@@ -191,12 +190,12 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
         };
 
 
-        this.get_list = function () {
+        this.get_list = function() {
             return this.list;
         };
 
 
-        this.observe = function (subject, topic, data) {
+        this.observe = function(subject, topic, data) {
             if (topic == "nsPref:changed") {
                 switch (data) {
                     case 'show_not':
@@ -213,7 +212,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
         };
 
         this.httpResponseObserver = SynoLoader_DownloadManager.magnetHandler.createObserver();
-        this.httpResponseObserver.observe = function (aSubject, aTopic, aData) {
+        this.httpResponseObserver.observe = function(aSubject, aTopic, aData) {
             SynoLoader_DownloadManager.Util.log("observer");
             if (aTopic == 'magnet-on-open-uri') {
                 var aURI = aSubject.QueryInterface(Components.interfaces.nsIURI);

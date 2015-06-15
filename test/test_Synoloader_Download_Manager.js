@@ -39,7 +39,7 @@ function test_Protocol_DownloadManager_transfer_to_nas_faild_mock() {
 
  var stube_connect_to_nas = function() {
 
- }
+ };
 
  SynoLoader_DownloadManager.connect_to_nas =  stube_connect_to_nas;
 
