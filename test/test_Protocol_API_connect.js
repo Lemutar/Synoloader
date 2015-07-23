@@ -1,12 +1,12 @@
 
 
-utils.include( utils.baseURL + "../src/modules/Protocol_API.js"); 
+utils.include( utils.baseURL + "../src/modules/Protocol_API.js");
 
 
 
 
 function setUp() {
-  
+
 }
 
 function tearDown() {
@@ -15,7 +15,7 @@ function tearDown() {
 
 function startUp()
 {
- 
+
 }
 
 function shutDown()
@@ -31,12 +31,12 @@ function test_Protocol_connect_succsed_mock() {
  var loaded = { value : false };
  var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
  utils.writeTo("{ \"data\" :{\"sid\" : \"ohOCjwhHhwghw\"},\"success\": true }" , "../fixtures/connect.txt" );
- server.expect("/webapi/auth.cgi", 200, '/connect.txt'); 
- mytest.conect(setdone);
+ server.expect("/webapi/auth.cgi", 200, '/connect.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(loaded);
@@ -54,14 +54,14 @@ function test_Protocol_connect_fail_400_mock() {
  var loaded = { value : false };
  var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
- 
+
  utils.writeTo("{ \"error\" :{\"code\" : 400},\"success\": false }" , "../fixtures/connect.txt" );
- server.expect("/webapi/auth.cgi", 200, '/connect.txt'); 
- mytest.conect(setdone);
+ server.expect("/webapi/auth.cgi", 200, '/connect.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(loaded);
@@ -77,14 +77,14 @@ function test_Protocol_connect_fail_401_mock() {
  var loaded = { value : false };
  var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
- 
+
  utils.writeTo("{ \"error\" :{\"code\" : 401},\"success\": false }" , "../fixtures/connect.txt" );
- server.expect("/webapi/auth.cgi", 200, '/connect.txt'); 
- mytest.conect(setdone);
+ server.expect("/webapi/auth.cgi", 200, '/connect.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(loaded);
@@ -100,14 +100,14 @@ function test_Protocol_connect_fail_402_mock() {
  var loaded = { value : false };
  var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
- 
+
  utils.writeTo("{ \"error\" :{\"code\" : 402},\"success\": false }" , "../fixtures/connect.txt" );
- server.expect("/webapi/auth.cgi", 200, '/connect.txt'); 
- mytest.conect(setdone);
+ server.expect("/webapi/auth.cgi", 200, '/connect.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(loaded);
@@ -123,14 +123,14 @@ function test_Protocol_connect_fail_403_mock() {
  var loaded = { value : false };
  var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
- 
+
  utils.writeTo("{ \"error\" :{\"code\" : 403},\"success\": false }" , "../fixtures/connect.txt" );
- server.expect("/webapi/auth.cgi", 200, '/connect.txt'); 
- mytest.conect(setdone);
+ server.expect("/webapi/auth.cgi", 200, '/connect.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(loaded);
@@ -146,14 +146,14 @@ function test_Protocol_connect_fail_404_mock() {
  var loaded = { value : false };
  var setdone = function(response){myresponse=response;loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
- 
+
  utils.writeTo("{ \"error\" :{\"code\" : 404},\"success\": false }" , "../fixtures/connect.txt" );
- server.expect("/webapi/auth.cgi", 200, '/connect.txt'); 
- mytest.conect(setdone);
+ server.expect("/webapi/auth.cgi", 200, '/connect.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(loaded);

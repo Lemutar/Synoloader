@@ -11,9 +11,9 @@
       <preference id="port" name="extensions.SynoLoader.port" type="string"/>
       <preference id="host" name="extensions.SynoLoader.host" type="string"/>
       <preference id="show_not" name="extensions.SynoLoader.show_not" type="bool"/>
-      <preference id="show_dgb" name="extensions.SynoLoader.show_dgb" type="bool"/>
+      <preference id="show_dbg" name="extensions.SynoLoader.show_dbg" type="bool"/>
       <preference id="use_magnet" name="extensions.SynoLoader.use_magnet" type="bool"/>
-      <preference id="DSM_Verison" name="extensions.SynoLoader.DSM_Verison" type="string"/>
+      <preference id="dsm_version" name="extensions.SynoLoader.dsm_version" type="string"/>
     </preferences>
     <groupbox>
         <caption label="Connection-details"/>
@@ -39,8 +39,8 @@
                     <textbox id="hostIn" preference="host"/>
                 </row>
                 <row>
-                    <label control="host">&dms_version.label;</label>
-                    <menulist preference="DSM_Verison" >
+                    <label control="host">&dsm_version.label;</label>
+                    <menulist preference="dsm_version" >
                         <menupopup>
                             <menuitem label="DSM Version &lt; 4.1" value="1"/>
                             <menuitem label="DSM Version &gt;= 4.1" value="2"/>
@@ -51,12 +51,12 @@
         </grid>
         <button label="Set Username and Password" oncommand="SynoLoader.SetUserNamePassword();"/>
         <button label="Check connection" disabled="false" oncommand="SynoLoader.checkConnection();">
-            <label>&CheckConnection.labe;</label>
+            <label>&CheckConnection.label;</label>
             <image id="SynoLoader_check_connection_image" check_status="test"/>
         </button>
     </groupbox>
     <checkbox label="Show 'Send Link' Notification" preference="show_not"/>
-    <checkbox label="Show Debug Information" preference="show_dgb"/>
+    <checkbox label="Show Debug Information" preference="show_dbg"/>
     <checkbox label="Use magnet link protocol" preference="use_magnet" id="Synoloader.use_magnet"/>
 </prefpane>
 </prefwindow>

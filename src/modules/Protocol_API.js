@@ -100,35 +100,35 @@ var Protocol = function(base_url, timeout, user_name, password) {
     return_protocol.ed2k_download_folder = "home";
     return_protocol.password = password;
     return_protocol.username = user_name;
-    return_protocol.conect = function(callback) {
-        var conect_response = {
+    return_protocol.connect = function(callback) {
+        var connect_response = {
             success: false,
             id: "",
             error_text: ''
         };
-        var conect_request = Request(return_protocol.base_url + '/webapi/auth.cgi',
+        var connect_request = Request(return_protocol.base_url + '/webapi/auth.cgi',
             "api=SYNO.API.Auth&version=2&method=login&account=" + encodeURIComponent(return_protocol.username) + "&passwd=" + encodeURIComponent(return_protocol.password) + "&session=DownloadStation&format=sid",
             timeout,
             function(response) {
                 if (response.status != 200) {
-                    conect_response.error_text = response.statusText;
+                    connect_response.error_text = response.statusText;
                 } else {
                     Util.log(response.text);
 
                     if (response.json.success === true) {
-                        conect_response.id = response.json.data.sid;
-                        conect_response.success = true;
+                        connect_response.id = response.json.data.sid;
+                        connect_response.success = true;
                         return_protocol.connect_id = response.json.data.sid;
                         return_protocol.Connect_Time = Date.now();
                     } else {
-                        set_auth_api_error_text(response.json.error.code, conect_response);
+                        set_auth_api_error_text(response.json.error.code, connect_response);
                     }
 
                 }
-                callback(conect_response);
+                callback(connect_response);
             });
-        Util.log("try to conect to : " + return_protocol.base_url);
-        conect_request.get();
+        Util.log("try to connect to : " + return_protocol.base_url);
+        connect_request.get();
 
     };
 
@@ -140,11 +140,11 @@ var Protocol = function(base_url, timeout, user_name, password) {
             error_text: ''
         };
         if (Date.now() - return_protocol.Connect_Time > 1000 * 60 * 20) {
-            return_protocol.conect(function(conect_response) {
-                if (conect_response.success === true) {
+            return_protocol.connect(function(connect_response) {
+                if (connect_response.success === true) {
                     return_protocol.task_action(callback, task_action, parameter);
                 } else {
-                    callback(conect_response);
+                    callback(connect_response);
                 }
             });
         } else {
@@ -373,7 +373,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 vbox.appendChild(label);
 
                 richlistitem.setAttribute('id', "syno-" + item.id);
-                richlistitem.setAttribute('syono-id', item.id);
+                richlistitem.setAttribute('syno-id', item.id);
                 richlistitem.setAttribute('class', "SynoLoader_Item");
                 richlistitem.appendChild(vbox);
                 if (background_color_toggel) {
