@@ -1,4 +1,7 @@
-language: javascript
+language: node_js
+
+node_js:
+  - "0.12"
 
 install:
   - sudo pip2 install mozdownload==1.12 mozinstall
