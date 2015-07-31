@@ -3,31 +3,20 @@ language: node_js
 node_js:
   - "0.12"
 
-install:
-  - sudo pip2 install mozdownload==1.12 mozinstall
-
 branches:
   only:
     - travis
 
-env:
-  - Firefox_Version=28.0
-  - Firefox_Version=37.0
+addons:
+  firefox:
+    - "28.0"
+    - "37.0"
 
 before_script:
-   - "mozdownload --version=$Firefox_Version --destination=./firefox.tar.bz2 --extension=tar.bz2"
-   - "mozinstall ./firefox.tar.bz2 --destination=./test_browser"
-   - "export FirfoxTest=./test_browser/firefox/firefox" 
    - "export DISPLAY=:99.0"
    - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
- 
+
 script:
   - sleep 2
-  - $FirfoxTest --version 
   - ./run_test.sh
   - ./run_integration_test.sh
-
-after_script:
-  - sh -e /etc/init.d/xvfb stop
-  - rm ./firefox.tar.bz2
-  - rm ./test_browser -rf
