@@ -1,12 +1,17 @@
 var EXPORTED_SYMBOLS = ["Util"];
+const { classes: Cc, interfaces: Ci } = Components;
 
-Util = function() {};
+if (typeof Util == "undefined") {
+    var Util = {};
 
-Util.consoleService = Components.classes["@mozilla.org/consoleservice;1"]
-    .getService(Components.interfaces.nsIConsoleService);
-Util.show_log = true;
-Util.log = function(errmsg) {
-    if (this.show_log === true) {
-        this.consoleService.logStringMessage("SynoLoader : " + errmsg);
-    }
-};
+    (function() {
+        this.show_log = true;
+        this.consoleService = Cc["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
+
+        this.log = function(errmsg) {
+            if (this.show_log === true) {
+                this.consoleService.logStringMessage("SynoLoader : " + errmsg);
+            }
+        };
+    }).apply(Util);
+}
