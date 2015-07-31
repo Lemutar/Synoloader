@@ -1,7 +1,7 @@
 language: javascript
 
 install:
-  - sudo pip install mozdownload mozinstall
+  - sudo pip2 install mozdownload mozinstall
 
 env:
   - Firefox_Version=28.0
