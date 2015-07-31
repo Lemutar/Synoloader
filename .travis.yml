@@ -1,7 +1,11 @@
 language: javascript
 
 install:
-  - sudo pip2 install mozdownload mozinstall
+  - sudo pip2 install mozdownload==1.12 mozinstall
+
+branches:
+  only:
+    - travis
 
 env:
   - Firefox_Version=28.0
