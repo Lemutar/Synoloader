@@ -7,14 +7,16 @@ branches:
   only:
     - travis
 
+env:
+  - Firefox_Version=28.0
+  - Firefox_Version=37.0
+
 addons:
-  firefox:
-    - "28.0"
-    - "37.0"
+  firefox: "$Firefox_Version"
 
 before_script:
    - "export DISPLAY=:99.0"
-   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16 -extension RANDR"
 
 script:
   - sleep 2
