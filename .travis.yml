@@ -12,7 +12,7 @@ env:
   - Firefox_Version=37.0
 
 addons:
-  firefox: "$Firefox_Version"
+  firefox: $Firefox_Version
 
 before_script:
    - "export DISPLAY=:99.0"
