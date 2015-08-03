@@ -11,13 +11,13 @@ function setUp()
     var preferences = Components.classes["@mozilla.org/preferences-service;1"]
         .getService(Components.interfaces.nsIPrefService)
         .getBranch("extensions.SynoLoader.");
-    preferences.setCharPref('DSM_Verison',"2");
+    preferences.setCharPref('dsm_version',"2");
     SynoLoader_DownloadManager.set_protocol();
     SynoLoader_DownloadManager.Util.show_log=true;
 }
 
 function tearDown() {
-   
+
    SynoLoader_DownloadManager.delete_all();
    utils.wait(5000);
 
@@ -25,7 +25,7 @@ function tearDown() {
 
 function startUp()
 {
- 
+
 }
 
 function shutDown()
@@ -65,7 +65,7 @@ function test_Protocol_DownloadManager_transfer_to_nas_torrent_file_old() {
  var preferences = Components.classes["@mozilla.org/preferences-service;1"]
      .getService(Components.interfaces.nsIPrefService)
      .getBranch("extensions.SynoLoader.");
- preferences.setCharPref('DSM_Verison',"1");
+ preferences.setCharPref('dsm_version',"1");
  SynoLoader_DownloadManager.set_protocol();
  var NotificationMock = new Mock(Notification);
  var loaded = { value : false };

@@ -2,10 +2,9 @@ pref("extensions.SynoLoader.protocol", "http");
 pref("extensions.SynoLoader.port", "5000");
 pref("extensions.SynoLoader.host", "");
 pref("extensions.SynoLoader.show_not", true);
-pref("extensions.SynoLoader.show_not", true);
-pref("extensions.SynoLoader.DSM_Verison", "2");
+pref("extensions.SynoLoader.dsm_version", "2");
 pref("extensions.SynoLoader.url", "http://");
-pref("extensions.SynoLoader.show_dgb", false);
+pref("extensions.SynoLoader.show_dbg", false);
 pref("extensions.SynoLoader.use_magnet", true);
 
 

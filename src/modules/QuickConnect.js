@@ -3,7 +3,7 @@ var EXPORTED_SYMBOLS = ["QuickConnect"];
 
 Components.utils.import("resource://SynoLoader/Request.js");
 
-var QuickConnect = function(timeout_relay, timeout_internal, protocloll, port) {
+var QuickConnect = function(timeout_relay, timeout_internal, protocol, port) {
     var return_quick_connect = function() {};
 
 
@@ -19,7 +19,7 @@ var QuickConnect = function(timeout_relay, timeout_internal, protocloll, port) {
                 version: "1",
                 command: "get_server_info",
                 serverID: quick_connect_id,
-                id: "dms_https"
+                id: "dsm_https"
             }),
             timeout_relay,
             function(response) {
@@ -46,7 +46,7 @@ var QuickConnect = function(timeout_relay, timeout_internal, protocloll, port) {
         var not_first = false;
         var error_count = 0;
         internal_ips.forEach(function(ip) {
-            var get_server = Request(protocloll + ip + ":" + port + "/webapi/query.cgi", "api=SYNO.API.Info&version=1&method=query&query=api=SYNO.API.Info&version=1&method=query&query=SYNO.API.Auth,SYNO.DownloadStation.Task",
+            var get_server = Request(protocol + ip + ":" + port + "/webapi/query.cgi", "api=SYNO.API.Info&version=1&method=query&query=api=SYNO.API.Info&version=1&method=query&query=SYNO.API.Auth,SYNO.DownloadStation.Task",
                 timeout_internal,
                 function(response) {
                     if (response.status == 200) {

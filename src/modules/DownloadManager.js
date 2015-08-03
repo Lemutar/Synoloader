@@ -27,7 +27,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
         this.preferences.QueryInterface(Components.interfaces.nsIPrefBranch2);
         this.preferences.addObserver("", this, false);
         SynoLoader_DownloadManager.Notification.show_not = this.preferences.getBoolPref('show_not');
-        SynoLoader_DownloadManager.Util.show_log = this.preferences.getBoolPref('show_dgb');
+        SynoLoader_DownloadManager.Util.show_log = this.preferences.getBoolPref('show_dbg');
         SynoLoader_DownloadManager.magnetHandler.set_active(SynoLoader_DownloadManager.preferences.getBoolPref('use_magnet'));
 
 
@@ -78,14 +78,14 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
         };
 
         this.set_protocol = function() {
-            switch (this.preferences.getCharPref('DSM_Verison')) {
+            switch (this.preferences.getCharPref('dsm_version')) {
                 case "1":
-                    SynoLoader_DownloadManager.Util.log("Set Protocol to < DMS 4.1");
+                    SynoLoader_DownloadManager.Util.log("Set Protocol to < DSM 4.1");
                     Components.utils.import("resource://SynoLoader/Protocol.js", SynoLoader_DownloadManager);
                     this.protocol = SynoLoader_DownloadManager.Protocol(this.url_to_connect, 50000, SynoLoader_DownloadManager.username, SynoLoader_DownloadManager.password);
                     break;
                 case "2":
-                    SynoLoader_DownloadManager.Util.log("Set Protocol to > DMS 4.1");
+                    SynoLoader_DownloadManager.Util.log("Set Protocol to > DSM 4.1");
                     Components.utils.import("resource://SynoLoader/Protocol_API.js", SynoLoader_DownloadManager);
                     this.protocol = SynoLoader_DownloadManager.Protocol(this.url_to_connect, 50000, SynoLoader_DownloadManager.username, SynoLoader_DownloadManager.password);
                     break;
@@ -113,7 +113,7 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                 SynoLoader_DownloadManager.set_protocol();
                 SynoLoader_DownloadManager.protocol.password = SynoLoader_DownloadManager.password;
                 SynoLoader_DownloadManager.protocol.username = SynoLoader_DownloadManager.username;
-                SynoLoader_DownloadManager.protocol.conect(function(response) {
+                SynoLoader_DownloadManager.protocol.connect(function(response) {
                     SynoLoader_DownloadManager.is_connect = response.success;
                     SynoLoader_DownloadManager.connecting = false;
                 });
@@ -201,8 +201,8 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
                     case 'show_not':
                         SynoLoader_DownloadManager.Notification.show_not = SynoLoader_DownloadManager.preferences.getBoolPref('show_not');
                         break;
-                    case 'show_dgb':
-                        SynoLoader_DownloadManager.Util.show_log = SynoLoader_DownloadManager.preferences.getBoolPref('show_dgb');
+                    case 'show_dbg':
+                        SynoLoader_DownloadManager.Util.show_log = SynoLoader_DownloadManager.preferences.getBoolPref('show_dbg');
                         break;
                     case 'use_magnet':
                         SynoLoader_DownloadManager.magnetHandler.set_active(SynoLoader_DownloadManager.preferences.getBoolPref('use_magnet'));

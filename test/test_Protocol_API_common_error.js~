@@ -1,10 +1,10 @@
 
 
-utils.include( utils.baseURL + "../src/modules/Protocol_API.js"); 
+utils.include( utils.baseURL + "../src/modules/Protocol_API.js");
 
 
 function setUp() {
-  
+
 }
 
 function tearDown() {
@@ -13,7 +13,7 @@ function tearDown() {
 
 function startUp()
 {
- 
+
 }
 
 function shutDown()
@@ -34,9 +34,9 @@ function test_Protocol_task_action_add_fail_100_mock() {
  addurl_response={};
  var addurl_callback = function(response){addurl_response=response; };
  utils.writeTo("{ \"error\" :{\"code\" : 100},\"success\": false }" , "../fixtures/action.txt" );
- server.expect("/webapi/DownloadStation/task.cgi", 200, '/action.txt'); 
+ server.expect("/webapi/DownloadStation/task.cgi", 200, '/action.txt');
  testee.Connect_Time = Date.now();
- testee.task_action(addurl_callback,'addurl','http://www.ubuntu.com/start-download?distro=desktop&bits=64&release=latest'); 
+ testee.task_action(addurl_callback,'addurl','http://www.ubuntu.com/start-download?distro=desktop&bits=64&release=latest');
 
  utils.wait(50);
  assert.equals(false,addurl_response.success);
@@ -52,14 +52,14 @@ function test_Protocol_connect_fail_401_mock() {
  myresponse={};
  var setdone = function(response){myresponse=response; };
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
- 
+
  utils.writeTo("{ \"error\" :{\"code\" : 401},\"success\": false }" , "../fixtures/connect.txt" );
- server.expect("/webapi/auth.cgi", 200, '/connect.txt'); 
- mytest.conect(setdone);
+ server.expect("/webapi/auth.cgi", 200, '/connect.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(200);
@@ -74,14 +74,14 @@ function test_Protocol_connect_fail_402_mock() {
  myresponse={};
  var setdone = function(response){myresponse=response; };
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
- 
+
  utils.writeTo("{ \"error\" :{\"code\" : 402},\"success\": false }" , "../fixtures/connect.txt" );
- server.expect("/webapi/auth.cgi", 200, '/connect.txt'); 
- mytest.conect(setdone);
+ server.expect("/webapi/auth.cgi", 200, '/connect.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(200);
@@ -96,14 +96,14 @@ function test_Protocol_connect_fail_403_mock() {
  myresponse={};
  var setdone = function(response){myresponse=response; };
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
- 
+
  utils.writeTo("{ \"error\" :{\"code\" : 403},\"success\": false }" , "../fixtures/connect.txt" );
- server.expect("/webapi/auth.cgi", 200, '/connect.txt'); 
- mytest.conect(setdone);
+ server.expect("/webapi/auth.cgi", 200, '/connect.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(200);
@@ -118,14 +118,14 @@ function test_Protocol_connect_fail_404_mock() {
  myresponse={};
  var setdone = function(response){myresponse=response; };
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
- 
+
  utils.writeTo("{ \"error\" :{\"code\" : 404},\"success\": false }" , "../fixtures/connect.txt" );
- server.expect("/webapi/auth.cgi", 200, '/connect.txt'); 
- mytest.conect(setdone);
+ server.expect("/webapi/auth.cgi", 200, '/connect.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(200);

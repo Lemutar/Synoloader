@@ -13,34 +13,34 @@ var Protocol = function(base_url, timeout, user_name, password) {
     return_protocol.ed2k_download_folder = "home";
     return_protocol.password = password;
     return_protocol.username = user_name;
-    return_protocol.conect = function(callback) {
-        var conect_response = {
+    return_protocol.connect = function(callback) {
+        var connect_response = {
             success: false,
             id: "",
             error_text: ''
         };
-        var conect_request = Request(return_protocol.base_url + '/download/download_redirector.cgi',
+        var connect_request = Request(return_protocol.base_url + '/download/download_redirector.cgi',
             'action=login&username=' + encodeURIComponent(return_protocol.username) + '&passwd=' + encodeURIComponent(return_protocol.password),
             timeout,
             function(response) {
                 if (response.status != 200) {
-                    conect_response.error_text = response.statusText;
+                    connect_response.error_text = response.statusText;
                 } else {
                     Util.log(response.text);
                     if (response.json.success === true) {
                         if (response.json.login_success === true) {
-                            conect_response.id = response.json.id;
-                            conect_response.success = true;
+                            connect_response.id = response.json.id;
+                            connect_response.success = true;
                             return_protocol.connect_id = response.json.id;
                             return_protocol.Connect_Time = Date.now();
                         } else {
-                            conect_response.success = false;
+                            connect_response.success = false;
                             switch (response.json.errcode) {
                                 case -2:
-                                    conect_response.error_text = "wrong password";
+                                    connect_response.error_text = "wrong password";
                                     break;
                                 case -5:
-                                    conect_response.error_text = "unknown user";
+                                    connect_response.error_text = "unknown user";
                                     break;
                             }
                         }
@@ -48,10 +48,10 @@ var Protocol = function(base_url, timeout, user_name, password) {
 
                     }
                 }
-                callback(conect_response);
+                callback(connect_response);
             });
-        Util.log("try to conect to : " + return_protocol.base_url);
-        conect_request.post();
+        Util.log("try to connect to : " + return_protocol.base_url);
+        connect_request.post();
 
     };
 
@@ -63,11 +63,11 @@ var Protocol = function(base_url, timeout, user_name, password) {
             error_text: ''
         };
         if (Date.now() - return_protocol.Connect_Time > 1000 * 60 * 20) {
-            return_protocol.conect(function(conect_response) {
-                if (conect_response.success === true) {
+            return_protocol.connect(function(connect_response) {
+                if (connect_response.success === true) {
                     return_protocol.task_action(callback, task_action, parameter);
                 } else {
-                    callback(conect_response);
+                    callback(connect_response);
                 }
             });
         } else {
@@ -224,7 +224,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 vbox.appendChild(label);
 
                 richlistitem.setAttribute('id', "syno-" + item.id);
-                richlistitem.setAttribute('syono-id', item.id);
+                richlistitem.setAttribute('syno-id', item.id);
                 richlistitem.setAttribute('class', "SynoLoader_Item");
                 richlistitem.appendChild(vbox);
 

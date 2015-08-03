@@ -1,10 +1,10 @@
 
 
-utils.include( utils.baseURL + "../src/modules/Protocol.js"); 
+utils.include( utils.baseURL + "../src/modules/Protocol.js");
 
 
 function setUp() {
-  
+
 }
 
 function tearDown() {
@@ -13,7 +13,7 @@ function tearDown() {
 
 function startUp()
 {
- 
+
 }
 
 function shutDown()
@@ -29,13 +29,13 @@ function test_Protocol_connect_succsed_mock() {
  var loaded = { value : false };
  var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester','1234');
  utils.writeTo("{ \"id\" : \"G.OzcP8kl19EU\", \"login_success\" : true , \"success\" : true }" , "../fixtures/test.txt" );
- server.expect('/download/download_redirector.cgi', 200, '/test.txt'); 
- mytest.conect(setdone);
+ server.expect('/download/download_redirector.cgi', 200, '/test.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(loaded);
@@ -52,13 +52,13 @@ function test_Protocol_connect_wrong_password_mock() {
  var loaded = { value : false };
  var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester', '1234');
  utils.writeTo("{ \"errcode\" : -2, \"login_success\" : false , \"success\" : true }" , "../fixtures/test.txt" );
- server.expect('/download/download_redirector.cgi', 200, '/test.txt'); 
- mytest.conect(setdone);
+ server.expect('/download/download_redirector.cgi', 200, '/test.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(loaded);
@@ -74,13 +74,13 @@ function test_Protocol_connect_wrong_user_mock() {
  var loaded = { value : false };
  var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',5000,'synoloader_tester', '1234');
  utils.writeTo("{ \"errcode\" : -5, \"login_success\" : false , \"success\" : true }" , "../fixtures/test.txt" );
- server.expect('/download/download_redirector.cgi', 200, '/test.txt'); 
- mytest.conect(setdone);
+ server.expect('/download/download_redirector.cgi', 200, '/test.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(loaded);
@@ -96,13 +96,13 @@ function test_Protocol_connect_timeout_mock() {
  var loaded = { value : false };
  var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',20,'synoloader_tester', '1234');
  utils.writeTo("{ \"errcode\" : -5, \"login_success\" : false , \"success\" : true }" , "../fixtures/test.txt" );
- server.expect('/download/download_redirector.cgi', 200, { path : '/test.txt', delay : 200 }); 
- mytest.conect(setdone);
+ server.expect('/download/download_redirector.cgi', 200, { path : '/test.txt', delay : 200 });
+ mytest.connect(setdone);
 
 
  utils.wait(loaded);
@@ -118,13 +118,13 @@ function test_Protocol_connect_error404_mock() {
  var loaded = { value : false };
  var setdone = function(response){myresponse=response; loaded.value = true;};
  var server = utils.setUpHttpServer(4445, "../fixtures");
- 
- 
+
+
 
  mytest= Protocol('http://localhost:4445',500,'synoloader_tester', '1234');
  utils.writeTo("{ \"errcode\" : -5, \"login_success\" : false , \"success\" : true }" , "../fixtures/test.txt" );
- server.expect('/download/download_redirector.cgi', 404, '/test.txt'); 
- mytest.conect(setdone);
+ server.expect('/download/download_redirector.cgi', 404, '/test.txt');
+ mytest.connect(setdone);
 
 
  utils.wait(loaded);
