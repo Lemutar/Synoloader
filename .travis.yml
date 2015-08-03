@@ -1,7 +1,7 @@
-language: javascript
+language: python
 
 install:
-  - pip install mozdownload==1.8
+  - pip install -q mozdownload==1.8
   - pip install mozinstall
 
 env:
