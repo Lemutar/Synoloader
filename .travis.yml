@@ -1,8 +1,8 @@
 language: python
 
 install:
-  - pip install -q mozdownload==1.12
-  - pip install mozinstall
+  - pip install mozdownload==1.12 --upgrade
+  - pip install mozinstall --upgrade
 
 env:
   - Firefox_Version=28.0
