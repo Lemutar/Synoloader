@@ -1,7 +1,7 @@
 language: python
 
 install:
-  - pip install mozdownload==1.12 --upgrade
+  - pip install mozdownload==1.10 --upgrade
   - pip install mozinstall --upgrade
 
 env:
