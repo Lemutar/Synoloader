@@ -1,8 +1,8 @@
 /*  skin/toolbar-button.css  */
-#synoloader_toolbar_id{
+#synoloader-toolbar-id{
       list-style-image: url("chrome://Synoloader/skin/synoloader.png");
     }
-toolbar[iconsize="small"] #synoloader_toolbar_id{
+toolbar[iconsize="small"] #synoloader-toolbar-id{
       list-style-image: url("chrome://Synoloader/skin/synoloader_small.png");
     }
 
@@ -12,8 +12,8 @@ toolbar[iconsize="small"] #synoloader_toolbar_id{
       height: 35px;
       float: right;
     }
-    
-    
+
+
 #synoloader_toolbar_panel_lable_id {
       font: normal 24px;
       text-align: center;
