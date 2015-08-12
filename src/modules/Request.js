@@ -1,18 +1,18 @@
-var EXPORTED_SYMBOLS = ['Request'];
+var EXPORTED_SYMBOLS = ["Request"];
 const { classes: Cc, interfaces: Ci } = Components;
 
-if (typeof Request === 'undefined') {
-    Components.utils.import('resource://SynoLoader/Util.js');
+if (typeof Request === "undefined") {
+    Components.utils.import("resource://SynoLoader/Util.js");
 
     var Request = function (url, parameter, timeout, callback) {
         var request = this;
 
-        this.http_request = Cc['@mozilla.org/xmlextras/xmlhttprequest;1']
+        this.http_request = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"]
             .createInstance(Ci.nsIXMLHttpRequest);
 
         this.response = {
-            text: '',
-            statusText: '',
+            text: "",
+            statusText: "",
             status: 0,
             json: {}
         };
@@ -20,7 +20,7 @@ if (typeof Request === 'undefined') {
         this.http_request.timeout = timeout;
         this.http_request.ontimeout = function () {
             request.response.status = 408;
-            request.response.statusText = 'Request Time-out';
+            request.response.statusText = "Request Time-out";
             callback(request.response);
         };
 
@@ -44,12 +44,12 @@ if (typeof Request === 'undefined') {
         };
 
         this.post = function () {
-            request.http_request.open('POST', url, true);
+            request.http_request.open("POST", url, true);
             request.http_request.send(parameter);
         };
 
         this.get = function () {
-            request.http_request.open('GET', url + '?' + parameter, true);
+            request.http_request.open("GET", url + "?" + parameter, true);
             request.http_request.send(null);
         };
 

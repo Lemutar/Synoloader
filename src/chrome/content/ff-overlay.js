@@ -1,147 +1,131 @@
-var SynoLoader = {};
-Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
+if (typeof SL_Overlay === "undefined") {
+    var SL_Overlay = {};
 
-(function() {
+    Cu.import("resource://SynoLoader/DownloadManager.js", SL_Overlay);
+    Cu.import("resource://SynoLoader/Util.js", SL_Overlay);
 
+    (function () {
+        this.firstRun = function (extensions) {
+            let firstRunPref = "extensions.SynoLoader.firstRunDone";
 
-    this.firstRun = function(extensions) {
-        var firstRunPref = "extensions.SynoLoader.firstRunDone";
+            if (!Application.prefs.getValue(firstRunPref, false)) {
+                Application.prefs.setValue(firstRunPref, true);
 
-        if (!Application.prefs.getValue(firstRunPref, false)) {
-            Application.prefs.setValue(firstRunPref, true);
-            var toolbar = document.getElementById("nav-bar");
-            var before = null;
-            toolbar.insertItem("synoloader_toolbar_id", before);
-            toolbar.setAttribute("currentset", toolbar.currentSet);
-            document.persist(toolbar.id, "currentset");
-        }
-    };
-
-
-
-    this.UpdateListPanel = function() {
-
-        var title = document.getElementById('synoloader_toolbar_panel_lable_id');
-        if (title.getAttribute("value") != "Loading...") {
-            title.setAttribute('value', "Loading...");
-        }
-
-        SynoLoader.SynoLoader_DownloadManager.load_download_list(function(items) {
-            var panel = document.getElementById('synoloader_toolbar_panel_id');
-            var list = document.getElementById('synoloader_toolbar_panel_list_id');
-            var hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
-            loaded_list = {};
-
-            if (typeof SynoLoader.SynoLoader_DownloadManager.protocol != "undefined") {
-                loaded_list = SynoLoader.SynoLoader_DownloadManager.protocol.calcItems(items);
+                let toolbar = document.getElementById("nav-bar");
+                toolbar.insertItem("synoloader-toolbar-id", null);
+                toolbar.setAttribute("currentset", toolbar.currentSet);
+                document.persist(toolbar.id, "currentset");
             }
+        };
 
-
-            var count = list.itemCount;
-            while (count-- > 0) {
-                list.removeItemAt(count);
-            }
-
-            for (var i in loaded_list) {
-                list.appendChild(loaded_list[i]);
-            }
-
-            if (loaded_list.length === 0) {
-                hbox_lable.setAttribute('hidden', "false");
-                var title = document.getElementById('synoloader_toolbar_panel_lable_id');
-                title.setAttribute('value', "No active Downloads");
-                clearInterval(SynoLoader.UpdateListPanelInterval);
-            } else {
-                hbox_lable.setAttribute('hidden', "true");
-            }
-            list.removeItemFromSelection(0);
-            panel.moveTo(-1, -1);
-
-        }, function(response) {
-            var hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
-            hbox_lable.setAttribute('hidden', "false");
-            var panel = document.getElementById('synoloader_toolbar_panel_id');
+        this.UpdateListPanel = function() {
             var title = document.getElementById('synoloader_toolbar_panel_lable_id');
-            title.setAttribute('value', "No Connection, please set correct Preferces");
-            clearInterval(SynoLoader.UpdateListPanelInterval);
-            panel.moveTo(-1, -1);
-        });
+            if (title.getAttribute("value") != "Loading...") {
+                title.setAttribute('value', "Loading...");
+            }
 
-    };
+            this.SL_DownloadManager.load_download_list(function(items) {
+                var panel = document.getElementById('synoloader_toolbar_panel_id');
+                var list = document.getElementById('synoloader_toolbar_panel_list_id');
+                var hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
+                loaded_list = {};
 
-    this.show_options = function() {
-        window.open("chrome://SynoLoader/content/options.xul", "Preferences", "chrome=yes,toolbar=yes");
-    };
-
-    this.onLoad = function() {
-
-        if (Application.extensions) {
-            this.firstRun(Application.extensions);
-        } else {
-            Application.getExtensions(this.firstRun);
-        }
-
-        document.getElementById("contentAreaContextMenu")
-            .addEventListener("popupshowing", function popupshowing(e) {
-                SynoLoader.showFirefoxContextMenu(e);
-            }, false);
-        SynoLoader.SynoLoader_DownloadManager.connect_to_nas();
-    };
-
-    this.onMenuItemLinkCommand = function(event) {
-        if (SynoLoader.SynoLoader_DownloadManager.is_connect === true) {
-            window.open(SynoLoader.SynoLoader_DownloadManager.url + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", SynoLoader.strWindowFeatures);
-        } else {
-            this.SynoLoader_DownloadManager.Notification.show("No Connection");
-        }
-
-    };
-
-    this.onMenuItemCommand = function(event) {
-        if (SynoLoader.SynoLoader_DownloadManager.is_connect === true) {
-            SynoLoader.SynoLoader_DownloadManager.transfer_to_nas(gContextMenu.linkURL);
-        } else {
-            SynoLoader.SynoLoader_DownloadManager.Notification.show("No Connection");
-        }
-
-    };
+                if (typeof SL_Overlay.SL_DownloadManager.protocol != "undefined") {
+                    loaded_list = SL_Overlay.SL_DownloadManager.protocol.calcItems(items);
+                }
 
 
-    this.onToolBarDownloadInfo = function(event) {
+                var count = list.itemCount;
+                while (count-- > 0) {
+                    list.removeItemAt(count);
+                }
 
-        SynoLoader.UpdateListPanel();
-        SynoLoader.UpdateListPanelInterval = setInterval(function() {
-            SynoLoader.UpdateListPanel();
-        }, 1000);
+                for (var i in loaded_list) {
+                    list.appendChild(loaded_list[i]);
+                }
 
-    };
+                if (loaded_list.length === 0) {
+                    hbox_lable.setAttribute('hidden', "false");
+                    var title = document.getElementById('synoloader_toolbar_panel_lable_id');
+                    title.setAttribute('value', "No active Downloads");
+                    clearInterval(SL_Overlay.UpdateListPanelInterval);
+                } else {
+                    hbox_lable.setAttribute('hidden', "true");
+                }
+                list.removeItemFromSelection(0);
+                panel.moveTo(-1, -1);
 
+            }, function(response) {
+                var hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
+                hbox_lable.setAttribute('hidden', "false");
+                var panel = document.getElementById('synoloader_toolbar_panel_id');
+                var title = document.getElementById('synoloader_toolbar_panel_lable_id');
+                title.setAttribute('value', "No Connection, please set correct Preferces");
+                clearInterval(SL_Overlay.UpdateListPanelInterval);
+                panel.moveTo(-1, -1);
+            });
+        };
 
-    this.onToolBarDownloadInfoHidden = function(event) {
+        this.showOptions = function() {
+            window.open("chrome://SynoLoader/content/options.xul", "Preferences", "chrome=yes,toolbar=yes");
+        };
 
-        clearInterval(SynoLoader.UpdateListPanelInterval);
+        this.onLoad = function() {
+            this.Util.log("SL_Overlay loaded");
+            if (Application.extensions) {
+                this.firstRun(Application.extensions);
+            } else {
+                Application.getExtensions(this.firstRun);
+            }
 
-    };
+            document.getElementById("contentAreaContextMenu")
+                .addEventListener("popupshowing", function popupshowing(e) {
+                    SL_Overlay.showFirefoxContextMenu(e);
+                }, false);
+            this.SL_DownloadManager.connectToNas();
+        };
 
-    this.onToolbarButtonCommand = function(e) {
+        this.onMenuItemLinkCommand = function(event) {
+            if (this.SL_DownloadManager.isConnected) {
+                window.open(this.SL_DownloadManager.url + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", SL_Overlay.strWindowFeatures);
+            } else {
+                this.SL_DownloadManager.Notification.show("No Connection");
+            }
+        };
 
-        this.onMenuItemCommand(e);
+        this.onMenuItemCommand = function(event) {
+            if (this.SL_DownloadManager.isConnected) {
+                this.SL_DownloadManager.transferToNas(gContextMenu.linkURL);
+            } else {
+                this.SL_DownloadManager.Notification.show("No Connection");
+            }
+        };
 
-    };
+        this.onToolBarDownloadInfo = function(event) {
+            this.UpdateListPanel();
+            this.UpdateListPanelInterval = setInterval(function() {
+                SL_Overlay.UpdateListPanel();
+            }, 1000);
+        };
 
+        this.onToolBarDownloadInfoHidden = function(event) {
+            clearInterval(this.UpdateListPanelInterval);
+        };
 
-    this.showFirefoxContextMenu = function(event) {
+        this.onToolbarButtonCommand = function(e) {
+            this.onMenuItemCommand(e);
+        };
 
-        document.getElementById("synoloader_context").hidden = (!gContextMenu.onLink);
+        this.showFirefoxContextMenu = function(event) {
+            document.getElementById("synoloader_context").hidden = (!gContextMenu.onLink);
+        };
 
-    };
-
+    }).apply(SL_Overlay);
 
     window.addEventListener("load", function load(event) {
         window.removeEventListener("load", load, false); //remove listener, no longer needed
-        SynoLoader.onLoad();
+        SL_Overlay.onLoad();
     }, false);
-
-
-}).apply(SynoLoader);
+}

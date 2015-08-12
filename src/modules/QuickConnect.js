@@ -1,26 +1,26 @@
-var EXPORTED_SYMBOLS = ['QuickConnect'];
-const { classes: Cc, interfaces: Ci } = Components;
+var EXPORTED_SYMBOLS = ["QuickConnect"];
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
-if (typeof QuickConnect === 'undefined') {
-    Components.utils.import('resource://SynoLoader/Request.js');
+if (typeof QuickConnect === "undefined") {
+    Cu.import("resource://SynoLoader/Request.js");
 
     var QuickConnect = function (timeout_relay, timeout_internal, protocol, port) {
         var quick_connect = this;
 
-        this.relai_server = 'https://ukc.synology.com/Serv.php';
+        this.relai_server = "https://ukc.synology.com/Serv.php";
         this.get_server_info = function (quick_connect_id, callback) {
             var get_server_info_response = {
                 success: false,
                 internal_ip: [],
-                external_ip: ''
+                external_ip: ""
             };
             var get_server = Request(
                 quick_connect.relai_server,
                 JSON.stringify({
-                    version: '1',
-                    command: 'get_server_info',
+                    version: "1",
+                    command: "get_server_info",
                     serverID: quick_connect_id,
-                    id: 'dsm_https'
+                    id: "dsm_https"
                 }),
                 timeout_relay,
                 function (response) {
@@ -43,14 +43,14 @@ if (typeof QuickConnect === 'undefined') {
         this.check_internal_ips = function (internal_ips, callback) {
             var check_internal_ips_response = {
                 success: false,
-                ip: ''
+                ip: ""
             };
             var not_first = false;
             var error_count = 0;
             internal_ips.forEach(function (ip) {
                 var get_server = Request(
-                    protocol + ip + ':' + port + '/webapi/query.cgi',
-                    'api=SYNO.API.Info&version=1&method=query&query=api=SYNO.API.Info&version=1&method=query&query=SYNO.API.Auth,SYNO.DownloadStation.Task',
+                    protocol + ip + ":" + port + "/webapi/query.cgi",
+                    "api=SYNO.API.Info&version=1&method=query&query=api=SYNO.API.Info&version=1&method=query&query=SYNO.API.Auth,SYNO.DownloadStation.Task",
                     timeout_internal,
                     function (response) {
                         if (response.status === 200) {
@@ -76,7 +76,7 @@ if (typeof QuickConnect === 'undefined') {
         this.get = function (quick_connect_id, callback) {
             var get_response = {
                 success: false,
-                ip: ''
+                ip: ""
             };
             quick_connect.get_server_info(quick_connect_id, function (response_info) {
                 if (response_info.success === true) {

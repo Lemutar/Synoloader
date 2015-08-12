@@ -10,8 +10,8 @@
       <preference id="url" name="extensions.SynoLoader.url" type="string"/>
       <preference id="port" name="extensions.SynoLoader.port" type="string"/>
       <preference id="host" name="extensions.SynoLoader.host" type="string"/>
-      <preference id="show_not" name="extensions.SynoLoader.show_not" type="bool"/>
-      <preference id="show_dbg" name="extensions.SynoLoader.show_dbg" type="bool"/>
+      <preference id="show_notif" name="extensions.SynoLoader.show_notif" type="bool"/>
+      <preference id="show_debug" name="extensions.SynoLoader.show_debug" type="bool"/>
       <preference id="use_magnet" name="extensions.SynoLoader.use_magnet" type="bool"/>
       <preference id="dsm_version" name="extensions.SynoLoader.dsm_version" type="string"/>
     </preferences>
@@ -55,8 +55,8 @@
             <image id="SynoLoader_check_connection_image" check_status="test"/>
         </button>
     </groupbox>
-    <checkbox label="Show 'Send Link' Notification" preference="show_not"/>
-    <checkbox label="Show Debug Information" preference="show_dbg"/>
+    <checkbox label="Show 'Send Link' Notification" preference="show_notif"/>
+    <checkbox label="Show Debug Information" preference="show_debug"/>
     <checkbox label="Use magnet link protocol" preference="use_magnet" id="Synoloader.use_magnet"/>
 </prefpane>
 </prefwindow>
