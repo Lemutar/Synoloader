@@ -1,7 +1,7 @@
 content   SynoLoader                 chrome/content/
 skin      SynoLoader   classic/1.0   chrome/skin/
 locale    SynoLoader   en-US         chrome/locale/en-US/
-resource  SynoLoader     	     modules/
+resource  SynoLoader                 modules/
 
 
 overlay   chrome://mozapps/content/downloads/unknownContentType.xul 	chrome://SynoLoader/content/SynoLoadunknownContentType.xul
@@ -9,5 +9,5 @@ overlay   chrome://browser/content/browser.xul   			chrome://SynoLoader/content/
 
 style chrome://global/content/customizeToolbar.xul chrome://SynoLoader/skin/toolbar.css
 
-component {789409b9-2e3b-4682-a5d1-0800200c9a66} modules/magnetHandler.js
+component {789409b9-2e3b-4682-a5d1-0800200c9a66} modules/MagnetHandler.js
 contract @mozilla.org/network/protocol;1?name=magnet {789409b9-2e3b-4682-a5d1-0800200c9a66}
