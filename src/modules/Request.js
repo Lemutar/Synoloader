@@ -1,58 +1,58 @@
 var EXPORTED_SYMBOLS = ["Request"];
-const { classes: Cc, interfaces: Ci } = Components;
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 if (typeof Request === "undefined") {
-    Components.utils.import("resource://SynoLoader/Util.js");
+    Cu.import("resource://SynoLoader/Util.js");
 
     var Request = function (url, parameter, timeout, callback) {
-        var request = this;
+        let self = this;
 
-        this.http_request = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"]
-            .createInstance(Ci.nsIXMLHttpRequest);
+        this.httpRequest = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
+                               createInstance(Ci.nsIXMLHttpRequest);
 
-        this.response = {
+        let response = {
             text: "",
             statusText: "",
             status: 0,
             json: {}
         };
 
-        this.http_request.timeout = timeout;
-        this.http_request.ontimeout = function () {
-            request.response.status = 408;
-            request.response.statusText = "Request Time-out";
-            callback(request.response);
+        this.httpRequest.timeout = timeout;
+        this.httpRequest.ontimeout = function () {
+            response.status = 408;
+            response.statusText = "Request Time-out";
+            callback(response);
         };
 
-        this.http_request.onreadystatechange = function () {
-            if (request.http_request.readyState === 4) {
-                switch (request.http_request.status) {
+        this.httpRequest.onreadystatechange = function () {
+            if (self.httpRequest.readyState === 4) {
+                switch (self.httpRequest.status) {
                     case 200:
-                        request.response.text = request.http_request.responseText;
+                        response.text = self.httpRequest.responseText;
                         try {
-                            request.response.json = JSON.parse(request.http_request.responseText);
+                            response.json = JSON.parse(self.httpRequest.responseText);
                         } catch (e) {}
                         break;
                     default:
                         break;
                 }
 
-                request.response.statusText = request.http_request.statusText;
-                request.response.status = request.http_request.status;
-                callback(request.response);
+                response.statusText = self.httpRequest.statusText;
+                response.status = self.httpRequest.status;
+                callback(response);
             }
         };
 
         this.post = function () {
-            request.http_request.open("POST", url, true);
-            request.http_request.send(parameter);
+            this.httpRequest.open("POST", url, true);
+            this.httpRequest.send(parameter);
         };
 
         this.get = function () {
-            request.http_request.open("GET", url + "?" + parameter, true);
-            request.http_request.send(null);
+            this.httpRequest.open("GET", url + "?" + parameter, true);
+            this.httpRequest.send(null);
         };
 
-        return request;
+        return this;
     };
 }
