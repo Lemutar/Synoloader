@@ -6,17 +6,17 @@ if (typeof Notification === 'undefined') {
 
     (function () {
         try {
-            Notification.AlertInterface = Cc['@mozilla.org/alerts-service;1']
-                .getService(Ci.nsIAlertsService);
+            this.AlertInterface = Cc['@mozilla.org/alerts-service;1'].
+                                      getService(Ci.nsIAlertsService);
         } catch (e) {
             // prevents runtime error on platforms that don't implement nsIAlertsService
         }
 
         this.show_not = false;
         this.show = function (title, text) {
-            if (Notification.show_not) {
+            if (this.show_not) {
                 try {
-                    Notification.AlertInterface.showAlertNotification('chrome://SynoLoader/skin/Syno.png', title, text, false, '', null);
+                    this.AlertInterface.showAlertNotification('chrome://SynoLoader/skin/Syno.png', title, text, false, '', null);
                 } catch (e) {
                     // prevents runtime error on platforms that don't implement nsIAlertsService
                 }
