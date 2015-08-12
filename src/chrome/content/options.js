@@ -1,86 +1,88 @@
-const { classes: Cc, interfaces: Ci } = Components;
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
-if (typeof SynoLoader === 'undefined') {
-    var SynoLoader = {};
+if (SL_Options === void(0)) {
+    var SL_Options = {};
 
-    Components.utils.import('resource://SynoLoader/DownloadManager.js', SynoLoader);
+    Cu.import("resource://SynoLoader/DownloadManager.js", SL_Options);
 
     (function () {
-        this.SetUserNamePassword = function () {
-            this.myLoginManager = Cc['@mozilla.org/login-manager;1']
-                .getService(Ci.nsILoginManager);
-            // create instance of LoginInfo
-            this.nsLoginInfo = new Components.Constructor(
-                '@mozilla.org/login-manager/loginInfo;1',
-                Ci.nsILoginInfo,
-                'init'
-            );
-            // ask for credentials
-            this.prompts = Cc['@mozilla.org/embedcomp/prompt-service;1']
-                .getService(Ci.nsIPromptService);
+        this.wasConnecting = false;
 
-            var username = {
-                value: ''
-            };
-            var password = {
-                value: ''
-            };
-            var check = {
-                value: false
-            };
-
-            var logins = this.myLoginManager.findLogins({}, 'chrome://SynoLoader.Pass', null, 'User Registration');
-            for (var index = 0; index < logins.length; index++) {
-                username = {
-                    value: logins[index].username
-                };
-                password = {
-                    value: logins[index].password
-                };
-                this.myLoginManager.removeLogin(logins[index]);
+        this.init = function () {
+            if (this.SynoLoader_DownloadManager.isConnected) {
+                document.getElementById("SynoLoader_check_connection_image").setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/approval.png)");
             }
-
-            this.prompts.promptUsernameAndPassword(window, '', 'Please enter your login for your SynoNas', username, password, null, {});
-            this.myLoginInfo = new this.nsLoginInfo('chrome://SynoLoader.Pass', null, 'User Registration', username.value, password.value, '', '');
-            this.myLoginManager.addLogin(this.myLoginInfo);
-            this.SynoLoader_DownloadManager.username = username.value;
-            this.SynoLoader_DownloadManager.password = password.value;
-        };
-
-        this.checkConnection = function () {
-            if (this.SynoLoader_DownloadManager.connecting === false) {
-                this.SynoLoader_DownloadManager.connect_to_nas();
-                this.UpdateStatus();
-            }
-        };
-
-        this.option_init = function () {
-            this.was_connecting = false;
-            if (this.SynoLoader_DownloadManager.is_connect === true) {
-                document.getElementById('SynoLoader_check_connection_image').setAttribute('style', 'list-style-image: url(chrome://SynoLoader/skin/approval.png)');
-            }
-            this.UpdateStatus();
+            this.updateStatus();
             this.interval = window.setInterval(function () {
-                SynoLoader.UpdateStatus();
+                SL_Options.updateStatus();
             }, 500);
         };
 
-        this.UpdateStatus = function () {
-            if (this.SynoLoader_DownloadManager.connecting === true) {
-                this.was_connecting = true;
-                document.getElementById('SynoLoader_check_connection_image').setAttribute('style', 'list-style-image: url(chrome://SynoLoader/skin/hour_glass.png)');
-            } else if (this.was_connecting === true) {
-                if (this.SynoLoader_DownloadManager.is_connect === true) {
-                    document.getElementById('SynoLoader_check_connection_image').setAttribute('style', 'list-style-image: url(chrome://SynoLoader/skin/approval.png)');
+        this.setUsernamePassword = function () {
+            let loginManager = Cc["@mozilla.org/login-manager;1"].
+                                      getService(Ci.nsILoginManager);
+            // create instance of LoginInfo
+            let loginInfo = new Components.Constructor(
+                "@mozilla.org/login-manager/loginInfo;1",
+                Ci.nsILoginInfo,
+                "init"
+            );
+            // ask for credentials
+            let prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"].
+                               getService(Ci.nsIPromptService);
+
+            let username = {
+                value: ""
+            };
+            let password = {
+                value: ""
+            };
+
+            let logins = loginManager.findLogins({}, "chrome://SynoLoader.Pass", null, "User Registration");
+            for (let i = 0; i < logins.length; i++) {
+                username = {
+                    value: logins[i].username
+                };
+                password = {
+                    value: logins[i].password
+                };
+                loginManager.removeLogin(logins[i]);
+            }
+
+            prompts.promptUsernameAndPassword(window, "", "Please enter your login for your SynoNas", username, password, null, {});
+
+            let myLoginInfo = new loginInfo("chrome://SynoLoader.Pass", null, "User Registration", username.value, password.value, "", "");
+            loginManager.addLogin(myLoginInfo);
+
+            this.SynoLoader_DownloadManager.username = username.value;
+            this.SynoLoader_DownloadManager.password = password.value;
+
+            this.checkConnection();
+        };
+
+        this.checkConnection = function () {
+            if (!this.SynoLoader_DownloadManager.isConnecting) {
+                this.SynoLoader_DownloadManager.connect_to_nas();
+                this.updateStatus();
+            }
+        };
+
+        this.updateStatus = function () {
+            if (this.SynoLoader_DownloadManager.isConnecting) {
+                this.wasConnecting = true;
+                document.getElementById("SynoLoader_check_connection_image").setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/hour_glass.png)");
+            } else if (this.wasConnecting) {
+                if (this.SynoLoader_DownloadManager.isConnected) {
+                    document.getElementById("SynoLoader_check_connection_image").setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/approval.png)");
                 } else {
-                    document.getElementById('SynoLoader_check_connection_image').setAttribute('style', 'list-style-image: url(chrome://SynoLoader/skin/cancel.png)');
+                    document.getElementById("SynoLoader_check_connection_image").setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/cancel.png)");
                 }
             }
         };
-    }).apply(SynoLoader);
+    }).apply(SL_Options);
 }
 
-window.addEventListener('load', function load (e) {
-    window.removeEventListener('load', load, false); //remove listener, no longer needed
-    SynoLoader.option_init();
+window.addEventListener("load", function load (e) {
+    window.removeEventListener("load", load, false); //remove listener, no longer needed
+    SL_Options.init();
 }, false);

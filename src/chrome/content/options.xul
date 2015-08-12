@@ -49,8 +49,8 @@
                 </row>
             </rows>
         </grid>
-        <button label="Set Username and Password" oncommand="SynoLoader.SetUserNamePassword();"/>
-        <button label="Check connection" disabled="false" oncommand="SynoLoader.checkConnection();">
+        <button label="Set Username and Password" oncommand="SL_Options.setUsernamePassword();"/>
+        <button label="Check connection" disabled="false" oncommand="SL_Options.checkConnection();">
             <label>&CheckConnection.label;</label>
             <image id="SynoLoader_check_connection_image" check_status="test"/>
         </button>
