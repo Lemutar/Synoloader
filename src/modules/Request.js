@@ -26,15 +26,11 @@ if (typeof Request === "undefined") {
 
         this.httpRequest.onreadystatechange = function () {
             if (self.httpRequest.readyState === 4) {
-                switch (self.httpRequest.status) {
-                    case 200:
-                        response.text = self.httpRequest.responseText;
-                        try {
-                            response.json = JSON.parse(self.httpRequest.responseText);
-                        } catch (e) {}
-                        break;
-                    default:
-                        break;
+                if (self.httpRequest.status === 200) {
+                    response.text = self.httpRequest.responseText;
+                    try {
+                        response.json = JSON.parse(self.httpRequest.responseText);
+                    } catch (e) {}
                 }
 
                 response.statusText = self.httpRequest.statusText;
@@ -43,14 +39,14 @@ if (typeof Request === "undefined") {
             }
         };
 
-        this.post = function () {
-            this.httpRequest.open("POST", url, true);
-            this.httpRequest.send(parameter);
-        };
-
         this.get = function () {
             this.httpRequest.open("GET", url + "?" + parameter, true);
             this.httpRequest.send(null);
+        };
+
+        this.post = function () {
+            this.httpRequest.open("POST", url, true);
+            this.httpRequest.send(parameter);
         };
 
         return this;
