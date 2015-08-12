@@ -1,18 +1,18 @@
-const { classes: Cc, interfaces: Ci } = Components;
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
-if (typeof SynoLoader === 'undefined') {
-    var SynoLoader = {};
+if (SL_Download === void(0)) {
+    let SL_Download = {};
 
-    Components.utils.import('resource://SynoLoader/DownloadManager.js', SynoLoader);
+    Cu.import("resource://SynoLoader/DownloadManager.js", SL_Download);
 
     (function () {
         this.onaccept = function (event) {
-            if (document.getElementById('mode').value === 'SynoLoader') {
-                SynoLoader.SynoLoader_DownloadManager.transfer_to_nas(dialog.mLauncher.source.spec);
+            if (document.getElementById("mode").value === "SynoLoader") {
+                this.SL_DownloadManager.transfer_to_nas(dialog.mLauncher.source.spec);
                 return dialog.onCancel();
             } else {
                 return dialog.onOK();
             }
         };
-    }).apply(SynoLoader);
+    }).apply(SL_Download);
 }

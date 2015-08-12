@@ -4,7 +4,7 @@
 
 <overlay id="SynoLoader-overlaydownload" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
     <script src="download.js" />
-    <dialog id="unknownContentType" ondialogaccept="return SynoLoader.onaccept()" />
+    <dialog id="unknownContentType" ondialogaccept="return SL_Download.onaccept()" />
     <radiogroup id="mode">
         <radio id="SynoLoader" label="&SynoLoaderContext.label;" accesskey="h" value="SynoLoader" />
     </radiogroup>
