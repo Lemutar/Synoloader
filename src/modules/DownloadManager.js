@@ -14,7 +14,11 @@ if (SynoLoader_DownloadManager === void(0)) {
         let quickConnectRelayTimeOutInMs = 8000,
             quickConnectLocalTimeOutInMs = 8000,
             loginManager = Cc['@mozilla.org/login-manager;1'].
-                               getService(Ci.nsILoginManager);
+                               getService(Ci.nsILoginManager),
+            prefs = Cc['@mozilla.org/preferences-service;1'].
+                        getService(Ci.nsIPrefService).
+                        getBranch('extensions.SynoLoader.');
+
 
         this.isConnected = false;
         this.isConnecting = false;
@@ -22,16 +26,13 @@ if (SynoLoader_DownloadManager === void(0)) {
         this.username = '';
         this.list = [];
         this.protocol = 'undefined';
-        this.preferences = Cc['@mozilla.org/preferences-service;1'].
-                               getService(Ci.nsIPrefService).
-                               getBranch('extensions.SynoLoader.');
 
-        this.preferences.QueryInterface(Ci.nsIPrefBranch2);
-        this.preferences.addObserver('', this, false);
+        prefs.QueryInterface(Ci.nsIPrefBranch2);
+        prefs.addObserver('', this, false);
 
-        this.Notification.show_notif = this.preferences.getBoolPref('show_notif');
-        this.Util.show_log = this.preferences.getBoolPref('show_debug');
-        this.MagnetHandler.set_active(this.preferences.getBoolPref('use_magnet'));
+        this.Notification.show_notif = prefs.getBoolPref('show_notif');
+        this.Util.show_log = prefs.getBoolPref('show_debug');
+        this.MagnetHandler.set_active(prefs.getBoolPref('use_magnet'));
 
         // Find users for the given parameters
         let logins = loginManager.findLogins({}, 'chrome://SynoLoader.Pass', null, 'User Registration');
@@ -58,26 +59,26 @@ if (SynoLoader_DownloadManager === void(0)) {
         };
 
         this.convert_old_url = function (url_string) {
-            if (this.preferences.getCharPref('host') === '') {
+            if (prefs.getCharPref('host') === '') {
                 this.Util.log(url_string);
                 var url = this.parse_url(url_string);
                 if (url.protocol !== undefined) {
-                    this.preferences.setCharPref('protocol', url.protocol.replace(':', ''));
+                    prefs.setCharPref('protocol', url.protocol.replace(':', ''));
                 }
 
                 if (url.port !== undefined) {
-                    this.preferences.setCharPref('port', url.port.replace(':', ''));
+                    prefs.setCharPref('port', url.port.replace(':', ''));
                     this.Util.log(url.port);
                 }
 
                 if (url.host !== undefined) {
-                    this.preferences.setCharPref('host', url.host);
+                    prefs.setCharPref('host', url.host);
                 }
             }
         };
 
         this.set_protocol = function () {
-            switch (this.preferences.getCharPref('dsm_version')) {
+            switch (prefs.getCharPref('dsm_version')) {
                 case '1':
                     this.Util.log('Set Protocol to < DSM 4.1');
                     Cu.import('resource://SynoLoader/Protocol.js', SynoLoader_DownloadManager);
@@ -93,10 +94,10 @@ if (SynoLoader_DownloadManager === void(0)) {
 
         this.connect_to_nas = function () {
             this.isConnecting = true;
-            this.convert_old_url(this.preferences.getCharPref('url'));
-            var protocol = this.preferences.getCharPref('protocol'),
-                port = this.preferences.getCharPref('port'),
-                host = this.preferences.getCharPref('host');
+            this.convert_old_url(prefs.getCharPref('url'));
+            var protocol = prefs.getCharPref('protocol'),
+                port = prefs.getCharPref('port'),
+                host = prefs.getCharPref('host');
             var quick_connect = this.QuickConnect(
                 quickConnectRelayTimeOutInMs,
                 quickConnectLocalTimeOutInMs,
@@ -199,13 +200,13 @@ if (SynoLoader_DownloadManager === void(0)) {
             if (topic === 'nsPref:changed') {
                 switch (data) {
                     case 'show_notif':
-                        this.Notification.show_notif = this.preferences.getBoolPref('show_notif');
+                        this.Notification.show_notif = prefs.getBoolPref('show_notif');
                         break;
                     case 'show_debug':
-                        this.Util.show_log = this.preferences.getBoolPref('show_debug');
+                        this.Util.show_log = prefs.getBoolPref('show_debug');
                         break;
                     case 'use_magnet':
-                        this.MagnetHandler.set_active(this.preferences.getBoolPref('use_magnet'));
+                        this.MagnetHandler.set_active(prefs.getBoolPref('use_magnet'));
                         break;
                 }
             }
