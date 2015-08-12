@@ -21,34 +21,34 @@ if (typeof SL_Overlay === "undefined") {
         };
 
         this.UpdateListPanel = function() {
-            var title = document.getElementById('synoloader_toolbar_panel_lable_id');
+            let title = document.getElementById('synoloader_toolbar_panel_lable_id');
             if (title.getAttribute("value") != "Loading...") {
                 title.setAttribute('value', "Loading...");
             }
 
             this.SL_DownloadManager.load_download_list(function(items) {
-                var panel = document.getElementById('synoloader_toolbar_panel_id');
-                var list = document.getElementById('synoloader_toolbar_panel_list_id');
-                var hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
-                loaded_list = {};
+                let panel = document.getElementById('synoloader_toolbar_panel_id');
+                let list = document.getElementById('synoloader_toolbar_panel_list_id');
+                let hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
+                let loaded_list = {};
 
                 if (typeof SL_Overlay.SL_DownloadManager.protocol != "undefined") {
                     loaded_list = SL_Overlay.SL_DownloadManager.protocol.calcItems(items);
                 }
 
 
-                var count = list.itemCount;
+                let count = list.itemCount;
                 while (count-- > 0) {
                     list.removeItemAt(count);
                 }
 
-                for (var i in loaded_list) {
+                for (let i in loaded_list) {
                     list.appendChild(loaded_list[i]);
                 }
 
                 if (loaded_list.length === 0) {
                     hbox_lable.setAttribute('hidden', "false");
-                    var title = document.getElementById('synoloader_toolbar_panel_lable_id');
+                    let title = document.getElementById('synoloader_toolbar_panel_lable_id');
                     title.setAttribute('value', "No active Downloads");
                     clearInterval(SL_Overlay.UpdateListPanelInterval);
                 } else {
@@ -58,10 +58,10 @@ if (typeof SL_Overlay === "undefined") {
                 panel.moveTo(-1, -1);
 
             }, function(response) {
-                var hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
+                let hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
                 hbox_lable.setAttribute('hidden', "false");
-                var panel = document.getElementById('synoloader_toolbar_panel_id');
-                var title = document.getElementById('synoloader_toolbar_panel_lable_id');
+                let panel = document.getElementById('synoloader_toolbar_panel_id');
+                let title = document.getElementById('synoloader_toolbar_panel_lable_id');
                 title.setAttribute('value', "No Connection, please set correct Preferces");
                 clearInterval(SL_Overlay.UpdateListPanelInterval);
                 panel.moveTo(-1, -1);

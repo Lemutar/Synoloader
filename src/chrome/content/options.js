@@ -10,7 +10,7 @@ if (typeof SL_Options === "undefined") {
 
         this.setUsernamePassword = function () {
             let loginManager = Cc["@mozilla.org/login-manager;1"].
-                                   getService(Ci.nsILoginManager);
+                                   getService(Ci.nsILoginManager),
                 // create instance of LoginInfo
                 loginInfo = new Components.Constructor(
                     "@mozilla.org/login-manager/loginInfo;1",
