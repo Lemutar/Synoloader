@@ -1,12 +1,15 @@
-<!ENTITY prefwindow.title "SynoLoader preferences">
-<!ENTITY pane1.title "SynoLoader preferences">
-<!ENTITY protocol.label "Protocol">
-<!ENTITY port.label "Port of the NAS (default 5000):">
+<!ENTITY prefwindow.title "SynoLoader Options">
+<!ENTITY pane1.title "SynoLoader Options">
+<!ENTITY connection_details.title "Connection Details">
+<!ENTITY protocol.label "Protocol:">
 <!ENTITY host.label "IP, Host or QuickConnectID:">
-<!ENTITY CheckConnection.label "Check Connection">
+<!ENTITY port.label "Port of the NAS (default 5000):">
+<!ENTITY check_connection.label "Check Connection">
 <!ENTITY dsm_version.label "Set DSM Version:">
+<!ENTITY dsm_version.menuitem1 "DSM Version &lt; 4.1">
+<!ENTITY dsm_version.menuitem2 "DSM Version &gt;= 4.1">
+<!ENTITY set_username_password.label "Set Username and Password">
+<!ENTITY show_notif.label "Show 'Send Link' Notification">
+<!ENTITY show_debug.label "Show Debug Information">
+<!ENTITY use_magnet.label "Use magnet link protocol">
 <!ENTITY url.accesskey "">
-<!ENTITY username.label "Enter your username">
-<!ENTITY username.accesskey "">
-<!ENTITY password.label "Enter your password">
-<!ENTITY password.accesskey "">

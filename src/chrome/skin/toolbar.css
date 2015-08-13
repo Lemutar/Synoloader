@@ -1,27 +1,24 @@
 /*  skin/toolbar-button.css  */
-#synoloader-toolbar-id{
-      list-style-image: url("chrome://Synoloader/skin/synoloader.png");
-    }
-toolbar[iconsize="small"] #synoloader-toolbar-id{
-      list-style-image: url("chrome://Synoloader/skin/synoloader_small.png");
-    }
-
-#SynoLoader_Setting{
-      list-style-image: url("chrome://Synoloader/skin/settings.png");
-      width: 35px;
-      height: 35px;
-      float: right;
-    }
-
-
-#synoloader_toolbar_panel_lable_id {
-      font: normal 24px;
-      text-align: center;
+#sl-toolbar {
+  list-style-image: url(chrome://Synoloader/skin/synoloader.png);
+}
+toolbar[iconsize="small"] #sl-toolbar {
+  list-style-image: url(chrome://Synoloader/skin/synoloader_small.png);
 }
 
+#sl-toolbar-panel-options {
+  list-style-image: url(chrome://Synoloader/skin/settings.png);
+  width: 35px;
+  height: 35px;
+  float: right;
+}
 
-#synoloader_toolbar_panel_title_id
-{
-      font-size:24px;
-      font-weight:bold;
+#sl-toolbar-panel-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#sl-toolbar-panel-label {
+  font: normal 24px;
+  text-align: center;
 }

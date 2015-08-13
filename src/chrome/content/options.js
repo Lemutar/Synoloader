@@ -57,7 +57,7 @@ if (typeof SL_Options === "undefined") {
         };
 
         this.setStatusImage = (img) => {
-            document.getElementById("SynoLoader_check_connection_image").setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/" + img + ")");
+            document.getElementById("sl-connection-status-image").setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/" + img + ")");
         };
 
         this.updateStatus = () => {

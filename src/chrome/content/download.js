@@ -6,7 +6,7 @@ if (typeof SL_Download === "undefined") {
     Cu.import("resource://SynoLoader/DownloadManager.js", SL_Download);
 
     (function () {
-        this.onaccept = function (event) {
+        this.onaccept = (event) => {
             if (document.getElementById("mode").value === "SynoLoader") {
                 this.SL_DownloadManager.transferToNas(dialog.mLauncher.source.spec);
                 return dialog.onCancel();

@@ -1,25 +1,20 @@
 
-.SynoLoader_Item_start {
-  min-width:30px;
+.sl-item-start,
+.sl-item-del {
   width:30px;
 }
 
-.SynoLoader_Item_del {
-  min-width:30px;
-  width:30px;
-}
-
-.SynoLoader_Item_hbox {
+.sl-item-hbox {
   height: 30px;
 }
 
-.SynoLoader_Item_progress {
-  height: 30px;
+.sl-item-progress {
+  height: 10px;
 }
 
-.SynoLoader_Item_title {
+.sl-item-title {
   width: 500px;
-  text-overflow: ellipsis
+  text-overflow: ellipsis;
 }
 
 prefpane > .content-box,
@@ -27,6 +22,14 @@ prefwindow > .paneDeckContainer {
     overflow: visible;
 }
 
-#SynoLoader_check_connection_image[check_status="test"] {
+prefpane row {
+  line-height: 1.4em;
+}
+
+prefpane row > label {
+  line-height: 2em;
+}
+
+#sl-connection-status-image[check_status="test"] {
   list-style-image: url(chrome://SynoLoader/skin/test.png);
 }

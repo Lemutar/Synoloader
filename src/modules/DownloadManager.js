@@ -164,7 +164,7 @@ if (typeof SL_DownloadManager === "undefined") {
 
         this.delete_all = () => {
             this.Util.log("delete_all");
-            this.load_download_list(
+            this.loadDownloadList(
                 (items) => {
                     items.forEach((item) => {
                         this.Util.log("delete " + item.id);
@@ -172,12 +172,12 @@ if (typeof SL_DownloadManager === "undefined") {
                     });
                 },
                 (response) => {
-                    this.Util.log("load_download_list: " + response.error_text);
+                    this.Util.log("loadDownloadList: " + response.error_text);
                 }
             );
         };
 
-        this.load_download_list = (manage_items_success, manage_items_fail) => {
+        this.loadDownloadList = (manage_items_success, manage_items_fail) => {
             this.protocol.task_action(
                 (response) => {
                     if (response.success === true) {

@@ -272,7 +272,7 @@ var Protocol = function (baseURL, timeout, username, password) {
             let del = doc.createElement("toolbarbutton");
 
             start.setAttribute("id", "syno-start" + item.id);
-            start.setAttribute("class", "SynoLoader_Item_start");
+            start.setAttribute("class", "sl-item-start");
             start.setAttribute("autocheck", "false");
 
             start.status = item.status;
@@ -284,26 +284,26 @@ var Protocol = function (baseURL, timeout, username, password) {
             }
             del.setAttribute("autocheck", "false");
             del.setAttribute("id", "syno-del" + item.id);
-            del.setAttribute("class", "SynoLoader_Item_del");
+            del.setAttribute("class", "sl-item-del");
             del.setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/Stop.png)");
             del.addEventListener("command", this.onDelete, true);
 
             item.progress = (item.additional.transfer.size_downloaded / item.size) * 100;
             progressmeter.setAttribute("value", item.progress);
-            progressmeter.setAttribute("class", "SynoLoader_Item_progress");
+            progressmeter.setAttribute("class", "sl-item-progress");
             progressmeter.setAttribute("id", "syno-progress" + item.id);
             progressmeter.setAttribute("flex", "1");
             title.setAttribute("id", "syno-title" + item.id);
             title.setAttribute("value", item.title);
             title.setAttribute("crop", "center");
-            title.setAttribute("class", "SynoLoader_Item_title");
+            title.setAttribute("class", "sl-item-title");
 
             label.setAttribute("value", item.status + " - " + this.fileSizeSI(item.additional.transfer.size_downloaded) + " of " + this.fileSizeSI(item.size) + " - " + item.progress.toFixed(2) + "%");
             label.setAttribute("id", "syno-label" + item.id);
             label.setAttribute("crop", "center");
 
 
-            hbox.setAttribute("class", "SynoLoader_Item_hbox");
+            hbox.setAttribute("class", "sl-item-hbox");
             hbox.setAttribute("flex", "1");
             vbox.setAttribute("flex", "1");
             vbox.appendChild(title);

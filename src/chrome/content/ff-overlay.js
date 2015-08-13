@@ -14,27 +14,28 @@ if (typeof SL_Overlay === "undefined") {
                 Application.prefs.setValue(firstRunPref, true);
 
                 let toolbar = document.getElementById("nav-bar");
-                toolbar.insertItem("synoloader-toolbar-id", null);
+                toolbar.insertItem("sl-toolbar", null);
                 toolbar.setAttribute("currentset", toolbar.currentSet);
                 document.persist(toolbar.id, "currentset");
             }
         };
 
-        this.UpdateListPanel = () => {
-            let title = document.getElementById('synoloader_toolbar_panel_lable_id');
-            if (title.getAttribute("value") != "Loading...") {
-                title.setAttribute('value', "Loading...");
+        this.updateListPanel = () => {
+            let panel = document.getElementById("sl-toolbar-panel"),
+                label = document.getElementById("sl-toolbar-panel-label"),
+                list = document.getElementById("sl-toolbar-panel-list"),
+                box = document.getElementById("sl-toolbar-panel-box");
+
+            if (label.getAttribute("value") !== "Loading...") {
+                label.setAttribute("value", "Loading...");
             }
 
-            this.SL_DownloadManager.load_download_list(
+            this.SL_DownloadManager.loadDownloadList(
                 (items) => {
-                    let panel = document.getElementById('synoloader_toolbar_panel_id');
-                    let list = document.getElementById('synoloader_toolbar_panel_list_id');
-                    let hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
-                    let loaded_list = {};
+                    let loadedList = {};
 
-                    if (typeof this.SL_DownloadManager.protocol != "undefined") {
-                        loaded_list = this.SL_DownloadManager.protocol.calcItems(items);
+                    if (typeof this.SL_DownloadManager.protocol !== "undefined") {
+                        loadedList = this.SL_DownloadManager.protocol.calcItems(items);
                     }
 
                     let count = list.itemCount;
@@ -42,29 +43,23 @@ if (typeof SL_Overlay === "undefined") {
                         list.removeItemAt(count);
                     }
 
-                    for (let i in loaded_list) {
-                        list.appendChild(loaded_list[i]);
-                    }
-
-                    if (loaded_list.length === 0) {
-                        hbox_lable.setAttribute('hidden', "false");
-                        let title = document.getElementById('synoloader_toolbar_panel_lable_id');
-                        title.setAttribute('value', "No active Downloads");
-                        clearInterval(this.UpdateListPanelInterval);
+                    if (loadedList.length === 0) {
+                        box.setAttribute("hidden", "false");
+                        label.setAttribute("value", "No active Downloads");
+                        clearInterval(this.updateListPanelInterval);
                     } else {
-                        hbox_lable.setAttribute('hidden', "true");
+                        for (let i in loadedList) {
+                            list.appendChild(loadedList[i]);
+                        }
+                        box.setAttribute("hidden", "true");
                     }
                     list.removeItemFromSelection(0);
                     panel.moveTo(-1, -1);
-
                 },
                 (response) => {
-                    let hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
-                    hbox_lable.setAttribute('hidden', "false");
-                    let panel = document.getElementById('synoloader_toolbar_panel_id');
-                    let title = document.getElementById('synoloader_toolbar_panel_lable_id');
-                    title.setAttribute('value', "No Connection, please set correct Preferces");
-                    clearInterval(this.UpdateListPanelInterval);
+                    box.setAttribute("hidden", "false");
+                    label.setAttribute("value", "No Connection, please set correct Preferences");
+                    clearInterval(this.updateListPanelInterval);
                     panel.moveTo(-1, -1);
                 }
             );
@@ -106,22 +101,18 @@ if (typeof SL_Overlay === "undefined") {
         };
 
         this.onToolBarDownloadInfo = (event) => {
-            this.UpdateListPanel();
-            this.UpdateListPanelInterval = setInterval(() => {
-                this.UpdateListPanel();
+            this.updateListPanel();
+            this.updateListPanelInterval = setInterval(() => {
+                this.updateListPanel();
             }, 1000);
         };
 
         this.onToolBarDownloadInfoHidden = (event) => {
-            clearInterval(this.UpdateListPanelInterval);
-        };
-
-        this.onToolbarButtonCommand = (event) => {
-            this.onMenuItemCommand(event);
+            clearInterval(this.updateListPanelInterval);
         };
 
         this.showFirefoxContextMenu = (event) => {
-            document.getElementById("synoloader_context").hidden = (!gContextMenu.onLink);
+            document.getElementById("sl-context-menu").hidden = (!gContextMenu.onLink);
         };
 
     }).apply(SL_Overlay);
