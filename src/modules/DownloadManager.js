@@ -111,8 +111,6 @@ if (typeof SL_DownloadManager === "undefined") {
                     SL_DownloadManager.urlToConnect += host + ':' + port;
                 }
                 SL_DownloadManager.setProtocol();
-                SL_DownloadManager.protocol.password = SL_DownloadManager.password;
-                SL_DownloadManager.protocol.username = SL_DownloadManager.username;
                 SL_DownloadManager.protocol.connect(function (response) {
                     SL_DownloadManager.isConnected = response.success;
                     SL_DownloadManager.isConnecting = false;

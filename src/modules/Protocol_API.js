@@ -1,397 +1,370 @@
 var EXPORTED_SYMBOLS = ["Protocol"];
-Components.utils.import("resource://SynoLoader/Request.js");
-Components.utils.import("resource://SynoLoader/Util.js");
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+
+Cu.import("resource://SynoLoader/Request.js");
+Cu.import("resource://SynoLoader/Util.js");
 
 try {
-    Components.utils.importGlobalProperties(['File']);
-} catch (err) {
-    Util.log("importGlobalProperties(['File']) fail");
+    Cu.importGlobalProperties(["File"]);
+} catch (e) {
+    Util.log("importGlobalProperties([\"File\"]) fail");
 }
 
+const apiErrorTexts = {
+    common: {
+        100: "Unknown error",
+        101: "Invalid parameter",
+        102: "The requested API does not exist",
+        103: "The requested method does not exist",
+        104: "The requested version does not support the functionality",
+        105: "The logged in session does not have permission",
+        106: "Session timeout",
+        107: "Session interrupted by duplicate login"
+    },
+    auth: {
+        400: "No such account or incorrect password",
+        401: "Account disabled",
+        402: "Permission denied",
+        403: "2-step verification code required",
+        404: "Failed to authenticate 2-step verification code"
+    },
+    download: {
+        400: "File upload failed",
+        401: "Max number of tasks reached",
+        402: "Destination denied",
+        403: "Destination does not exist",
+        404: "Invalid task id",
+        405: "Invalid task action",
+        406: "No default destination"
+    }
+};
 
+function set_common_error_text (error_code, response) {
+    response.error_text = apiErrorTexts.common[error_code];
+}
 
-function set_auth_api_error_text(error_code, response) {
+function set_auth_api_error_text (error_code, response) {
     set_common_error_text(error_code, response);
-    switch (error_code) {
-        case 400:
-            response.error_text = "No such account or incorrect password";
-            break;
-        case 401:
-            response.error_text = "Account disabled";
-            break;
-        case 402:
-            response.error_text = "Permission denied";
-            break;
-        case 403:
-            response.error_text = "2-step verification code required";
-            break;
-        case 404:
-            response.error_text = "Failed to authenticate 2-step verification code";
-            break;
-    }
+    response.error_text = apiErrorTexts.auth[error_code];
 }
 
-
-function set_download_api_error_text(error_code, response) {
+function set_download_api_error_text (error_code, response) {
     set_common_error_text(error_code, response);
-    switch (error_code) {
-        case 400:
-            response.error_text = "File upload failed";
-            break;
-        case 401:
-            response.error_text = "Max number of tasks reached";
-            break;
-        case 402:
-            response.error_text = "Destination denied";
-            break;
-        case 403:
-            response.error_text = "Destination does not exist";
-            break;
-        case 404:
-            response.error_text = "Invalid task id";
-            break;
-        case 405:
-            response.error_text = "Invalid task action";
-            break;
-        case 406:
-            response.error_text = "No default destination";
-            break;
-    }
+    response.error_text = apiErrorTexts.download[error_code];
 }
 
-function set_common_error_text(error_code, response) {
-    switch (error_code) {
-        case 100:
-            response.error_text = "Unknown error";
-            break;
-        case 101:
-            response.error_text = "Invalid parameter";
-            break;
-        case 102:
-            response.error_text = "The requested API does not exist";
-            break;
-        case 103:
-            response.error_text = "The requested method does not exist";
-            break;
-        case 104:
-            response.error_text = "The requested version does not support the functionality";
-            break;
-        case 105:
-            response.error_text = "The logged in session does not have permission";
-            break;
-        case 106:
-            response.error_text = "Session timeout";
-            break;
-        case 107:
-            response.error_text = "Session interrupted by duplicate login";
-            break;
+const apiEndpoints = {
+    auth: "/webapi/auth.cgi",
+    download: {
+        task: "/webapi/DownloadStation/task.cgi"
     }
-}
+};
 
 
-var Protocol = function(base_url, timeout, user_name, password) {
-    var return_protocol = function() {};
-    return_protocol.connect_id = "";
-    return_protocol.base_url = base_url;
+var Protocol = function (baseURL, timeout, username, password) {
+    let connectionID = "",
+        connectionIDEncoded = ""
 
-    return_protocol.version = 1;
+    this.version = 1;
+    this.ed2kDownloadFolder = "home";
 
-    return_protocol.Connect_Time = 0;
-    return_protocol.ed2k_download_folder = "home";
-    return_protocol.password = password;
-    return_protocol.username = user_name;
-    return_protocol.connect = function(callback) {
-        var connect_response = {
-            success: false,
-            id: "",
-            error_text: ''
-        };
-        var connect_request = Request(return_protocol.base_url + '/webapi/auth.cgi',
-            "api=SYNO.API.Auth&version=2&method=login&account=" + encodeURIComponent(return_protocol.username) + "&passwd=" + encodeURIComponent(return_protocol.password) + "&session=DownloadStation&format=sid",
+    this.baseURL = baseURL;
+
+    this.connectTime = 0;
+
+    this.connect = function (callback) {
+        Util.log("try to connect to : " + this.baseURL);
+
+        let response = {
+                success: false,
+                id: "",
+                error_text: ""
+            };
+
+        Request(this.baseURL + apiEndpoints.auth,
+            "api=SYNO.API.Auth&version=2&method=login&account=" + encodeURIComponent(username) + "&passwd=" + encodeURIComponent(password) + "&session=DownloadStation&format=sid",
             timeout,
-            function(response) {
-                if (response.status != 200) {
-                    connect_response.error_text = response.statusText;
-                } else {
-                    Util.log(response.text);
+            (apiResponse) => {
+                if (apiResponse.status === 200) {
+                    Util.log(apiResponse.text);
 
-                    if (response.json.success === true) {
-                        connect_response.id = response.json.data.sid;
-                        connect_response.success = true;
-                        return_protocol.connect_id = response.json.data.sid;
-                        return_protocol.Connect_Time = Date.now();
+                    if (apiResponse.json.success) {
+                        response.success = true;
+                        response.id = apiResponse.json.data.sid;
+                        this.setConnectionID(apiResponse.json.data.sid);
+                        this.connectTime = Date.now();
                     } else {
-                        set_auth_api_error_text(response.json.error.code, connect_response);
+                        set_auth_api_error_text(apiResponse.json.error.code, response);
                     }
-
+                } else {
+                    response.error_text = apiResponse.statusText;
                 }
-                callback(connect_response);
-            });
-        Util.log("try to connect to : " + return_protocol.base_url);
-        connect_request.get();
-
+                callback(response);
+            }
+        ).get();
     };
 
+    this.setConnectionID = (id) => {
+        connectionID = id;
+        connectionIDEncoded = encodeURIComponent(id);
+    };
 
-    return_protocol.task_action = function(callback, task_action, parameter) {
-        var task_action_response = {
-            success: false,
-            data: [],
-            error_text: ''
-        };
-        if (Date.now() - return_protocol.Connect_Time > 1000 * 60 * 20) {
-            return_protocol.connect(function(connect_response) {
-                if (connect_response.success === true) {
-                    return_protocol.task_action(callback, task_action, parameter);
+    this.task_action = (callback, action, parameter) => {
+        let response = {
+                success: false,
+                data: [],
+                error_text: ""
+            },
+            parameterEncoded = encodeURIComponent(parameter);
+
+        if (Date.now() - this.connectTime > 1000 * 60 * 20) {
+            this.connect((connectResponse) => {
+                if (connectResponse.success === true) {
+                    this.task_action(callback, action, parameter);
                 } else {
-                    callback(connect_response);
+                    callback(connectResponse);
                 }
             });
         } else {
 
-            switch (task_action) {
-                case 'getall':
-                    var task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
-                        'api=SYNO.DownloadStation.Task&version=1&method=list&additional=detail,transfer&_sid=' + encodeURIComponent(return_protocol.connect_id),
+            switch (action) {
+                case "getall":
+                    Util.log("try to getall to : " + this.baseURL);
+                    Request(this.baseURL + apiEndpoints.download.task,
+                        "api=SYNO.DownloadStation.Task&version=1&method=list&additional=detail,transfer&_sid=" + connectionIDEncoded,
                         timeout,
-                        function(response) {
-                            if (response.status != 200) {
-                                task_action_response.error_text = response.statusText;
+                        function(apiResponse) {
+                            if (apiResponse.status != 200) {
+                                response.error_text = apiResponse.statusText;
                             } else {
 
-                                if (response.json.success === false) {
-                                    set_download_api_error_text(response.json.error.code, task_action_response);
+                                if (apiResponse.json.success === false) {
+                                    set_download_api_error_text(apiResponse.json.error.code, response);
                                 }
 
-                                Util.log(response.text);
-                                task_action_response.success = response.json.success;
-                                task_action_response.items = response.json.data.tasks;
+                                Util.log(apiResponse.text);
+                                response.success = apiResponse.json.success;
+                                response.items = apiResponse.json.data.tasks;
                             }
-                            callback(task_action_response);
-                        });
-                    Util.log("try to getall to : " + return_protocol.base_url);
-                    task_action_request.get();
-
+                            callback(response);
+                        }
+                    ).get();
                     break;
 
-                case 'addurl':
-                    task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
-                        'api=SYNO.DownloadStation.Task&version=1&method=create&uri=' + encodeURIComponent(parameter) +
-                        '&_sid=' + encodeURIComponent(return_protocol.connect_id),
+                case "addurl":
+                    Util.log("try to addurl to : " + this.baseURL);
+                    Request(this.baseURL + apiEndpoints.download.task,
+                        "api=SYNO.DownloadStation.Task&version=1&method=create&uri=" + parameterEncoded +
+                        "&_sid=" + connectionIDEncoded,
                         timeout,
-                        function(response) {
-                            if (response.status != 200) {
-                                task_action_response.error_text = response.statusText;
+                        function(apiResponse) {
+                            if (apiResponse.status != 200) {
+                                response.error_text = apiResponse.statusText;
                             } else {
-                                if (response.json.success === false) {
-                                    set_download_api_error_text(response.json.error.code, task_action_response);
+                                if (apiResponse.json.success === false) {
+                                    set_download_api_error_text(apiResponse.json.error.code, response);
                                 }
-                                Util.log(response.text);
-                                task_action_response.success = response.json.success;
+                                Util.log(apiResponse.text);
+                                response.success = apiResponse.json.success;
                             }
-                            callback(task_action_response);
+                            callback(response);
 
-                        });
-                    Util.log("try to addurl to : " + return_protocol.base_url);
-                    task_action_request.post();
+                        }
+                    ).post();
                     break;
 
-                case 'add_file':
+                case "add_file":
                     Util.log("try to add file to " + parameter.path);
 
-                    var formData = Components.classes["@mozilla.org/files/formdata;1"].createInstance(Components.interfaces.nsIDOMFormData);
+                    let formData = Cc["@mozilla.org/files/formdata;1"].
+                                       createInstance(Ci.nsIDOMFormData);
                     formData.append("api", "SYNO.DownloadStation.Task");
                     formData.append("version", "1");
                     formData.append("method", "create");
-                    formData.append("_sid", encodeURIComponent(return_protocol.connect_id));
+                    formData.append("_sid", connectionIDEncoded);
                     formData.append("file", File(parameter.path));
 
 
-                    task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
+                    Request(this.baseURL + apiEndpoints.download.task,
                         formData,
                         timeout,
-                        function(response) {
-                            if (response.status != 200) {
-                                task_action_response.error_text = response.statusText;
+                        function(apiResponse) {
+                            if (apiResponse.status != 200) {
+                                response.error_text = apiResponse.statusText;
                             } else {
-                                if (response.json.success === false) {
-                                    set_download_api_error_text(response.json.error.code, task_action_response);
+                                if (apiResponse.json.success === false) {
+                                    set_download_api_error_text(apiResponse.json.error.code, response);
                                 }
-                                Util.log(response.text);
-                                task_action_response.success = response.json.success;
+                                Util.log(apiResponse.text);
+                                response.success = apiResponse.json.success;
                             }
-                            callback(task_action_response);
+                            callback(response);
 
-                        });
-
-                    task_action_request.post();
+                        }
+                    ).post();
                     break;
 
-                case 'delete':
-                    task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
-                        'api=SYNO.DownloadStation.Task&version=1&method=delete&id=' + encodeURIComponent(parameter) +
-                        '&force_complete=false&_sid=' + encodeURIComponent(return_protocol.connect_id),
+                case "delete":
+                    Util.log("try to delete " + parameterEncoded + " to : " + this.baseURL);
+
+                    Request(this.baseURL + apiEndpoints.download.task,
+                        "api=SYNO.DownloadStation.Task&version=1&method=delete&id=" + parameterEncoded +
+                        "&force_complete=false&_sid=" + connectionIDEncoded,
                         timeout,
-                        function(response) {
-                            if (response.status != 200) {
-                                task_action_response.error_text = response.statusText;
+                        function(apiResponse) {
+                            if (apiResponse.status != 200) {
+                                response.error_text = apiResponse.statusText;
                             } else {
-                                if (response.json.success === false) {
-                                    set_download_api_error_text(response.json.error.code, task_action_response);
+                                if (apiResponse.json.success === false) {
+                                    set_download_api_error_text(apiResponse.json.error.code, response);
                                 }
-                                Util.log(response.text);
-                                task_action_response.success = response.json.success;
+                                Util.log(apiResponse.text);
+                                response.success = apiResponse.json.success;
                             }
-                            callback(task_action_response);
-                        });
-                    Util.log("try to " + encodeURIComponent(parameter) + " to : " + return_protocol.base_url);
-                    task_action_request.get();
-                    break;
-                case 'resume':
-                    task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
-                        'api=SYNO.DownloadStation.Task&version=1&method=resume&id=' + encodeURIComponent(parameter) +
-                        '&_sid=' + encodeURIComponent(return_protocol.connect_id),
-                        timeout,
-                        function(response) {
-                            if (response.status != 200) {
-                                task_action_response.error_text = response.statusText;
-                            } else {
-                                if (response.json.success === false) {
-                                    set_download_api_error_text(response.json.error.code, task_action_response);
-                                }
-                                Util.log(response.text);
-                                task_action_response.success = response.json.success;
-                            }
-                            callback(task_action_response);
-                        });
-                    Util.log("try to " + encodeURIComponent(parameter) + " to : " + return_protocol.base_url);
-                    task_action_request.get();
-                    break;
-                case 'stop':
-                    task_action_request = Request(return_protocol.base_url + '/webapi/DownloadStation/task.cgi',
-                        'api=SYNO.DownloadStation.Task&version=1&method=pause&id=' + encodeURIComponent(parameter) +
-                        '&_sid=' + encodeURIComponent(return_protocol.connect_id),
-                        timeout,
-                        function(response) {
-                            if (response.status != 200) {
-                                task_action_response.error_text = response.statusText;
-                            } else {
-                                if (response.json.success === false) {
-                                    set_download_api_error_text(response.json.error.code, task_action_response);
-                                }
-                                Util.log(response.text);
-                                task_action_response.success = response.json.success;
-                            }
-                            callback(task_action_response);
-                        });
-                    Util.log("try to " + encodeURIComponent(parameter) + " to : " + return_protocol.base_url);
-                    task_action_request.get();
+                            callback(response);
+                        }
+                    ).get();
                     break;
 
+                case "resume":
+                    Util.log("try to resume " + parameterEncoded + " to : " + this.baseURL);
+                    Request(this.baseURL + apiEndpoints.download.task,
+                        "api=SYNO.DownloadStation.Task&version=1&method=resume&id=" + parameterEncoded +
+                        "&_sid=" + connectionIDEncoded,
+                        timeout,
+                        function(apiResponse) {
+                            if (apiResponse.status != 200) {
+                                response.error_text = apiResponse.statusText;
+                            } else {
+                                if (apiResponse.json.success === false) {
+                                    set_download_api_error_text(apiResponse.json.error.code, response);
+                                }
+                                Util.log(apiResponse.text);
+                                response.success = apiResponse.json.success;
+                            }
+                            callback(response);
+                        }
+                    ).get();
+                    break;
 
+                case "stop":
+                    Util.log("try to stop " + parameterEncoded + " to : " + this.baseURL);
+                    Request(this.baseURL + apiEndpoints.download.task,
+                        "api=SYNO.DownloadStation.Task&version=1&method=pause&id=" + parameterEncoded +
+                        "&_sid=" + connectionIDEncoded,
+                        timeout,
+                        function(apiResponse) {
+                            if (apiResponse.status != 200) {
+                                response.error_text = apiResponse.statusText;
+                            } else {
+                                if (apiResponse.json.success === false) {
+                                    set_download_api_error_text(apiResponse.json.error.code, response);
+                                }
+                                Util.log(apiResponse.text);
+                                response.success = apiResponse.json.success;
+                            }
+                            callback(response);
+                        }
+                    ).get();
+                    break;
             }
         }
-
-
-
-        return_protocol.OnStart = function(event) {
-
-            if (event.target.status == "paused") {
-                return_protocol.task_action(function() {}, 'resume', event.target.id.replace("syno-start", ""));
-            } else {
-                return_protocol.task_action(function() {}, 'stop', event.target.id.replace("syno-start", ""));
-            }
-        };
-
-        return_protocol.OnDel = function(event) {
-            return_protocol.task_action(function() {}, 'delete', event.target.id.replace("syno-del", ""));
-        };
-
-
-        return_protocol.fileSizeSI = function(a, b, c, d, e) {
-            return (b = Math, c = b.log, d = 1e3, e = c(a) / c(d) | 0, a / b.pow(d, e)).toFixed(2) + ' ' + (e ? 'kMGTPEZY' [--e] + 'B' : 'Bytes');
-        };
-
-        return_protocol.calcItems = function(items) {
-            mediator = Components.classes['@mozilla.org/appshell/window-mediator;1']
-                .getService(Components.interfaces.nsIWindowMediator);
-            document = mediator.getMostRecentWindow("navigator:browser").document;
-            var richlistitems = [];
-            var background_color_toggel = false;
-            items.forEach(function(item) {
-                var richlistitem = document.createElement('richlistitem');
-                richlistitem.setAttribute('download_task_id', item.id);
-                var vbox = document.createElement('vbox');
-                var hbox = document.createElement('hbox');
-                var title = document.createElement('label');
-                var progressmeter = document.createElement('progressmeter');
-                var label = document.createElement('label');
-                var start = document.createElement('toolbarbutton');
-                var del = document.createElement('toolbarbutton');
-
-                start.setAttribute('id', "syno-start" + item.id);
-                start.setAttribute('class', "SynoLoader_Item_start");
-                start.setAttribute('autocheck', "false");
-
-                start.status = item.status;
-                start.addEventListener('command', return_protocol.OnStart, true);
-                if (item.status == "paused") {
-                    start.setAttribute('style', "list-style-image: url('chrome://SynoLoader/skin/Play.png')");
-                } else {
-                    start.setAttribute('style', "list-style-image: url('chrome://SynoLoader/skin/Pause.png')");
-                }
-                del.setAttribute('autocheck', "false");
-                del.setAttribute('id', "syno-del" + item.id);
-                del.setAttribute('class', "SynoLoader_Item_del");
-                del.setAttribute("style", "list-style-image: url('chrome://SynoLoader/skin/Stop.png')");
-                del.addEventListener('command', return_protocol.OnDel, true);
-
-                item.progress = (item.additional.transfer.size_downloaded / item.size) * 100;
-                progressmeter.setAttribute('value', item.progress);
-                progressmeter.setAttribute('class', "SynoLoader_Item_progress");
-                progressmeter.setAttribute('id', "syno-progress" + item.id);
-                progressmeter.setAttribute('flex', '1');
-                title.setAttribute('id', "syno-title" + item.id);
-                title.setAttribute('value', item.title);
-                title.setAttribute('crop', "center");
-                title.setAttribute('class', "SynoLoader_Item_title");
-
-                label.setAttribute('value', item.status + " - " + return_protocol.fileSizeSI(item.additional.transfer.size_downloaded) + " of " + return_protocol.fileSizeSI(item.size) + " - " + item.progress.toFixed(2) + "%");
-                label.setAttribute('id', "syno-label" + item.id);
-                label.setAttribute('crop', "center");
-
-
-                hbox.setAttribute('class', "SynoLoader_Item_hbox");
-                hbox.setAttribute('flex', '1');
-                vbox.setAttribute('flex', '1');
-                vbox.appendChild(title);
-
-                hbox.appendChild(progressmeter);
-                hbox.appendChild(start);
-                hbox.appendChild(del);
-                vbox.appendChild(hbox);
-                vbox.appendChild(label);
-
-                richlistitem.setAttribute('id', "syno-" + item.id);
-                richlistitem.setAttribute('syno-id', item.id);
-                richlistitem.setAttribute('class', "SynoLoader_Item");
-                richlistitem.appendChild(vbox);
-                if (background_color_toggel) {
-                    richlistitem.setAttribute('style', "background-color:#F0F0F0;");
-                    background_color_toggel = false;
-                } else {
-                    richlistitem.setAttribute('style', "");
-                    background_color_toggel = true;
-                }
-
-
-                richlistitems.push(richlistitem);
-            });
-            return richlistitems;
-        };
-
-
     };
 
-    return return_protocol;
+    this.OnStart = function(event) {
+        if (event.target.status == "paused") {
+            this.task_action(function() {}, "resume", event.target.id.replace("syno-start", ""));
+        } else {
+            this.task_action(function() {}, "stop", event.target.id.replace("syno-start", ""));
+        }
+    };
+
+    this.OnDel = function(event) {
+        this.task_action(function() {}, "delete", event.target.id.replace("syno-del", ""));
+    };
+
+
+    this.fileSizeSI = function(a, b, c, d, e) {
+        return (b = Math, c = b.log, d = 1e3, e = c(a) / c(d) | 0, a / b.pow(d, e)).toFixed(2) + " " + (e ? "kMGTPEZY" [--e] + "B" : "Bytes");
+    };
+
+    this.calcItems = function(items) {
+        let mediator = Cc["@mozilla.org/appshell/window-mediator;1"].
+                           getService(Ci.nsIWindowMediator);
+        let doc = mediator.getMostRecentWindow("navigator:browser").document;
+        var richlistitems = [];
+        var background_color_toggel = false;
+        items.forEach((item) => {
+            var richlistitem = doc.createElement("richlistitem");
+            richlistitem.setAttribute("download_task_id", item.id);
+            var vbox = doc.createElement("vbox");
+            var hbox = doc.createElement("hbox");
+            var title = doc.createElement("label");
+            var progressmeter = doc.createElement("progressmeter");
+            var label = doc.createElement("label");
+            var start = doc.createElement("toolbarbutton");
+            var del = doc.createElement("toolbarbutton");
+
+            start.setAttribute("id", "syno-start" + item.id);
+            start.setAttribute("class", "SynoLoader_Item_start");
+            start.setAttribute("autocheck", "false");
+
+            start.status = item.status;
+            start.addEventListener("command", this.OnStart, true);
+            if (item.status == "paused") {
+                start.setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/Play.png)");
+            } else {
+                start.setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/Pause.png)");
+            }
+            del.setAttribute("autocheck", "false");
+            del.setAttribute("id", "syno-del" + item.id);
+            del.setAttribute("class", "SynoLoader_Item_del");
+            del.setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/Stop.png)");
+            del.addEventListener("command", this.OnDel, true);
+
+            item.progress = (item.additional.transfer.size_downloaded / item.size) * 100;
+            progressmeter.setAttribute("value", item.progress);
+            progressmeter.setAttribute("class", "SynoLoader_Item_progress");
+            progressmeter.setAttribute("id", "syno-progress" + item.id);
+            progressmeter.setAttribute("flex", "1");
+            title.setAttribute("id", "syno-title" + item.id);
+            title.setAttribute("value", item.title);
+            title.setAttribute("crop", "center");
+            title.setAttribute("class", "SynoLoader_Item_title");
+
+            label.setAttribute("value", item.status + " - " + this.fileSizeSI(item.additional.transfer.size_downloaded) + " of " + this.fileSizeSI(item.size) + " - " + item.progress.toFixed(2) + "%");
+            label.setAttribute("id", "syno-label" + item.id);
+            label.setAttribute("crop", "center");
+
+
+            hbox.setAttribute("class", "SynoLoader_Item_hbox");
+            hbox.setAttribute("flex", "1");
+            vbox.setAttribute("flex", "1");
+            vbox.appendChild(title);
+
+            hbox.appendChild(progressmeter);
+            hbox.appendChild(start);
+            hbox.appendChild(del);
+            vbox.appendChild(hbox);
+            vbox.appendChild(label);
+
+            richlistitem.setAttribute("id", "syno-" + item.id);
+            richlistitem.setAttribute("syno-id", item.id);
+            richlistitem.setAttribute("class", "SynoLoader_Item");
+            richlistitem.appendChild(vbox);
+            if (background_color_toggel) {
+                richlistitem.setAttribute("style", "background-color:#F0F0F0;");
+                background_color_toggel = false;
+            } else {
+                richlistitem.setAttribute("style", "");
+                background_color_toggel = true;
+            }
+
+
+            richlistitems.push(richlistitem);
+        });
+        return richlistitems;
+    };
+
+    return this;
 };

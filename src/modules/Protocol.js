@@ -1,25 +1,27 @@
 var EXPORTED_SYMBOLS = ["Protocol"];
+const { classes: Cc, interfaces: Ci } = Components;
+
 Components.utils.import("resource://SynoLoader/Request.js");
 Components.utils.import("resource://SynoLoader/Util.js");
 
-var Protocol = function(base_url, timeout, user_name, password) {
+var Protocol = function(baseURL, timeout, username, password) {
     var return_protocol = function() {};
-    return_protocol.connect_id = "";
-    return_protocol.base_url = base_url;
+    return_protocol.connectionID = "";
+    return_protocol.baseURL = baseURL;
 
 
     return_protocol.version = 0;
-    return_protocol.Connect_Time = 0;
-    return_protocol.ed2k_download_folder = "home";
+    return_protocol.connectTime = 0;
+    return_protocol.ed2kDownloadFolder = "home";
     return_protocol.password = password;
-    return_protocol.username = user_name;
+    return_protocol.username = username;
     return_protocol.connect = function(callback) {
         var connect_response = {
             success: false,
             id: "",
             error_text: ''
         };
-        var connect_request = Request(return_protocol.base_url + '/download/download_redirector.cgi',
+        var connect_request = Request(return_protocol.baseURL + '/download/download_redirector.cgi',
             'action=login&username=' + encodeURIComponent(return_protocol.username) + '&passwd=' + encodeURIComponent(return_protocol.password),
             timeout,
             function(response) {
@@ -31,8 +33,8 @@ var Protocol = function(base_url, timeout, user_name, password) {
                         if (response.json.login_success === true) {
                             connect_response.id = response.json.id;
                             connect_response.success = true;
-                            return_protocol.connect_id = response.json.id;
-                            return_protocol.Connect_Time = Date.now();
+                            return_protocol.connectionID = response.json.id;
+                            return_protocol.connectTime = Date.now();
                         } else {
                             connect_response.success = false;
                             switch (response.json.errcode) {
@@ -50,7 +52,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 }
                 callback(connect_response);
             });
-        Util.log("try to connect to : " + return_protocol.base_url);
+        Util.log("try to connect to : " + return_protocol.baseURL);
         connect_request.post();
 
     };
@@ -62,7 +64,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
             data: [],
             error_text: ''
         };
-        if (Date.now() - return_protocol.Connect_Time > 1000 * 60 * 20) {
+        if (Date.now() - return_protocol.connectTime > 1000 * 60 * 20) {
             return_protocol.connect(function(connect_response) {
                 if (connect_response.success === true) {
                     return_protocol.task_action(callback, task_action, parameter);
@@ -73,8 +75,8 @@ var Protocol = function(base_url, timeout, user_name, password) {
         } else {
             switch (task_action) {
                 case 'getall':
-                    var task_action_request = Request(return_protocol.base_url + '/download/download_redirector.cgi',
-                        'action=getall&id=' + return_protocol.connect_id,
+                    var task_action_request = Request(return_protocol.baseURL + '/download/download_redirector.cgi',
+                        'action=getall&id=' + return_protocol.connectionID,
                         timeout,
                         function(response) {
                             if (response.status != 200) {
@@ -86,14 +88,14 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             }
                             callback(task_action_response);
                         });
-                    Util.log("try to getall to : " + return_protocol.base_url);
+                    Util.log("try to getall to : " + return_protocol.baseURL);
                     task_action_request.post();
 
                     break;
 
                 case 'addurl':
-                    task_action_request = Request(return_protocol.base_url + '/download/download_redirector.cgi',
-                        'action=' + task_action + '&id=' + return_protocol.connect_id + '&url=' + encodeURIComponent(parameter),
+                    task_action_request = Request(return_protocol.baseURL + '/download/download_redirector.cgi',
+                        'action=' + task_action + '&id=' + return_protocol.connectionID + '&url=' + encodeURIComponent(parameter),
                         timeout,
                         function(response) {
                             if (response.status != 200) {
@@ -105,7 +107,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             callback(task_action_response);
 
                         });
-                    Util.log("try to addurl to : " + return_protocol.base_url);
+                    Util.log("try to addurl to : " + return_protocol.baseURL);
                     task_action_request.post();
 
 
@@ -114,8 +116,8 @@ var Protocol = function(base_url, timeout, user_name, password) {
                 case 'delete':
                 case 'resume':
                 case 'stop':
-                    task_action_request = Request(return_protocol.base_url + '/download/download_redirector.cgi',
-                        'action=' + task_action + '&idList=' + parameter + '&id=' + return_protocol.connect_id,
+                    task_action_request = Request(return_protocol.baseURL + '/download/download_redirector.cgi',
+                        'action=' + task_action + '&idList=' + parameter + '&id=' + return_protocol.connectionID,
                         timeout,
                         function(response) {
                             if (response.status != 200) {
@@ -126,7 +128,7 @@ var Protocol = function(base_url, timeout, user_name, password) {
                             }
                             callback(task_action_response);
                         });
-                    Util.log("try to " + task_action + " to : " + return_protocol.base_url);
+                    Util.log("try to " + task_action + " to : " + return_protocol.baseURL);
                     task_action_request.post();
                     break;
 
@@ -136,7 +138,6 @@ var Protocol = function(base_url, timeout, user_name, password) {
 
 
         return_protocol.OnStart = function(event) {
-
             if (event.target.status == 3) {
                 return_protocol.task_action(function() {}, 'resume', event.target.id.replace("syno-start", ""));
             } else {
@@ -150,8 +151,8 @@ var Protocol = function(base_url, timeout, user_name, password) {
 
 
         return_protocol.calcItems = function(items) {
-            mediator = Components.classes['@mozilla.org/appshell/window-mediator;1']
-                .getService(Components.interfaces.nsIWindowMediator);
+            mediator = Cc['@mozilla.org/appshell/window-mediator;1']
+                .getService(Ci.nsIWindowMediator);
             document = mediator.getMostRecentWindow("navigator:browser").document;
             var richlistitems = [];
             var background_color_toggel = false;
