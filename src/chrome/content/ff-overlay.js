@@ -91,7 +91,7 @@ if (typeof SL_Overlay === "undefined") {
 
         this.onMenuItemLinkCommand = (event) => {
             if (this.SL_DownloadManager.isConnected) {
-                window.open(this.SL_DownloadManager.url + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", this.strWindowFeatures);
+                window.open(this.SL_DownloadManager.urlToConnect + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", this.strWindowFeatures);
             } else {
                 this.SL_DownloadManager.Notification.show("No Connection");
             }
