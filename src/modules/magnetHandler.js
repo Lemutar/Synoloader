@@ -1,13 +1,13 @@
 /* This js module doesn't export anything, it's meant to handle the protocol registration/unregistration */
 var EXPORTED_SYMBOLS = ['MagnetHandler'];
-const { classes: Cc, interfaces: Ci } = Components;
+const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
-Components.utils.import('resource://SynoLoader/Util.js');
+Cu.import('resource://SynoLoader/Util.js');
 
 var manager = Components.manager.QueryInterface(Ci.nsIComponentRegistrar);
 
 // our XPCOM components to handle the protocols
-Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 
 function Magnet_ProtocolWrapper () {
     var myHandler = function () {};

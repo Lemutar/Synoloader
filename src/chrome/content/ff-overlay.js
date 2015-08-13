@@ -33,8 +33,8 @@ if (typeof SL_Overlay === "undefined") {
                     let hbox_lable = document.getElementById('synoloader_toolbar_panel_box_lable_id');
                     let loaded_list = {};
 
-                    if (typeof SL_Overlay.SL_DownloadManager.protocol != "undefined") {
-                        loaded_list = SL_Overlay.SL_DownloadManager.protocol.calcItems(items);
+                    if (typeof this.SL_DownloadManager.protocol != "undefined") {
+                        loaded_list = this.SL_DownloadManager.protocol.calcItems(items);
                     }
 
                     let count = list.itemCount;
@@ -50,7 +50,7 @@ if (typeof SL_Overlay === "undefined") {
                         hbox_lable.setAttribute('hidden', "false");
                         let title = document.getElementById('synoloader_toolbar_panel_lable_id');
                         title.setAttribute('value', "No active Downloads");
-                        clearInterval(SL_Overlay.UpdateListPanelInterval);
+                        clearInterval(this.UpdateListPanelInterval);
                     } else {
                         hbox_lable.setAttribute('hidden', "true");
                     }
@@ -64,7 +64,7 @@ if (typeof SL_Overlay === "undefined") {
                     let panel = document.getElementById('synoloader_toolbar_panel_id');
                     let title = document.getElementById('synoloader_toolbar_panel_lable_id');
                     title.setAttribute('value', "No Connection, please set correct Preferces");
-                    clearInterval(SL_Overlay.UpdateListPanelInterval);
+                    clearInterval(this.UpdateListPanelInterval);
                     panel.moveTo(-1, -1);
                 }
             );
@@ -84,14 +84,14 @@ if (typeof SL_Overlay === "undefined") {
 
             document.getElementById("contentAreaContextMenu")
                 .addEventListener("popupshowing", (event) => {
-                    SL_Overlay.showFirefoxContextMenu(event);
+                    this.showFirefoxContextMenu(event);
                 }, false);
             this.SL_DownloadManager.connectToNas();
         };
 
         this.onMenuItemLinkCommand = (event) => {
             if (this.SL_DownloadManager.isConnected) {
-                window.open(this.SL_DownloadManager.url + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", SL_Overlay.strWindowFeatures);
+                window.open(this.SL_DownloadManager.url + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", this.strWindowFeatures);
             } else {
                 this.SL_DownloadManager.Notification.show("No Connection");
             }
@@ -108,7 +108,7 @@ if (typeof SL_Overlay === "undefined") {
         this.onToolBarDownloadInfo = (event) => {
             this.UpdateListPanel();
             this.UpdateListPanelInterval = setInterval(() => {
-                SL_Overlay.UpdateListPanel();
+                this.UpdateListPanel();
             }, 1000);
         };
 
@@ -126,7 +126,7 @@ if (typeof SL_Overlay === "undefined") {
 
     }).apply(SL_Overlay);
 
-    window.addEventListener("load", load = (event) => {
+    window.addEventListener("load", function load (event) {
         window.removeEventListener("load", load, false); //remove listener, no longer needed
         SL_Overlay.onLoad();
     }, false);

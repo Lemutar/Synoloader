@@ -5,8 +5,6 @@ if (typeof QuickConnect === "undefined") {
     Cu.import("resource://SynoLoader/Request.js");
 
     var QuickConnect = function (timeoutRelay, timeoutInternal, protocol, port) {
-        let self = this;
-
         this.relayServer = "https://ukc.synology.com/Serv.php";
 
         this.getServerInfo = (quickConnectID, callback) => {
