@@ -9,7 +9,7 @@ if (typeof Util === "undefined") {
         this.consoleService = Cc["@mozilla.org/consoleservice;1"].
                                   getService(Ci.nsIConsoleService);
 
-        this.log = function (msg) {
+        this.log = (msg) => {
             if (this.show_log) {
                 this.consoleService.logStringMessage("SynoLoader : " + msg);
             }

@@ -18,13 +18,13 @@ if (typeof Request === "undefined") {
         };
 
         this.httpRequest.timeout = timeout;
-        this.httpRequest.ontimeout = function () {
+        this.httpRequest.ontimeout = () => {
             response.status = 408;
             response.statusText = "Request Time-out";
             callback(response);
         };
 
-        this.httpRequest.onreadystatechange = function () {
+        this.httpRequest.onreadystatechange = () => {
             if (self.httpRequest.readyState === 4) {
                 if (self.httpRequest.status === 200) {
                     response.text = self.httpRequest.responseText;
@@ -39,12 +39,12 @@ if (typeof Request === "undefined") {
             }
         };
 
-        this.get = function () {
+        this.get = () => {
             this.httpRequest.open("GET", url + "?" + parameter, true);
             this.httpRequest.send(null);
         };
 
-        this.post = function () {
+        this.post = () => {
             this.httpRequest.open("POST", url, true);
             this.httpRequest.send(parameter);
         };
