@@ -1,11 +1,10 @@
-content   SynoLoader                 chrome/content/
-skin      SynoLoader   classic/1.0   chrome/skin/
-locale    SynoLoader   en-US         chrome/locale/en-US/
-resource  SynoLoader                 modules/
+content   SynoLoader                chrome/content/
+skin      SynoLoader  classic/1.0   chrome/skin/
+locale    SynoLoader  en-US         chrome/locale/en-US/
+resource  SynoLoader                modules/
 
-
-overlay   chrome://mozapps/content/downloads/unknownContentType.xul 	chrome://SynoLoader/content/SynoLoadunknownContentType.xul
-overlay   chrome://browser/content/browser.xul   			chrome://SynoLoader/content/ff-overlay.xul
+overlay   chrome://mozapps/content/downloads/unknownContentType.xul   chrome://SynoLoader/content/download.xul
+overlay   chrome://browser/content/browser.xul                        chrome://SynoLoader/content/ff-overlay.xul
 
 style chrome://global/content/customizeToolbar.xul chrome://SynoLoader/skin/toolbar.css
 
