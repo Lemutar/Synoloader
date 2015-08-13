@@ -8,7 +8,7 @@ if (typeof SL_Options === "undefined") {
     (function () {
         this.wasConnecting = false;
 
-        this.setUsernamePassword = function () {
+        this.setUsernamePassword = () => {
             let loginManager = Cc["@mozilla.org/login-manager;1"].
                                    getService(Ci.nsILoginManager),
                 // create instance of LoginInfo
@@ -49,18 +49,18 @@ if (typeof SL_Options === "undefined") {
             this.checkConnection();
         };
 
-        this.checkConnection = function () {
+        this.checkConnection = () => {
             if (!this.SL_DownloadManager.isConnecting) {
                 this.SL_DownloadManager.connectToNas();
                 this.updateStatus();
             }
         };
 
-        this.setStatusImage = function (img) {
+        this.setStatusImage = (img) => {
             document.getElementById("SynoLoader_check_connection_image").setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/" + img + ")");
         };
 
-        this.updateStatus = function () {
+        this.updateStatus = () => {
             if (this.SL_DownloadManager.isConnecting) {
                 this.wasConnecting = true;
                 this.setStatusImage("hour_glass.png");
@@ -73,12 +73,12 @@ if (typeof SL_Options === "undefined") {
             }
         };
 
-        this.onLoad = function () {
+        this.onLoad = () => {
             if (this.SL_DownloadManager.isConnected) {
                 this.setStatusImage("approval.png");
             }
             this.updateStatus();
-            this.interval = window.setInterval(function () {
+            this.interval = window.setInterval(() => {
                 SL_Options.updateStatus();
             }, 500);
         };
