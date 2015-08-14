@@ -136,13 +136,13 @@ if (typeof SL_DownloadManager === "undefined") {
                     () => {
                         this.protocol.task_action(
                             (response) => {
-                                if (response.success === true) {
+                                if (response.success) {
                                     this.Notification.show("Send torrent file to NAS", link);
                                 } else {
                                     this.Notification.show("Send link failed", response.error_text);
                                 }
                             },
-                            "add_file",
+                            "addfile",
                             file
                         );
                     }
@@ -150,7 +150,7 @@ if (typeof SL_DownloadManager === "undefined") {
             } else {
                 this.protocol.task_action(
                     (response) => {
-                        if (response.success === true) {
+                        if (response.success) {
                             this.Notification.show("Send link", link);
                         } else {
                             this.Notification.show("Send link failed", response.error_text);

@@ -56,7 +56,7 @@
       <button label="&set_username_password.label;" oncommand="SL_Options.setUsernamePassword();"/>
       <button label="&check_connection.label;" disabled="false" oncommand="SL_Options.checkConnection();">
         <label>&check_connection.label;</label>
-        <image id="sl-connection-status-image" check_status="test"/>
+        <image id="sl-connection-status-image" status="test"/>
       </button>
     </groupbox>
     <checkbox label="&show_notif.label;" preference="show_notif"/>

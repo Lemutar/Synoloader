@@ -56,26 +56,26 @@ if (typeof SL_Options === "undefined") {
             }
         };
 
-        this.setStatusImage = (img) => {
-            document.getElementById("sl-connection-status-image").setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/" + img + ")");
+        this.setConnectionStatus = (status) => {
+            document.getElementById("sl-connection-status-image").setAttribute("status", status);
         };
 
         this.updateStatus = () => {
             if (this.SL_DownloadManager.isConnecting) {
                 this.wasConnecting = true;
-                this.setStatusImage("hour_glass.png");
+                this.setConnectionStatus("busy");
             } else if (this.wasConnecting) {
                 if (this.SL_DownloadManager.isConnected) {
-                    this.setStatusImage("approval.png");
+                    this.setConnectionStatus("succeeded");
                 } else {
-                    this.setStatusImage("cancel.png");
+                    this.setConnectionStatus("failed");
                 }
             }
         };
 
         this.onLoad = () => {
             if (this.SL_DownloadManager.isConnected) {
-                this.setStatusImage("approval.png");
+                this.setConnectionStatus("succeeded");
             }
             this.updateStatus();
             this.interval = window.setInterval(() => {

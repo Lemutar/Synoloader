@@ -30,6 +30,19 @@ prefwindow > .paneDeckContainer {
   line-height: 2em;
 }
 
-#sl-connection-status-image[check_status="test"] {
-  list-style-image: url(chrome://SynoLoader/skin/test.png);
+#sl-connection-status-image[status="test"] {
+  list-style-image: url(chrome://SynoLoader/skin/test-tube.png);
 }
+
+#sl-connection-status-image[status="busy"] {
+  list-style-image: url(chrome://SynoLoader/skin/hourglass.png);
+}
+
+#sl-connection-status-image[status="succeeded"] {
+  list-style-image: url(chrome://SynoLoader/skin/approval.png);
+}
+
+#sl-connection-status-image[status="failed"] {
+  list-style-image: url(chrome://SynoLoader/skin/error.png);
+}
+
