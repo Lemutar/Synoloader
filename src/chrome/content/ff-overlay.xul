@@ -5,7 +5,7 @@
 <?xml-stylesheet href="chrome://SynoLoader/skin/SynoDownloads.css" type="text/css"?>
 <!DOCTYPE overlay SYSTEM "chrome://SynoLoader/locale/overlay.dtd">
 
-<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<overlay id="sl-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="ff-overlay.js"/>
   <toolbarpalette id="BrowserToolbarPalette">
     <toolbarbutton id="sl-toolbar" type="panel" label="SynoLoader" tooltiptext="Synology Download" class="toolbarbutton-1 chromeclass-toolbar-additional custombutton">

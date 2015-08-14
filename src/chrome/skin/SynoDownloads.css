@@ -22,11 +22,11 @@ prefwindow > .paneDeckContainer {
     overflow: visible;
 }
 
-prefpane row {
+#sl-options row {
   line-height: 1.4em;
 }
 
-prefpane row > label {
+#sl-options row > label {
   line-height: 2em;
 }
 
