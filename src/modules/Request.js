@@ -2,11 +2,7 @@ var EXPORTED_SYMBOLS = ["Request"];
 const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 if (typeof Request === "undefined") {
-    Cu.import("resource://SynoLoader/Util.js");
-
     var Request = function (url, parameter, timeout, callback) {
-        let self = this;
-
         this.httpRequest = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
                                createInstance(Ci.nsIXMLHttpRequest);
 
@@ -25,16 +21,23 @@ if (typeof Request === "undefined") {
         };
 
         this.httpRequest.onreadystatechange = () => {
-            if (self.httpRequest.readyState === 4) {
-                if (self.httpRequest.status === 200) {
-                    response.text = self.httpRequest.responseText;
-                    try {
-                        response.json = JSON.parse(self.httpRequest.responseText);
-                    } catch (e) {}
+            if (this.httpRequest.readyState === 4) {
+                response.json = false;
+                response.status = this.httpRequest.status;
+                response.statusText = this.httpRequest.statusText;
+                response.text = this.httpRequest.responseText;
+
+                switch (response.status) {
+                    case 0:
+                        response.statusText = "Couldn't connect to host.";
+                        break;
+                    case 200:
+                        try {
+                            response.json = JSON.parse(response.text);
+                        } catch (e) {}
+                        break;
                 }
 
-                response.statusText = self.httpRequest.statusText;
-                response.status = self.httpRequest.status;
                 callback(response);
             }
         };

@@ -39,18 +39,14 @@ const apiErrorTexts = {
     }
 };
 
-function set_common_error_text (error_code, response) {
-    response.error_text = apiErrorTexts.common[error_code];
-}
-
-function set_auth_api_error_text (error_code, response) {
-    set_common_error_text(error_code, response);
-    response.error_text = apiErrorTexts.auth[error_code];
-}
-
-function set_download_api_error_text (error_code, response) {
-    set_common_error_text(error_code, response);
-    response.error_text = apiErrorTexts.download[error_code];
+const apiSetErrorText = (response, errorCode, module) => {
+    if(typeof apiErrorTexts[module][errorCode] !== "undefined") {
+        response.error_text = apiErrorTexts[module][errorCode];
+    } else if (typeof apiErrorTexts["common"][errorCode] !== "undefined") {
+        response.error_text = apiErrorTexts["common"][errorCode];
+    } else {
+        response.error_text = apiErrorTexts["common"][100];
+    }
 }
 
 const apiEndpoints = {
@@ -67,7 +63,6 @@ var Protocol = function (baseURL, timeout, username, password) {
 
     this.version = 1;
     this.ed2kDownloadFolder = "home";
-
     this.baseURL = baseURL;
 
     this.connectTime = 0;
@@ -88,17 +83,22 @@ var Protocol = function (baseURL, timeout, username, password) {
                 if (apiResponse.status === 200) {
                     Util.log(apiResponse.text);
 
-                    if (apiResponse.json.success) {
-                        response.success = true;
-                        response.id = apiResponse.json.data.sid;
-                        this.setConnectionID(apiResponse.json.data.sid);
+                    let apiJSON = apiResponse.json;
+
+                    response.success = (apiJSON && apiJSON.success);
+                    if (response.success && typeof apiJSON.data.sid !== "undefined") {
+                        response.id = apiJSON.data.sid;
+                        this.setConnectionID(apiJSON.data.sid);
                         this.connectTime = Date.now();
+                    } else if (typeof apiJSON.error.code !== "undefined") {
+                        apiSetErrorText(response, apiJSON.error.code, "auth");
                     } else {
-                        set_auth_api_error_text(apiResponse.json.error.code, response);
+                        apiSetErrorText(response, 100, "common");
                     }
                 } else {
                     response.error_text = apiResponse.statusText;
                 }
+                Util.log(response.error_text);
                 callback(response);
             }
         ).get();
@@ -119,7 +119,7 @@ var Protocol = function (baseURL, timeout, username, password) {
 
         if (Date.now() - this.connectTime > 1000 * 60 * 20) {
             this.connect((connectResponse) => {
-                if (connectResponse.success === true) {
+                if (connectResponse.success) {
                     this.task_action(callback, action, parameter);
                 } else {
                     callback(connectResponse);
@@ -128,18 +128,22 @@ var Protocol = function (baseURL, timeout, username, password) {
         } else {
             let apiResponseCB = (apiResponse) => {
                     if (apiResponse.status === 200) {
-                        let apiJSON = apiResponse.json;
-                        if (!apiJSON.success) {
-                            set_download_api_error_text(apiJSON.error.code, response);
-                        }
-                        response.success = apiJSON.success;
-                        if (typeof apiJSON.data.tasks !== "undefined") {
-                            response.items = apiJSON.data.tasks;
-                        }
                         Util.log(apiResponse.text);
+
+                        let apiJSON = apiResponse.json;
+
+                        response.success = (apiJSON && apiJSON.success);
+                        if (response.success && typeof apiJSON.data.tasks !== "undefined") {
+                            response.items = apiJSON.data.tasks;
+                        } else if (typeof apiJSON.error.code !== "undefined") {
+                            apiSetErrorText(response, apiJSON.error.code, "download");
+                        } else {
+                            apiSetErrorText(response, 100, "common");
+                        }
                     } else {
                         response.error_text = apiResponse.statusText;
                     }
+                    Util.log(response.error_text);
                     callback(response);
                 },
                 apiBaseURL = "api=SYNO.DownloadStation.Task" +

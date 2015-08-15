@@ -53,6 +53,9 @@ if (typeof SL_Options === "undefined") {
             if (!this.SL_DownloadManager.isConnecting) {
                 this.SL_DownloadManager.connectToNas();
                 this.updateStatus();
+                this.updateStatusInterval = setInterval(() => {
+                    this.updateStatus();
+                }, 500);
             }
         };
 
@@ -70,6 +73,7 @@ if (typeof SL_Options === "undefined") {
                 } else {
                     this.setConnectionStatus("failed");
                 }
+                clearInterval(this.updateStatusInterval);
             }
         };
 
@@ -78,9 +82,6 @@ if (typeof SL_Options === "undefined") {
                 this.setConnectionStatus("succeeded");
             }
             this.updateStatus();
-            this.interval = window.setInterval(() => {
-                SL_Options.updateStatus();
-            }, 500);
         };
     }).apply(SL_Options);
 

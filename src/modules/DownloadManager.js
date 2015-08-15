@@ -180,7 +180,7 @@ if (typeof SL_DownloadManager === "undefined") {
         this.loadDownloadList = (manage_items_success, manage_items_fail) => {
             this.protocol.task_action(
                 (response) => {
-                    if (response.success === true) {
+                    if (response.success) {
                         manage_items_success(response.items);
                     } else {
                         manage_items_fail(response);
