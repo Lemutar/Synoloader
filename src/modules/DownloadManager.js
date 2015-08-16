@@ -85,8 +85,8 @@ if (typeof SL_DownloadManager === "undefined") {
                     break;
                 case "2":
                     this.Util.log("Set Protocol to >= DSM 4.1");
-                    Cu.import("resource://SynoLoader/Protocol_API.js", this);
-                    this.protocol = this.Protocol(this.urlToConnect, 50000, this.username, this.password);
+                    Cu.import("resource://SynoLoader/API.js", this);
+                    this.protocol = this.Protocol(1, this.urlToConnect, 50000, this.username, this.password);
                     break;
             }
         };
