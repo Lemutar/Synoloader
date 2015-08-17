@@ -86,6 +86,70 @@ const apiAllParameters = {
     }
 };
 
+const apiAllResponseCallbacks = {
+    0: {
+        auth: (apiObj, response, apiResponse) => {
+            let apiJSON = apiResponse.json;
+            if (apiJSON !== false) {
+                response.success = apiJSON.login_success;
+                if (response.success && typeof apiJSON.id !== "undefined") {
+                    response.id = apiJSON.id;
+                    apiObj.setConnectionID(apiJSON.id);
+                    apiObj.connectTime = Date.now();
+                } else if (typeof apiJSON.errcode !== "undefined") {
+                    apiObj.setErrorText(response, apiJSON.errcode, "auth");
+                } else {
+                    apiObj.setErrorText(response, 100, "common");
+                }
+            } else {
+                apiObj.setErrorText(response, 100, "common");
+            }
+        },
+        download: (apiObj, response, apiResponse) => {
+            let apiJSON = apiResponse.json;
+            response.success = (apiJSON && apiJSON.success);
+            if (response.success && typeof apiJSON.items !== "undefined") {
+                response.items = apiJSON.items;
+            } else if (typeof apiJSON.errcode !== "undefined") {
+                apiObj.setErrorText(response, apiJSON.errcode, "download");
+            } else {
+                apiObj.setErrorText(response, 100, "common");
+            }
+        }
+    },
+    1: {
+        auth: (apiObj, response, apiResponse) => {
+            let apiJSON = apiResponse.json;
+            if (apiJSON !== false) {
+                response.success = apiJSON.success;
+                if (response.success && typeof apiJSON.data !== "undefined" && typeof apiJSON.data.sid !== "undefined") {
+                    response.id = apiJSON.data.sid;
+                    apiObj.setConnectionID(apiJSON.data.sid);
+                    apiObj.connectTime = Date.now();
+                } else if (typeof apiJSON.error !== "undefined" && typeof apiJSON.error.code !== "undefined") {
+                    apiObj.setErrorText(response, apiJSON.error.code, "auth");
+                } else {
+                    apiObj.setErrorText(response, 100, "common");
+                }
+            } else {
+                apiObj.setErrorText(response, 100, "common");
+            }
+        },
+        download: (apiObj, response, apiResponse) => {
+            let apiJSON = apiResponse.json;
+            response.success = (apiJSON && apiJSON.success);
+            if (response.success && typeof apiJSON.data !== "undefined") {
+                if (typeof apiJSON.data.tasks !== "undefined") {
+                    response.items = apiJSON.data.tasks;
+                }
+            } else if (typeof apiJSON.error !== "undefined" && typeof apiJSON.error.code !== "undefined") {
+                apiObj.setErrorText(response, apiJSON.error.code, "download");
+            } else {
+                apiObj.setErrorText(response, 100, "common");
+            }
+        }
+    }
+}
 
 var Protocol = function (version, baseURL, timeout, username, password) {
     let connectionID = "",
@@ -101,7 +165,7 @@ var Protocol = function (version, baseURL, timeout, username, password) {
 
     this.connectTime = 0;
 
-    const setErrorText = (response, errorCode, module) => {
+    this.setErrorText = (response, errorCode, module) => {
         let hasErrorCode = (typeof errorCode !== "undefined"),
             hasModule = (typeof module !== "undefined");
 
@@ -122,11 +186,11 @@ var Protocol = function (version, baseURL, timeout, username, password) {
         }
     };
 
-    const apiGetParameter = (task, action, extra) => {
-        let taskParam = apiAllParameters[version][task],
+    const apiGetParameter = (module, action, extra) => {
+        let taskParam = apiAllParameters[version][module],
             param = "";
 
-        switch (task) {
+        switch (module) {
             case "auth":
                 param = taskParam.replace("%username%", usernameEnc).replace("%password%", passwordEnc);
                 break;
@@ -149,8 +213,21 @@ var Protocol = function (version, baseURL, timeout, username, password) {
         return param;
     };
 
+    const apiResponseCallback = (callback, response, apiResponse, module) => {
+        let responseCallback = apiAllResponseCallbacks[version][module];
+
+        if (apiResponse.status === 200) {
+            Util.log(apiResponse.text);
+            responseCallback(this, response, apiResponse);
+        } else {
+            response.error_text = apiResponse.statusText;
+        }
+        Util.log(response.error_text);
+        callback(response);
+    };
+
     this.connect = (callback) => {
-        Util.log("try to connect to : " + this.baseURL);
+        Util.log("try to connect: " + this.baseURL);
 
         let response = {
                 success: false,
@@ -162,38 +239,7 @@ var Protocol = function (version, baseURL, timeout, username, password) {
             apiGetParameter("auth"),
             timeout,
             (apiResponse) => {
-                if (apiResponse.status === 200) {
-                    Util.log(apiResponse.text);
-
-                    let apiJSON = apiResponse.json;
-                    if (apiJSON !== false) {
-                        if (version === 0) {
-                            response.success = apiJSON.login_success;
-                            if (response.success && typeof apiJSON.id !== "undefined") {
-                                response.id = apiJSON.id;
-                                this.setConnectionID(apiJSON.id);
-                                this.connectTime = Date.now();
-                            } else if (typeof apiJSON.errcode !== "undefined") {
-                                setErrorText(response, apiJSON.errcode, "auth");
-                            }
-                        } else if (version === 1) {
-                            response.success = apiJSON.success;
-                            if (response.success && typeof apiJSON.data.sid !== "undefined") {
-                                response.id = apiJSON.data.sid;
-                                this.setConnectionID(apiJSON.data.sid);
-                                this.connectTime = Date.now();
-                            } else if (typeof apiJSON.error.code !== "undefined") {
-                                setErrorText(response, apiJSON.error.code, "auth");
-                            }
-                        }
-                    } else {
-                        setErrorText(response, 100, "common");
-                    }
-                } else {
-                    response.error_text = apiResponse.statusText;
-                }
-                Util.log(response.error_text);
-                callback(response);
+                apiResponseCallback(callback, response, apiResponse, "auth");
             }
         ).get();
     };
@@ -206,7 +252,7 @@ var Protocol = function (version, baseURL, timeout, username, password) {
     this.task_action = (callback, action, parameter) => {
         let response = {
                 success: false,
-                data: [],
+                items: [],
                 error_text: ""
             },
             parameterEnc = encodeURIComponent(parameter);
@@ -220,92 +266,57 @@ var Protocol = function (version, baseURL, timeout, username, password) {
                 }
             });
         } else {
-            let apiResponseCB = (apiResponse) => {
-                    if (apiResponse.status === 200) {
-                        Util.log(apiResponse.text);
-
-                        let apiJSON = apiResponse.json;
-                        response.success = (apiJSON && apiJSON.success);
-                        if (version === 0) {
-                            if (response.success && typeof apiJSON.items !== "undefined") {
-                                response.items = apiJSON.items;
-                            } else if (typeof apiJSON.errcode !== "undefined") {
-                                setErrorText(response, apiJSON.errcode, "download");
-                            } else {
-                                setErrorText(response, 100, "common");
-                            }
-                        } else if (version === 1) {
-                            if (response.success && typeof apiJSON.data.tasks !== "undefined") {
-                                response.items = apiJSON.data.tasks;
-                            } else if (typeof apiJSON.error.code !== "undefined") {
-                                setErrorText(response, apiJSON.error.code, "download");
-                            } else {
-                                setErrorText(response, 100, "common");
-                            }
-                        }
-                    } else {
-                        response.error_text = apiResponse.statusText;
-                    }
-                    Util.log(response.error_text);
-                    callback(response);
-                },
+            let url = this.baseURL + apiEndpoints.download.task,
+                method = "",
                 param = "";
 
             switch (action) {
                 case "getall":
+                    method = "get";
                     param = apiGetParameter("download", "getall");
 
                     Util.log("try to get all: " + param);
-                    Request(this.baseURL + apiEndpoints.download.task,
-                        param,
-                        timeout,
-                        apiResponseCB
-                    ).get();
                     break;
 
                 case "addurl":
+                    method = "post";
                     param = apiGetParameter("download", "addurl", parameterEnc);
 
                     Util.log("try to add url (" + parameter + "): " + param);
-                    Request(this.baseURL + apiEndpoints.download.task,
-                        param,
-                        timeout,
-                        apiResponseCB
-                    ).post();
                     break;
 
                 case "addfile":
-                    let formData = Cc["@mozilla.org/files/formdata;1"].
+                    method = "post";
+                    param = Cc["@mozilla.org/files/formdata;1"].
                                        createInstance(Ci.nsIDOMFormData);
-                    formData.append("api", "SYNO.DownloadStation.Task");
-                    formData.append("version", "1");
-                    formData.append("method", "create");
-                    formData.append("_sid", connectionIDEnc);
-                    formData.append("file", File(parameter.path));
+                    param.append("api", "SYNO.DownloadStation.Task");
+                    param.append("version", "1");
+                    param.append("method", "create");
+                    param.append("_sid", connectionIDEnc);
+                    param.append("file", File(parameter.path));
 
-                    Util.log("try to add file to '" + parameter.path + "': " + formData);
-                    Request(this.baseURL + apiEndpoints.download.task,
-                        formData,
-                        timeout,
-                        apiResponseCB
-                    ).post();
+                    Util.log("try to add file to '" + parameter.path + "': " + param);
                     break;
 
                 case "resume":
                 case "pause":
                 case "delete":
+                    method = "get";
                     param = apiGetParameter("download", "task", {action: action, id: parameterEnc});
                     if (action === "delete") {
                         param += "&force_complete=false";
                     }
 
                     Util.log("try to " + action + " " + parameter + ": " + param);
-                    Request(this.baseURL + apiEndpoints.download.task,
-                        param,
-                        timeout,
-                        apiResponseCB
-                    ).get();
                     break;
+            }
+
+            let request = Request(url, param, timeout, (apiResponse) => {
+                    apiResponseCallback(callback, response, apiResponse, "download");
+                });
+            switch (method) {
+                case "get": request.get(); break;
+                case "post": request.post(); break;
             }
         }
     };
@@ -320,6 +331,7 @@ var Protocol = function (version, baseURL, timeout, username, password) {
                 action = "pause";
                 break;
             case "paused":
+            case "error":
                 action = "resume";
                 break;
             case "finished":
