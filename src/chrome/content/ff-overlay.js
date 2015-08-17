@@ -104,7 +104,7 @@ if (typeof SL_Overlay === "undefined") {
             this.updateListPanel();
             this.updateListPanelInterval = setInterval(() => {
                 this.updateListPanel();
-            }, 1000);
+            }, 2500);
         };
 
         this.onToolBarDownloadInfoHidden = (event) => {

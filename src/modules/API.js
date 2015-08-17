@@ -92,11 +92,11 @@ const apiAllResponseCallbacks = {
             let apiJSON = apiResponse.json;
             if (apiJSON !== false) {
                 response.success = apiJSON.login_success;
-                if (response.success && typeof apiJSON.id !== "undefined") {
+                if (response.success && Util.val("id", apiJSON)) {
                     response.id = apiJSON.id;
                     apiObj.setConnectionID(apiJSON.id);
                     apiObj.connectTime = Date.now();
-                } else if (typeof apiJSON.errcode !== "undefined") {
+                } else if (Util.val("errcode", apiJSON)) {
                     apiObj.setErrorText(response, apiJSON.errcode, "auth");
                 } else {
                     apiObj.setErrorText(response, 100, "common");
@@ -108,9 +108,11 @@ const apiAllResponseCallbacks = {
         download: (apiObj, response, apiResponse) => {
             let apiJSON = apiResponse.json;
             response.success = (apiJSON && apiJSON.success);
-            if (response.success && typeof apiJSON.items !== "undefined") {
-                response.items = apiJSON.items;
-            } else if (typeof apiJSON.errcode !== "undefined") {
+            if (response.success) {
+                if (Util.val("items", apiJSON)) {
+                    response.items = apiJSON.items;
+                }
+            } else if (Util.val("errcode", apiJSON)) {
                 apiObj.setErrorText(response, apiJSON.errcode, "download");
             } else {
                 apiObj.setErrorText(response, 100, "common");
@@ -122,11 +124,11 @@ const apiAllResponseCallbacks = {
             let apiJSON = apiResponse.json;
             if (apiJSON !== false) {
                 response.success = apiJSON.success;
-                if (response.success && typeof apiJSON.data !== "undefined" && typeof apiJSON.data.sid !== "undefined") {
+                if (response.success && Util.val("data.sid", apiJSON)) {
                     response.id = apiJSON.data.sid;
                     apiObj.setConnectionID(apiJSON.data.sid);
                     apiObj.connectTime = Date.now();
-                } else if (typeof apiJSON.error !== "undefined" && typeof apiJSON.error.code !== "undefined") {
+                } else if (Util.val("error.code", apiJSON)) {
                     apiObj.setErrorText(response, apiJSON.error.code, "auth");
                 } else {
                     apiObj.setErrorText(response, 100, "common");
@@ -138,11 +140,11 @@ const apiAllResponseCallbacks = {
         download: (apiObj, response, apiResponse) => {
             let apiJSON = apiResponse.json;
             response.success = (apiJSON && apiJSON.success);
-            if (response.success && typeof apiJSON.data !== "undefined") {
-                if (typeof apiJSON.data.tasks !== "undefined") {
+            if (response.success) {
+                if (Util.val("data.tasks", apiJSON)) {
                     response.items = apiJSON.data.tasks;
                 }
-            } else if (typeof apiJSON.error !== "undefined" && typeof apiJSON.error.code !== "undefined") {
+            } else if (Util.val("error.code", apiJSON)) {
                 apiObj.setErrorText(response, apiJSON.error.code, "download");
             } else {
                 apiObj.setErrorText(response, 100, "common");
@@ -195,8 +197,7 @@ var Protocol = function (version, baseURL, timeout, username, password) {
                 param = taskParam.replace("%username%", usernameEnc).replace("%password%", passwordEnc);
                 break;
             case "download":
-                param = taskParam.base + taskParam[action];
-                param = param.replace("%sid%", connectionIDEnc);
+                param = taskParam.base.replace("%sid%", connectionIDEnc) + taskParam[action];
 
                 switch (action) {
                     case "addurl":
@@ -204,9 +205,6 @@ var Protocol = function (version, baseURL, timeout, username, password) {
                         break;
                     case "task":
                         param = param.replace("%action%", extra.action).replace("%id%", extra.id);
-                        if (extra.action === "delete") {
-                            param += "&force_complete=false";
-                        }
                         break;
                 }
         }
@@ -217,12 +215,12 @@ var Protocol = function (version, baseURL, timeout, username, password) {
         let responseCallback = apiAllResponseCallbacks[version][module];
 
         if (apiResponse.status === 200) {
-            Util.log(apiResponse.text);
             responseCallback(this, response, apiResponse);
+            Util.log(apiResponse.text);
         } else {
             response.error_text = apiResponse.statusText;
+            Util.log(response.error_text);
         }
-        Util.log(response.error_text);
         callback(response);
     };
 
@@ -298,14 +296,12 @@ var Protocol = function (version, baseURL, timeout, username, password) {
                     Util.log("try to add file to '" + parameter.path + "': " + param);
                     break;
 
+                case "delete":
+                    param = "&force_complete=false";
                 case "resume":
                 case "pause":
-                case "delete":
                     method = "get";
-                    param = apiGetParameter("download", "task", {action: action, id: parameterEnc});
-                    if (action === "delete") {
-                        param += "&force_complete=false";
-                    }
+                    param = apiGetParameter("download", "task", {action: action, id: parameterEnc}) + param;
 
                     Util.log("try to " + action + " " + parameter + ": " + param);
                     break;

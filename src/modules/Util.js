@@ -17,5 +17,17 @@ if (typeof Util === "undefined") {
                 this.consoleService.logStringMessage("SynoLoader : " + msg);
             }
         };
+
+        this.val = (str, context) => {
+            let scope = context || window,
+                properties = str.split('.'), i;
+            for(let i = 0; i < properties.length; i++) {
+              if (!scope[properties[i]]) {
+                 return null;
+              }
+              scope = scope[properties[i]];
+            }
+            return scope;
+        };
     }).apply(Util);
 }
