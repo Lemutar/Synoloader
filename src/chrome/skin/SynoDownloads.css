@@ -1,22 +1,4 @@
 
-.sl-item-start,
-.sl-item-del {
-  width:30px;
-}
-
-.sl-item-hbox {
-  height: 30px;
-}
-
-.sl-item-progress {
-  height: 10px;
-}
-
-.sl-item-title {
-  width: 500px;
-  text-overflow: ellipsis;
-}
-
 prefpane > .content-box,
 prefwindow > .paneDeckContainer {
     overflow: visible;

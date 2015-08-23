@@ -1,5 +1,5 @@
 var EXPORTED_SYMBOLS = ["QuickConnect"];
-const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 if (typeof QuickConnect === "undefined") {
     Cu.import("resource://SynoLoader/Request.js");

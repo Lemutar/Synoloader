@@ -1,5 +1,5 @@
 var EXPORTED_SYMBOLS = ["Notification"];
-const { classes: Cc, interfaces: Ci } = Components;
+let { classes: Cc, interfaces: Ci } = Components;
 
 if (typeof Notification === "undefined") {
     var Notification = {};
@@ -12,9 +12,9 @@ if (typeof Notification === "undefined") {
             // prevents runtime error on platforms that don't implement nsIAlertsService
         }
 
-        this.show_notif = false;
-        this.show = function (title, text) {
-            if (this.show_notif) {
+        this.showNotif = false;
+        this.show = (title, text) => {
+            if (this.showNotif) {
                 try {
                     this.AlertInterface.showAlertNotification("chrome://SynoLoader/skin/Syno.png", title, text, false, "", null);
                 } catch (e) {

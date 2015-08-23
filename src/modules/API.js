@@ -1,5 +1,5 @@
 var EXPORTED_SYMBOLS = ["Protocol"];
-const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 Cu.import("resource://SynoLoader/Request.js");
 Cu.import("resource://SynoLoader/Util.js");
@@ -318,26 +318,7 @@ var Protocol = function (version, baseURL, timeout, username, password) {
     };
 
     this.onResume = (event) => {
-        let task = event.target.task;
-        let action = "";
-        switch (task.status) {
-            case "downloading":
-            case "seeding":
-            case "waiting":
-                action = "pause";
-                break;
-            case "paused":
-            case "error":
-                action = "resume";
-                break;
-            case "finished":
-                if (task.type === "bt") {
-                    action = "resume";
-                }
-            default:
-                return;
-        }
-        this.task_action(() => {}, action, task.id);
+        this.task_action(() => {}, event.target.action, event.target.task.id);
     };
 
     this.onDelete = (event) => {
@@ -360,6 +341,14 @@ var Protocol = function (version, baseURL, timeout, username, password) {
 
             let wrapper = doc.createElement("hbox");
             wrapper.setAttribute("flex", "1");
+
+            let statusButton = doc.createElement("toolbarbutton");
+            statusButton.setAttribute("id", "sl-item-status-" + item.id);
+            statusButton.setAttribute("class", "sl-item-status");
+            statusButton.setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/status_" + item.status + ".png);");
+            statusButton.setAttribute("autocheck", "false");
+
+            wrapper.appendChild(statusButton);
 
             // Item Info.
             let iteminfo = doc.createElement("vbox");
@@ -401,12 +390,37 @@ var Protocol = function (version, baseURL, timeout, username, password) {
             resumeButton.setAttribute("autocheck", "false");
             resumeButton.addEventListener("command", this.onResume, true);
 
+            switch (item.status) {
+                case "downloading":
+                case "seeding":
+                case "waiting":
+                case "finishing":
+                case "hash_checking":
+                case "filehosting_waiting":
+                case "extracting":
+                    resumeButton.action = "pause";
+                    break;
+                case "paused":
+                case "error":
+                    resumeButton.action = "resume";
+                    break;
+                case "finished":
+                    if (item.type === "bt") {
+                        resumeButton.action = "resume";
+                    }
+                    break;
+            }
+            resumeButton.setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/" + resumeButton.action + ".png);");
+
+
             let deleteButton = doc.createElement("toolbarbutton");
             deleteButton.task = item;
             deleteButton.setAttribute("id", "sl-item-delete-" + item.id);
             deleteButton.setAttribute("class", "sl-item-delete");
             deleteButton.setAttribute("autocheck", "false");
             deleteButton.addEventListener("command", this.onDelete, true);
+            deleteButton.setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/delete.png);");
+
 
             wrapper.appendChild(resumeButton);
             wrapper.appendChild(deleteButton);

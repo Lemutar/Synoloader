@@ -1,5 +1,5 @@
 var EXPORTED_SYMBOLS = ["Protocol"];
-const { classes: Cc, interfaces: Ci } = Components;
+let { classes: Cc, interfaces: Ci } = Components;
 
 Components.utils.import("resource://SynoLoader/Request.js");
 Components.utils.import("resource://SynoLoader/Util.js");

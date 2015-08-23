@@ -1,4 +1,4 @@
-const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 if (typeof SL_Overlay === "undefined") {
     var SL_Overlay = {};
@@ -30,12 +30,12 @@ if (typeof SL_Overlay === "undefined") {
                 label.setAttribute("value", "Loading...");
             }
 
-            this.SL_DownloadManager.loadDownloadList(
+            this.DownloadManager.loadDownloadList(
                 (items) => {
                     let loadedList = {};
 
-                    if (typeof this.SL_DownloadManager.protocol !== "undefined") {
-                        loadedList = this.SL_DownloadManager.protocol.calcItems(items);
+                    if (typeof this.DownloadManager.protocol !== "undefined") {
+                        loadedList = this.DownloadManager.protocol.calcItems(items);
                     }
 
                     let count = list.itemCount;
@@ -77,26 +77,26 @@ if (typeof SL_Overlay === "undefined") {
                 Application.getExtensions(this.firstRun);
             }
 
-            document.getElementById("contentAreaContextMenu")
-                .addEventListener("popupshowing", (event) => {
+            document.getElementById("contentAreaContextMenu").
+                addEventListener("popupshowing", (event) => {
                     this.showFirefoxContextMenu(event);
                 }, false);
-            this.SL_DownloadManager.connectToNas();
+            this.DownloadManager.connectToNas();
         };
 
         this.onMenuItemLinkCommand = (event) => {
-            if (this.SL_DownloadManager.isConnected) {
-                window.open(this.SL_DownloadManager.urlToConnect + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", this.strWindowFeatures);
+            if (this.DownloadManager.isConnected) {
+                window.open(this.DownloadManager.urlToConnect + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", this.strWindowFeatures);
             } else {
-                this.SL_DownloadManager.Notification.show("No Connection");
+                this.DownloadManager.Notification.show("No Connection");
             }
         };
 
         this.onMenuItemCommand = (event) => {
-            if (this.SL_DownloadManager.isConnected) {
-                this.SL_DownloadManager.transferToNas(gContextMenu.linkURL);
+            if (this.DownloadManager.isConnected) {
+                this.DownloadManager.transferToNas(gContextMenu.linkURL);
             } else {
-                this.SL_DownloadManager.Notification.show("No Connection");
+                this.DownloadManager.Notification.show("No Connection");
             }
         };
 

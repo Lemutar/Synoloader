@@ -1,14 +1,14 @@
-var EXPORTED_SYMBOLS = ["SL_DownloadManager"];
-const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+var EXPORTED_SYMBOLS = ["DownloadManager"];
+let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
-if (typeof SL_DownloadManager === "undefined") {
-    var SL_DownloadManager = {};
+if (typeof DownloadManager === "undefined") {
+    var DownloadManager = {};
 
-    Cu.import("resource://SynoLoader/FileDownloaderHandler.js", SL_DownloadManager);
-    Cu.import("resource://SynoLoader/MagnetHandler.js", SL_DownloadManager);
-    Cu.import("resource://SynoLoader/Notification.js", SL_DownloadManager);
-    Cu.import("resource://SynoLoader/QuickConnect.js", SL_DownloadManager);
-    Cu.import("resource://SynoLoader/Util.js", SL_DownloadManager);
+    Cu.import("resource://SynoLoader/FileDownloaderHandler.js", DownloadManager);
+    Cu.import("resource://SynoLoader/MagnetHandler.js", DownloadManager);
+    Cu.import("resource://SynoLoader/Notification.js", DownloadManager);
+    Cu.import("resource://SynoLoader/QuickConnect.js", DownloadManager);
+    Cu.import("resource://SynoLoader/Util.js", DownloadManager);
 
     (function () {
         let quickConnectRelayTimeOutInMs = 8000,
@@ -29,9 +29,9 @@ if (typeof SL_DownloadManager === "undefined") {
         prefs.QueryInterface(Ci.nsIPrefBranch2);
         prefs.addObserver("", this, false);
 
-        this.Notification.show_notif = prefs.getBoolPref("show_notif");
-        this.Util.show_log = prefs.getBoolPref("show_debug");
-        this.MagnetHandler.set_active(prefs.getBoolPref("use_magnet"));
+        this.Notification.showNotif = prefs.getBoolPref("show_notif");
+        this.Util.showLog = prefs.getBoolPref("show_debug");
+        this.MagnetHandler.setActive(prefs.getBoolPref("use_magnet"));
 
         // Find users for the given parameters
         let logins = loginManager.findLogins({}, "chrome://SynoLoader.Pass", null, "User Registration");
@@ -130,7 +130,7 @@ if (typeof SL_DownloadManager === "undefined") {
                                generateUUID().toString().replace("{", "").replace("}", "");
                 file.append("synoloader" + uuid + ".torrent");
                 file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0666);
-                this.FileDownloaderHandler.get_file_content(
+                this.FileDownloaderHandler.getFileContent(
                     link,
                     file.path,
                     () => {
@@ -177,13 +177,13 @@ if (typeof SL_DownloadManager === "undefined") {
             );
         };
 
-        this.loadDownloadList = (manage_items_success, manage_items_fail) => {
+        this.loadDownloadList = (manageItemsSuccessCB, manageItemsFailCB) => {
             this.protocol.task_action(
                 (response) => {
                     if (response.success) {
-                        manage_items_success(response.items);
+                        manageItemsSuccessCB(response.items);
                     } else {
-                        manage_items_fail(response);
+                        manageItemsFailCB(response);
                     }
                 },
                 "getall"
@@ -194,20 +194,40 @@ if (typeof SL_DownloadManager === "undefined") {
             if (topic === "nsPref:changed") {
                 switch (data) {
                     case "show_notif":
-                        this.Notification.show_notif = prefs.getBoolPref("show_notif");
+                        this.Notification.showNotif = prefs.getBoolPref("show_notif");
                         break;
                     case "show_debug":
-                        this.Util.show_log = prefs.getBoolPref("show_debug");
+                        this.Util.showLog = prefs.getBoolPref("show_debug");
                         break;
                     case "use_magnet":
-                        this.MagnetHandler.set_active(prefs.getBoolPref("use_magnet"));
+                        this.MagnetHandler.setActive(prefs.getBoolPref("use_magnet"));
                         break;
                 }
             }
         };
 
-        this.httpResponseObserver = this.MagnetHandler.createObserver();
-        this.httpResponseObserver.observe = (aSubject, aTopic, aData) => {
+
+
+        this.httpResponseObserver = DownloadManager.MagnetHandler.createObserver();
+        this.httpResponseObserver.observe = function(aSubject, aTopic, aData) {
+            DownloadManager.Util.log("observer");
+            if (aTopic == 'magnet-on-open-uri') {
+                var aURI = aSubject.QueryInterface(Components.interfaces.nsIURI);
+                if (!aURI) return;
+                var uriText = aURI.spec;
+                DownloadManager.transferToNas(uriText);
+            }
+        };
+        DownloadManager.Util.log(JSON.stringify(this.httpResponseObserver));
+
+        this.observerService = Components.classes["@mozilla.org/observer-service;1"]
+            .getService(Components.interfaces.nsIObserverService);
+
+        this.observerService.addObserver(DownloadManager.httpResponseObserver, "magnet-on-open-uri", false);
+
+
+/*        this.httpResponseObserver.observe = (aSubject, aTopic, aData) => {
+        this.httpResponseObserver.observe = function (aSubject, aTopic, aData) {
             this.Util.log("observer");
             if (aTopic === "magnet-on-open-uri") {
                 let aURI = aSubject.QueryInterface(Ci.nsIURI);
@@ -218,7 +238,6 @@ if (typeof SL_DownloadManager === "undefined") {
 
         Cc["@mozilla.org/observer-service;1"].
             getService(Ci.nsIObserverService).
-            addObserver(this.httpResponseObserver, "magnet-on-open-uri", false);
-
-    }).apply(SL_DownloadManager);
+            addObserver(this.httpResponseObserver, "magnet-on-open-uri", false);*/
+    }).apply(DownloadManager);
 }

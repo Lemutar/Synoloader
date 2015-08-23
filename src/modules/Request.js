@@ -1,5 +1,5 @@
 var EXPORTED_SYMBOLS = ["Request"];
-const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 if (typeof Request === "undefined") {
     var Request = function (url, parameter, timeout, callback) {

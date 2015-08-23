@@ -1,4 +1,4 @@
-const { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 if (typeof SL_Options === "undefined") {
     var SL_Options = {};
@@ -43,15 +43,15 @@ if (typeof SL_Options === "undefined") {
             let myLoginInfo = new loginInfo("chrome://SynoLoader.Pass", null, "User Registration", username.value, password.value, "", "");
             loginManager.addLogin(myLoginInfo);
 
-            this.SL_DownloadManager.username = username.value;
-            this.SL_DownloadManager.password = password.value;
+            this.DownloadManager.username = username.value;
+            this.DownloadManager.password = password.value;
 
             this.checkConnection();
         };
 
         this.checkConnection = () => {
-            if (!this.SL_DownloadManager.isConnecting) {
-                this.SL_DownloadManager.connectToNas();
+            if (!this.DownloadManager.isConnecting) {
+                this.DownloadManager.connectToNas();
                 this.updateStatus();
                 this.updateStatusInterval = setInterval(() => {
                     this.updateStatus();
@@ -64,11 +64,11 @@ if (typeof SL_Options === "undefined") {
         };
 
         this.updateStatus = () => {
-            if (this.SL_DownloadManager.isConnecting) {
+            if (this.DownloadManager.isConnecting) {
                 this.wasConnecting = true;
                 this.setConnectionStatus("busy");
             } else if (this.wasConnecting) {
-                if (this.SL_DownloadManager.isConnected) {
+                if (this.DownloadManager.isConnected) {
                     this.setConnectionStatus("succeeded");
                 } else {
                     this.setConnectionStatus("failed");
@@ -78,7 +78,7 @@ if (typeof SL_Options === "undefined") {
         };
 
         this.onLoad = () => {
-            if (this.SL_DownloadManager.isConnected) {
+            if (this.DownloadManager.isConnected) {
                 this.setConnectionStatus("succeeded");
             }
             this.updateStatus();
