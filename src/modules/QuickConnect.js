@@ -1,9 +1,9 @@
 var EXPORTED_SYMBOLS = ["QuickConnect"];
 let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
-if (typeof QuickConnect === "undefined") {
-    Cu.import("resource://SynoLoader/Request.js");
+Cu.import("resource://SynoLoader/Request.js");
 
+if (typeof QuickConnect === "undefined") {
     var QuickConnect = function (timeoutRelay, timeoutInternal, protocol, port) {
         this.relayServer = "https://ukc.synology.com/Serv.php";
 
@@ -14,7 +14,7 @@ if (typeof QuickConnect === "undefined") {
                     externalIP: ""
                 };
 
-            Request(
+            new Request(
                 this.relayServer,
                 JSON.stringify({
                     version: "1",
@@ -48,13 +48,13 @@ if (typeof QuickConnect === "undefined") {
                 };
 
             internalIPs.forEach((ip) => {
-                Request(
+                new Request(
                     protocol + ip + ":" + port + "/webapi/query.cgi",
                     "api=SYNO.API.Info&version=1&method=query&query=api=SYNO.API.Info&version=1&method=query&query=SYNO.API.Auth,SYNO.DownloadStation.Task",
                     timeoutInternal,
                     (apiResponse) => {
                         if (apiResponse.status === 200) {
-                            if (first && apiResponse.json.success === true) {
+                            if (first && apiResponse.json.success) {
                                 first = false;
                                 response.success = true;
                                 response.ip = ip;
@@ -79,10 +79,10 @@ if (typeof QuickConnect === "undefined") {
                 };
 
             this.getServerInfo(quickConnectID, (serverInfoResponse) => {
-                if (serverInfoResponse.success === true) {
+                if (serverInfoResponse.success) {
                     this.checkInternalIPs(serverInfoResponse.internalIP, (response_ip) => {
                         response.success = true;
-                        if (response_ip.success === true) {
+                        if (response_ip.success) {
                             response.ip = response_ip.ip;
                         } else {
                             response.ip = serverInfoResponse.externalIP;
