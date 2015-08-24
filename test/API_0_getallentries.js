@@ -1,4 +1,4 @@
-utils.include( utils.baseURL + "../src/modules/API.js");
+utils.include(utils.baseURL + "../src/modules/API.js");
 
 let server;
 let api;
@@ -13,16 +13,17 @@ function setUp() {
   response = {};
   loaded = { value : false };
 
+  server.expect("/download/download_redirector.cgi", 200, "/connect.txt");
   server.expect("/download/download_redirector.cgi", 200, "/items.txt");
 
   api = new Protocol(0, "http://localhost:4445");
-  api.connectTime = Date.now();
 }
 
 function tearDown() { }
 
 function startUp() {
   server = utils.setUpHttpServer(4445, "../fixtures");
+  utils.writeTo('{"id":"CONNECTION_ID","login_success":true,"success":true}', "../fixtures/connect.txt");
 }
 
 function shutDown() {

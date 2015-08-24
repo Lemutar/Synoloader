@@ -1,11 +1,11 @@
 var EXPORTED_SYMBOLS = ["FileDownloaderHandler"];
 let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
+Cu.import("resource://gre/modules/Downloads.jsm");
+Cu.import("resource://gre/modules/Task.jsm");
+
 if (typeof FileDownloaderHandler === "undefined") {
     var FileDownloaderHandler = {};
-
-    Cu.import("resource://gre/modules/Downloads.jsm", FileDownloaderHandler);
-    Cu.import("resource://gre/modules/Task.jsm", FileDownloaderHandler);
 
     (function () {
         this.getFileContent = (source, destination, succeeded) => {

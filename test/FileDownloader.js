@@ -1,4 +1,4 @@
-utils.include( utils.baseURL + "../src/modules/FileDownloaderHandler.js");
+utils.include(utils.baseURL + "../src/modules/FileDownloaderHandler.js");
 
 let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 

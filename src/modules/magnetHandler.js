@@ -7,11 +7,10 @@ Cu.import("resource://SynoLoader/Util.js");
 // Our XPCOM components to handle the protocols.
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
-var manager = Components.manager.QueryInterface(Ci.nsIComponentRegistrar);
-
+let manager = Components.manager.QueryInterface(Ci.nsIComponentRegistrar);
 
 function Magnet_ProtocolWrapper () {
-    var myHandler = function () {};
+    let myHandler = function () {};
 
     myHandler.prototype = {
         QueryInterface: XPCOMUtils.generateQI([Ci.nsIProtocolHandler]),
@@ -67,8 +66,8 @@ MagnetHandler.setActive = (activate) => {
     Util.log("Synoloader: attempting to register protocol");
 
     try {
-        var protocolHandler = Magnet_ProtocolWrapper();
-        var proto = protocolHandler.prototype;
+        let protocolHandler = Magnet_ProtocolWrapper();
+        let proto = protocolHandler.prototype;
 
         if (activate) {
             Util.log("Synoloader: enabling magnet protocol");

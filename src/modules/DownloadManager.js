@@ -1,12 +1,13 @@
 var EXPORTED_SYMBOLS = ["DownloadManager"];
 let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
+Cu.import("resource://SynoLoader/Notification.js");
+
 if (typeof DownloadManager === "undefined") {
     var DownloadManager = {};
 
     Cu.import("resource://SynoLoader/FileDownloaderHandler.js", DownloadManager);
     Cu.import("resource://SynoLoader/MagnetHandler.js", DownloadManager);
-    Cu.import("resource://SynoLoader/Notification.js", DownloadManager);
     Cu.import("resource://SynoLoader/QuickConnect.js", DownloadManager);
     Cu.import("resource://SynoLoader/Util.js", DownloadManager);
 
@@ -19,7 +20,6 @@ if (typeof DownloadManager === "undefined") {
                         getService(Ci.nsIPrefService).
                         getBranch("extensions.SynoLoader.");
 
-
         this.isConnected = false;
         this.isConnecting = false;
         this.password = "";
@@ -29,7 +29,7 @@ if (typeof DownloadManager === "undefined") {
         prefs.QueryInterface(Ci.nsIPrefBranch2);
         prefs.addObserver("", this, false);
 
-        this.Notification.showNotif = prefs.getBoolPref("show_notif");
+        Notification.showNotif = prefs.getBoolPref("show_notif");
         this.Util.showLog = prefs.getBoolPref("show_debug");
         this.MagnetHandler.setActive(prefs.getBoolPref("use_magnet"));
 
@@ -59,19 +59,18 @@ if (typeof DownloadManager === "undefined") {
 
         this.convertOldURL = (url) => {
             if (prefs.getCharPref("host") === "") {
-                this.Util.log(url);
-                let url = this.parseURL(url);
-                if (url.protocol !== undefined) {
-                    prefs.setCharPref("protocol", url.protocol.replace(":", ""));
+                let newurl = this.parseURL(url);
+
+                if (newurl.protocol !== undefined) {
+                    prefs.setCharPref("protocol", newurl.protocol.replace(":", ""));
                 }
 
-                if (url.port !== undefined) {
-                    prefs.setCharPref("port", url.port.replace(":", ""));
-                    this.Util.log(url.port);
+                if (newurl.host !== undefined) {
+                    prefs.setCharPref("host", newurl.host);
                 }
 
-                if (url.host !== undefined) {
-                    prefs.setCharPref("host", url.host);
+                if (newurl.port !== undefined) {
+                    prefs.setCharPref("port", newurl.port.replace(":", ""));
                 }
             }
         };
@@ -80,13 +79,13 @@ if (typeof DownloadManager === "undefined") {
             switch (prefs.getCharPref("dsm_version")) {
                 case "1":
                     this.Util.log("Set Protocol to < DSM 4.1");
-                    Cu.import("resource://SynoLoader/Protocol.js", this);
-                    this.protocol = this.Protocol(this.urlToConnect, 50000, this.username, this.password);
+                    Cu.import("resource://SynoLoader/Protocol.js");
+                    this.protocol = Protocol(this.urlToConnect, 30000, this.username, this.password);
                     break;
                 case "2":
                     this.Util.log("Set Protocol to >= DSM 4.1");
-                    Cu.import("resource://SynoLoader/API.js", this);
-                    this.protocol = this.Protocol(1, this.urlToConnect, 50000, this.username, this.password);
+                    Cu.import("resource://SynoLoader/API.js");
+                    this.protocol = new Protocol(1, this.urlToConnect, 30000, this.username, this.password);
                     break;
             }
         };
@@ -121,7 +120,7 @@ if (typeof DownloadManager === "undefined") {
         };
 
         this.transferToNas = (link) => {
-            if (link.toLowerCase().endsWith(".torrent") && this.protocol.version > 0) {
+            if (link.toLowerCase().endsWith(".torrent") ) {
                 let file = Cc["@mozilla.org/file/directory_service;1"].
                                getService(Ci.nsIProperties).
                                get("TmpD", Ci.nsIFile),
@@ -137,9 +136,9 @@ if (typeof DownloadManager === "undefined") {
                         this.protocol.task_action(
                             (response) => {
                                 if (response.success) {
-                                    this.Notification.show("Send torrent file to NAS", link);
+                                    Notification.show("Send torrent file to NAS", link);
                                 } else {
-                                    this.Notification.show("Send link failed", response.error_text);
+                                    Notification.show("Send link failed", response.error_text);
                                 }
                             },
                             "addfile",
@@ -151,9 +150,9 @@ if (typeof DownloadManager === "undefined") {
                 this.protocol.task_action(
                     (response) => {
                         if (response.success) {
-                            this.Notification.show("Send link", link);
+                            Notification.show("Send link", link);
                         } else {
-                            this.Notification.show("Send link failed", response.error_text);
+                            Notification.show("Send link failed", response.error_text);
                         }
                     },
                     "addurl",
@@ -194,7 +193,7 @@ if (typeof DownloadManager === "undefined") {
             if (topic === "nsPref:changed") {
                 switch (data) {
                     case "show_notif":
-                        this.Notification.showNotif = prefs.getBoolPref("show_notif");
+                        Notification.showNotif = prefs.getBoolPref("show_notif");
                         break;
                     case "show_debug":
                         this.Util.showLog = prefs.getBoolPref("show_debug");

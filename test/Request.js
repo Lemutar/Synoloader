@@ -1,4 +1,4 @@
-utils.include( utils.baseURL + "../src/modules/Request.js");
+utils.include(utils.baseURL + "../src/modules/Request.js");
 
 let server;
 let request;

@@ -162,8 +162,9 @@ var Protocol = function (version, baseURL, timeout, username, password) {
         apiEndpoints = apiAllEndpoints[version],
         apiErrorTexts = apiAllErrorTexts[version];
 
-    this.baseURL = baseURL;
     this.ed2kDownloadFolder = "home";
+
+    this.baseURL = baseURL;
 
     this.connectTime = 0;
 
@@ -177,14 +178,6 @@ var Protocol = function (version, baseURL, timeout, username, password) {
             response.error_text = apiErrorTexts["common"][errorCode];
         } else {
             response.error_text = apiErrorTexts["common"][100];
-        }
-
-        if (hasErrorCode && hasModule) {
-            response.error_text = "(" + errorCode + ":" + module + ") " + response.error_text;
-        } else if (hasErrorCode) {
-            response.error_text = "(" + errorCode + ") " + response.error_text;
-        } else if (hasModule) {
-            response.error_text = "(" + module + ") " + response.error_text;
         }
     };
 
@@ -432,6 +425,4 @@ var Protocol = function (version, baseURL, timeout, username, password) {
 
         return listitems;
     };
-
-    return this;
 };
