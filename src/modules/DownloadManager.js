@@ -97,7 +97,7 @@ if (typeof DownloadManager === "undefined") {
             let protocol = prefs.getCharPref("protocol"),
                 port = prefs.getCharPref("port"),
                 host = prefs.getCharPref("host");
-            let quickConnect = QuickConnect(
+            let quickConnect = new QuickConnect(
                     quickConnectRelayTimeOutInMs,
                     quickConnectLocalTimeOutInMs,
                     protocol + "://",

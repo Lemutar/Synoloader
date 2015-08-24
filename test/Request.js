@@ -1,24 +1,25 @@
 utils.include(utils.baseURL + "../src/modules/Request.js");
 
-let server;
-let request;
-let response;
-let loaded;
-let cb = (res) => {
-  response = res;
-  loaded.value = true;
-};
+let server,
+    request,
+    response,
+    loaded,
+    cb = (res) => {
+      response = res;
+      loaded.value = true;
+    };
 
 function setUp() {
   response = {};
   loaded = { value : false };
+
+  request = new Request("http://localhost:4445/download", "", 500, cb);
 }
 
-function tearDown() { }
+function tearDown() {}
 
 function startUp() {
   server = utils.setUpHttpServer(4445, "../fixtures");
-  request = Request("http://localhost:4445/download", "", 500, cb)
 }
 
 function shutDown() {

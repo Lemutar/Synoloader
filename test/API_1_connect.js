@@ -1,22 +1,24 @@
 utils.include(utils.baseURL + "../src/modules/API.js");
 
-let server;
-let response;
-let loaded;
-let api;
-let cb = (res) => {
-  response = res;
-  loaded.value = true;
-};
+let api,
+    server,
+    loaded,
+    response,
+    cb = (res) => {
+      response = res;
+      loaded.value = true;
+    };
 
 function setUp() {
   response = {};
   loaded = { value : false };
+
   server.expect("/webapi/auth.cgi", 200, "/connect.txt");
+
   api = new Protocol(1, "http://localhost:4445");
 }
 
-function tearDown() { }
+function tearDown() {}
 
 function startUp() {
   server = utils.setUpHttpServer(4445, "../fixtures");
@@ -26,12 +28,14 @@ function shutDown() {
   utils.tearDownHttpServer(4445);
 }
 
+
 function doConnect(successful, str, responseKey) {
   api.connect(cb);
   utils.wait(loaded);
   assert.equals(successful, response.success);
   assert.equals(str, response[responseKey]);
 }
+
 
 test_API_1_connect_succeed_mock.description = "test_API_1_connect_succeed_mock";
 test_API_1_connect_succeed_mock.priority    = "must";

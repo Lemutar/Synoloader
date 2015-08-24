@@ -1,18 +1,17 @@
 utils.include(utils.baseURL + "../src/modules/API.js");
 
-let server;
-let api;
-let response;
-let loaded;
-let cb = (res) => {
-  response = res;
-  loaded.value = true;
-};
+let api,
+    server,
+    loaded,
+    response,
+    cb = (res) => {
+      response = res;
+      loaded.value = true;
+    };
 
 function setUp() {
   response = {};
   loaded = { value : false };
-
 
   server.expect("/webapi/auth.cgi", 200, "/connect.txt");
   server.expect("/webapi/DownloadStation/task.cgi", 200, "/items.txt");
@@ -20,7 +19,7 @@ function setUp() {
   api = new Protocol(1, "http://localhost:4445");
 }
 
-function tearDown() { }
+function tearDown() {}
 
 function startUp() {
   server = utils.setUpHttpServer(4445, "../fixtures");

@@ -1,22 +1,21 @@
 utils.include(utils.baseURL + "../src/modules/DownloadManager.js");
 
-let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
-
-let prefs;
-let server;
-let response;
-let loaded;
-let cb = (res) => {
-  response = res;
-  loaded.value = true;
-};
+let { classes: Cc, interfaces: Ci, utils: Cu } = Components,
+    prefs,
+    server,
+    loaded,
+    response,
+    cb = (res) => {
+      response = res;
+      loaded.value = true;
+    };
 
 function setUp() {
   response = {};
   loaded = { value : false };
 }
 
-function tearDown() { }
+function tearDown() {}
 
 function startUp() {
   server = utils.setUpHttpServer(4445, "../fixtures");

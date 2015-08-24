@@ -1,42 +1,43 @@
 utils.include(utils.baseURL + "../src/modules/QuickConnect.js");
 
-let quickConnect;
-let response;
-let loaded;
-let cb = (res) => {
-  response = res;
-  loaded.value = true;
-};
+let quickConnect,
+    server,
+    response,
+    loaded,
+    cb = (res) => {
+      response = res;
+      loaded.value = true;
+    };
 
 function setUp() {
   response = {};
   loaded = { value : false };
-}
 
-function tearDown() { }
-
-function startUp() {
   server = utils.setUpHttpServer(4445, "../fixtures");
 }
 
-function shutDown() {
+function tearDown() {
   utils.tearDownHttpServer(4445);
 }
+
+function startUp() {}
+
+function shutDown() {}
 
 
 test_quick_connect_get_nas_info.description = "test_quick_connect_get_nas_info";
 test_quick_connect_get_nas_info.priority    = "must";
 function test_quick_connect_get_nas_info() {
-  let quickConnectResponse = '{"version":1,"command":"get_server_info","errno":0,"server"\
-      :{"serverID":"002834820","ddns":"QuickConnectID.synology.me","fqdn":"NULL","ipv6_tunnel":[],"gateway":"192.168.0.1","interface":\
-      [{"ip":"192.168.0.200","ipv6":[{"addr_type":32,"address":"fe80::211:32ff:fe0a:d061","prefix_length":64,"scope":"link"}],\
-      "mask":"255.255.255.0","name":"eth0"},{"ip":"192.168.0.150","ipv6":[{"addr_type":32,"address":"fe80::211:32ff:fe0a:d061","prefix_length":64,"scope":"link"}],\
-      "mask":"255.255.255.0","name":"eth0"}],"external":{"ip":"217.162.254.219"},"behind_nat":true,"udp_punch_port":41864,"tcp_punch_port":0,"ds_state":"OFFLINE"},\
-      "client":{"external":{"ip":"217.162.254.219"}},"env":{"relay_region":"de","control_host":"dec.quickconnect.to"},"service":{"port":5001,"ext_port":0,"pingpong":"UNKNOWN"}}';
+  let quickConnectResponse = '{"version":1,"command":"get_server_info","errno":0,"server"' +
+      ':{"serverID":"002834820","ddns":"QuickConnectID.synology.me","fqdn":"NULL","ipv6_tunnel":[],"gateway":"192.168.0.1","interface":' +
+      '[{"ip":"192.168.0.200","ipv6":[{"addr_type":32,"address":"fe80::211:32ff:fe0a:d061","prefix_length":64,"scope":"link"}],' +
+      '"mask":"255.255.255.0","name":"eth0"},{"ip":"192.168.0.150","ipv6":[{"addr_type":32,"address":"fe80::211:32ff:fe0a:d061","prefix_length":64,"scope":"link"}],' +
+      '"mask":"255.255.255.0","name":"eth0"}],"external":{"ip":"217.162.254.219"},"behind_nat":true,"udp_punch_port":41864,"tcp_punch_port":0,"ds_state":"OFFLINE"},' +
+      '"client":{"external":{"ip":"217.162.254.219"}},"env":{"relay_region":"de","control_host":"dec.quickconnect.to"},"service":{"port":5001,"ext_port":0,"pingpong":"UNKNOWN"}}';
   utils.writeTo(quickConnectResponse, "../fixtures/connect.txt");
   server.expect("/relayServer.php", 200, "/connect.txt");
 
-  quickConnect = QuickConnect(1000, 200, "http://", 5000);
+  quickConnect = QuickConnect(1000, 200, "http://", 4445);
   quickConnect.relayServer = "http://localhost:4445/relayServer.php";
   quickConnect.getServerInfo("QuickConnectID", cb);
 
@@ -50,16 +51,16 @@ function test_quick_connect_get_nas_info() {
 test_quick_connect_get_nas_info_fail.description = "test_quick_connect_get_nas_info_fail";
 test_quick_connect_get_nas_info_fail.priority    = "must";
 function test_quick_connect_get_nas_info_fail() {
-  let quickConnectResponse = '{"version":1,"command":"get_server_info","errno":1,"server"\
-      :{"serverID":"002834820","ddns":"QuickConnectID.synology.me","fqdn":"NULL","ipv6_tunnel":[],"gateway":"192.168.0.1","interface":\
-      [{"ip":"192.168.0.200","ipv6":[{"addr_type":32,"address":"fe80::211:32ff:fe0a:d061","prefix_length":64,"scope":"link"}],\
-      "mask":"255.255.255.0","name":"eth0"},{"ip":"192.168.0.150","ipv6":[{"addr_type":32,"address":"fe80::211:32ff:fe0a:d061","prefix_length":64,"scope":"link"}],\
-      "mask":"255.255.255.0","name":"eth0"}],"external":{"ip":"217.162.254.219"},"behind_nat":true,"udp_punch_port":41864,"tcp_punch_port":0,"ds_state":"OFFLINE"},\
-      "client":{"external":{"ip":"217.162.254.219"}},"env":{"relay_region":"de","control_host":"dec.quickconnect.to"},"service":{"port":5001,"ext_port":0,"pingpong":"UNKNOWN"}}';
+  let quickConnectResponse = '{"version":1,"command":"get_server_info","errno":1,"server"' +
+      ':{"serverID":"002834820","ddns":"QuickConnectID.synology.me","fqdn":"NULL","ipv6_tunnel":[],"gateway":"192.168.0.1","interface":' +
+      '[{"ip":"192.168.0.200","ipv6":[{"addr_type":32,"address":"fe80::211:32ff:fe0a:d061","prefix_length":64,"scope":"link"}],' +
+      '"mask":"255.255.255.0","name":"eth0"},{"ip":"192.168.0.150","ipv6":[{"addr_type":32,"address":"fe80::211:32ff:fe0a:d061","prefix_length":64,"scope":"link"}],' +
+      '"mask":"255.255.255.0","name":"eth0"}],"external":{"ip":"217.162.254.219"},"behind_nat":true,"udp_punch_port":41864,"tcp_punch_port":0,"ds_state":"OFFLINE"},' +
+      '"client":{"external":{"ip":"217.162.254.219"}},"env":{"relay_region":"de","control_host":"dec.quickconnect.to"},"service":{"port":5001,"ext_port":0,"pingpong":"UNKNOWN"}}';
   utils.writeTo(quickConnectResponse, "../fixtures/connect.txt");
   server.expect("/relayServer.php", 200, "/connect.txt");
 
-  quickConnect = QuickConnect(1000, 200, "http://", 5000);
+  quickConnect = QuickConnect(1000, 200, "http://", 4445);
   quickConnect.relayServer = "http://localhost:4445/relayServer.php";
   quickConnect.getServerInfo("QuickConnectID", cb);
 
@@ -70,7 +71,7 @@ function test_quick_connect_get_nas_info_fail() {
 test_quick_connect_get_nas_info_fail_no_answer.description = "test_quick_connect_get_nas_info_fail_no_answer";
 test_quick_connect_get_nas_info_fail_no_answer.priority    = "must";
 function test_quick_connect_get_nas_info_fail_no_answer() {
-  quickConnect = QuickConnect(1000, 200, "http://", 5000);
+  quickConnect = QuickConnect(1000, 200, "http://", 4445);
   quickConnect.relayServer = "http://localhost:4445/relayServer.php";
   quickConnect.getServerInfo("QuickConnectID", cb);
 
@@ -82,6 +83,7 @@ test_quick_connect_checkInternalIPs.description = "test_quick_connect_checkInter
 test_quick_connect_checkInternalIPs.priority    = "must";
 function test_quick_connect_checkInternalIPs() {
   let internalIPs = ["localhost:4445/ip_1", "localhost:4445/ip_2"];
+
   utils.writeTo('{"data":2,"success":true}', "../fixtures/connect.txt");
   server.expect("/ip_1:4445/webapi/query.cgi", 200, { path : "/connect.txt", delay : 100 });
   server.expect("/ip_2:4445/webapi/query.cgi", 200, { path : "/connect.txt", delay : 50 });
@@ -98,6 +100,7 @@ test_quick_connect_checkInternalIPs_timeout.description = "test_quick_connect_ch
 test_quick_connect_checkInternalIPs_timeout.priority    = "must";
 function test_quick_connect_checkInternalIPs_timeout() {
   let internalIPs = ["localhost:4445/ip_1", "localhost:4445/ip_2"];
+
   utils.writeTo('{"data":2,"success":true}', "../fixtures/connect.txt");
   server.expect("/ip_1:4445/webapi/query.cgi", 200, { path : "/connect.txt", delay : 300 });
   server.expect("/ip_2:4445/webapi/query.cgi", 200, { path : "/connect.txt", delay : 300 });

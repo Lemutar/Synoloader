@@ -151,7 +151,7 @@ const apiAllResponseCallbacks = {
             }
         }
     }
-}
+};
 
 var Protocol = function (version, baseURL, timeout, username, password) {
     let connectionID = "",
@@ -174,10 +174,10 @@ var Protocol = function (version, baseURL, timeout, username, password) {
 
         if(typeof apiErrorTexts[module][errorCode] !== "undefined") {
             response.error_text = apiErrorTexts[module][errorCode];
-        } else if (typeof apiErrorTexts["common"][errorCode] !== "undefined") {
-            response.error_text = apiErrorTexts["common"][errorCode];
+        } else if (typeof apiErrorTexts.common[errorCode] !== "undefined") {
+            response.error_text = apiErrorTexts.common[errorCode];
         } else {
-            response.error_text = apiErrorTexts["common"][100];
+            response.error_text = apiErrorTexts.common[100];
         }
     };
 
@@ -226,7 +226,7 @@ var Protocol = function (version, baseURL, timeout, username, password) {
                 error_text: ""
             };
 
-        Request(this.baseURL + apiEndpoints.auth,
+        new Request(this.baseURL + apiEndpoints.auth,
             apiGetParameter("auth"),
             timeout,
             (apiResponse) => {
@@ -300,7 +300,7 @@ var Protocol = function (version, baseURL, timeout, username, password) {
                     break;
             }
 
-            let request = Request(url, param, timeout, (apiResponse) => {
+            let request = new Request(url, param, timeout, (apiResponse) => {
                     apiResponseCallback(callback, response, apiResponse, "download");
                 });
             switch (method) {
