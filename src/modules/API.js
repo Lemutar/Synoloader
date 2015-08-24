@@ -291,6 +291,7 @@ var Protocol = function (version, baseURL, timeout, username, password) {
 
                 case "delete":
                     param = "&force_complete=false";
+                    // Don't break!
                 case "resume":
                 case "pause":
                     method = "get";
@@ -325,8 +326,8 @@ var Protocol = function (version, baseURL, timeout, username, password) {
     this.calcItems = (items) => {
         let doc = Cc["@mozilla.org/appshell/window-mediator;1"].
                       getService(Ci.nsIWindowMediator).
-                      getMostRecentWindow("navigator:browser").document;
-        let listitems = [];
+                      getMostRecentWindow("navigator:browser").document,
+            listitems = [];
         items.forEach((item) => {
             let listitem = doc.createElement("richlistitem");
             listitem.setAttribute("id", "sl-item-" + item.id);
@@ -405,7 +406,6 @@ var Protocol = function (version, baseURL, timeout, username, password) {
             }
             resumeButton.setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/" + resumeButton.action + ".png);");
 
-
             let deleteButton = doc.createElement("toolbarbutton");
             deleteButton.task = item;
             deleteButton.setAttribute("id", "sl-item-delete-" + item.id);
@@ -413,7 +413,6 @@ var Protocol = function (version, baseURL, timeout, username, password) {
             deleteButton.setAttribute("autocheck", "false");
             deleteButton.addEventListener("command", this.onDelete, true);
             deleteButton.setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/delete.png);");
-
 
             wrapper.appendChild(resumeButton);
             wrapper.appendChild(deleteButton);

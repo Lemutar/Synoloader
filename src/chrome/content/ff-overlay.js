@@ -1,6 +1,7 @@
 let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
 Cu.import("resource://SynoLoader/DownloadManager.js");
+Cu.import("resource://SynoLoader/Notification.js");
 Cu.import("resource://SynoLoader/Util.js");
 
 if (typeof SL_Overlay === "undefined") {
@@ -88,7 +89,7 @@ if (typeof SL_Overlay === "undefined") {
             if (DownloadManager.isConnected) {
                 window.open(DownloadManager.urlToConnect + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", this.strWindowFeatures);
             } else {
-                DownloadManager.Notification.show("No Connection");
+                Notification.show("No Connection");
             }
         };
 
@@ -96,7 +97,7 @@ if (typeof SL_Overlay === "undefined") {
             if (DownloadManager.isConnected) {
                 DownloadManager.transferToNas(gContextMenu.linkURL);
             } else {
-                DownloadManager.Notification.show("No Connection");
+                Notification.show("No Connection");
             }
         };
 

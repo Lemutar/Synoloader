@@ -10,7 +10,6 @@ Cu.import("resource://SynoLoader/Util.js");
 if (typeof DownloadManager === "undefined") {
     var DownloadManager = {};
 
-
     (function () {
         let quickConnectRelayTimeOutInMs = 8000,
             quickConnectLocalTimeOutInMs = 8000,
@@ -213,7 +212,9 @@ if (typeof DownloadManager === "undefined") {
             Util.log("observer");
             if (topic === "magnet-on-open-uri") {
                 let aURI = subject.QueryInterface(Ci.nsIURI);
-                if (!aURI) return;
+                if (!aURI) {
+                    return;
+                }
                 this.transferToNas(aURI.spec);
             }
         };

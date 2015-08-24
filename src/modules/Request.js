@@ -7,11 +7,11 @@ if (typeof Request === "undefined") {
                                createInstance(Ci.nsIXMLHttpRequest);
 
         let response = {
-            text: "",
-            statusText: "",
-            status: 0,
-            json: {}
-        };
+                text: "",
+                statusText: "",
+                status: 0,
+                json: {}
+            };
 
         this.httpRequest.timeout = timeout;
         this.httpRequest.ontimeout = () => {
