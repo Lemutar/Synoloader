@@ -1,15 +1,15 @@
 var EXPORTED_SYMBOLS = ["DownloadManager"];
 let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
+Cu.import("resource://SynoLoader/FileDownloaderHandler.js");
+Cu.import("resource://SynoLoader/MagnetHandler.js");
 Cu.import("resource://SynoLoader/Notification.js");
+Cu.import("resource://SynoLoader/QuickConnect.js");
+Cu.import("resource://SynoLoader/Util.js");
 
 if (typeof DownloadManager === "undefined") {
     var DownloadManager = {};
 
-    Cu.import("resource://SynoLoader/FileDownloaderHandler.js", DownloadManager);
-    Cu.import("resource://SynoLoader/MagnetHandler.js", DownloadManager);
-    Cu.import("resource://SynoLoader/QuickConnect.js", DownloadManager);
-    Cu.import("resource://SynoLoader/Util.js", DownloadManager);
 
     (function () {
         let quickConnectRelayTimeOutInMs = 8000,
@@ -30,8 +30,8 @@ if (typeof DownloadManager === "undefined") {
         prefs.addObserver("", this, false);
 
         Notification.showNotif = prefs.getBoolPref("show_notif");
-        this.Util.showLog = prefs.getBoolPref("show_debug");
-        this.MagnetHandler.setActive(prefs.getBoolPref("use_magnet"));
+        Util.showLog = prefs.getBoolPref("show_debug");
+        MagnetHandler.setActive(prefs.getBoolPref("use_magnet"));
 
         // Find users for the given parameters
         let logins = loginManager.findLogins({}, "chrome://SynoLoader.Pass", null, "User Registration");
@@ -78,12 +78,12 @@ if (typeof DownloadManager === "undefined") {
         this.setProtocol = () => {
             switch (prefs.getCharPref("dsm_version")) {
                 case "1":
-                    this.Util.log("Set Protocol to < DSM 4.1");
+                    Util.log("Set Protocol to < DSM 4.1");
                     Cu.import("resource://SynoLoader/Protocol.js");
                     this.protocol = Protocol(this.urlToConnect, 30000, this.username, this.password);
                     break;
                 case "2":
-                    this.Util.log("Set Protocol to >= DSM 4.1");
+                    Util.log("Set Protocol to >= DSM 4.1");
                     Cu.import("resource://SynoLoader/API.js");
                     this.protocol = new Protocol(1, this.urlToConnect, 30000, this.username, this.password);
                     break;
@@ -97,7 +97,7 @@ if (typeof DownloadManager === "undefined") {
             let protocol = prefs.getCharPref("protocol"),
                 port = prefs.getCharPref("port"),
                 host = prefs.getCharPref("host");
-            let quickConnect = this.QuickConnect(
+            let quickConnect = QuickConnect(
                     quickConnectRelayTimeOutInMs,
                     quickConnectLocalTimeOutInMs,
                     protocol + "://",
@@ -126,10 +126,13 @@ if (typeof DownloadManager === "undefined") {
                                get("TmpD", Ci.nsIFile),
                     uuid = Cc["@mozilla.org/uuid-generator;1"].
                                getService(Ci.nsIUUIDGenerator).
-                               generateUUID().toString().replace("{", "").replace("}", "");
+                               generateUUID().
+                               toString().
+                               replace("{", "").
+                               replace("}", "");
                 file.append("synoloader" + uuid + ".torrent");
                 file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0666);
-                this.FileDownloaderHandler.getFileContent(
+                FileDownloaderHandler.getFileContent(
                     link,
                     file.path,
                     () => {
@@ -162,16 +165,16 @@ if (typeof DownloadManager === "undefined") {
         };
 
         this.delete_all = () => {
-            this.Util.log("delete_all");
+            Util.log("delete_all");
             this.loadDownloadList(
                 (items) => {
                     items.forEach((item) => {
-                        this.Util.log("delete " + item.id);
+                        Util.log("delete " + item.id);
                         this.protocol.task_action(() => {}, "delete", item.id);
                     });
                 },
                 (response) => {
-                    this.Util.log("loadDownloadList: " + response.error_text);
+                    Util.log("loadDownloadList: " + response.error_text);
                 }
             );
         };
@@ -196,40 +199,20 @@ if (typeof DownloadManager === "undefined") {
                         Notification.showNotif = prefs.getBoolPref("show_notif");
                         break;
                     case "show_debug":
-                        this.Util.showLog = prefs.getBoolPref("show_debug");
+                        Util.showLog = prefs.getBoolPref("show_debug");
                         break;
                     case "use_magnet":
-                        this.MagnetHandler.setActive(prefs.getBoolPref("use_magnet"));
+                        MagnetHandler.setActive(prefs.getBoolPref("use_magnet"));
                         break;
                 }
             }
         };
 
-
-
-        this.httpResponseObserver = DownloadManager.MagnetHandler.createObserver();
-        this.httpResponseObserver.observe = function(aSubject, aTopic, aData) {
-            DownloadManager.Util.log("observer");
-            if (aTopic == 'magnet-on-open-uri') {
-                var aURI = aSubject.QueryInterface(Components.interfaces.nsIURI);
-                if (!aURI) return;
-                var uriText = aURI.spec;
-                DownloadManager.transferToNas(uriText);
-            }
-        };
-        DownloadManager.Util.log(JSON.stringify(this.httpResponseObserver));
-
-        this.observerService = Components.classes["@mozilla.org/observer-service;1"]
-            .getService(Components.interfaces.nsIObserverService);
-
-        this.observerService.addObserver(DownloadManager.httpResponseObserver, "magnet-on-open-uri", false);
-
-
-/*        this.httpResponseObserver.observe = (aSubject, aTopic, aData) => {
-        this.httpResponseObserver.observe = function (aSubject, aTopic, aData) {
-            this.Util.log("observer");
-            if (aTopic === "magnet-on-open-uri") {
-                let aURI = aSubject.QueryInterface(Ci.nsIURI);
+        this.httpResponseObserver = MagnetHandler.createObserver();
+        this.httpResponseObserver.observe = (subject, topic, data) => {
+            Util.log("observer");
+            if (topic === "magnet-on-open-uri") {
+                let aURI = subject.QueryInterface(Ci.nsIURI);
                 if (!aURI) return;
                 this.transferToNas(aURI.spec);
             }
@@ -237,6 +220,7 @@ if (typeof DownloadManager === "undefined") {
 
         Cc["@mozilla.org/observer-service;1"].
             getService(Ci.nsIObserverService).
-            addObserver(this.httpResponseObserver, "magnet-on-open-uri", false);*/
+            addObserver(this.httpResponseObserver, "magnet-on-open-uri", false);
+
     }).apply(DownloadManager);
 }

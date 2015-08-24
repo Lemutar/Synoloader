@@ -21,7 +21,6 @@ function tearDown() { }
 function startUp() {
   server = utils.setUpHttpServer(4445, "../fixtures");
 
-
   prefs = Cc["@mozilla.org/preferences-service;1"].
     getService(Ci.nsIPrefService).
     getBranch("extensions.SynoLoader.");
@@ -32,7 +31,6 @@ function startUp() {
 function shutDown() {
   utils.tearDownHttpServer(4445);
 }
-
 
 
 function setUpAPI() {
@@ -47,7 +45,7 @@ function setUpAPI() {
 function setUpNotificationMock(title, text) {
   let NotificationMock = new Mock(Notification);
   NotificationMock.expect("show", [title, text], null).
-    andStub((title, text) => { loaded.value = true; }).
+    andStub(() => { loaded.value = true; }).
     times(1);
   Notification = NotificationMock;
 }

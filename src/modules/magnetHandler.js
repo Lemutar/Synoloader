@@ -9,7 +9,7 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
 let manager = Components.manager.QueryInterface(Ci.nsIComponentRegistrar);
 
-function Magnet_ProtocolWrapper () {
+function MagnetProtocolWrapper () {
     let myHandler = function () {};
 
     myHandler.prototype = {
@@ -60,13 +60,13 @@ function Magnet_ProtocolWrapper () {
 // This function takes care of register/unregister the protocol handlers as requested
 // It's called when the preferences change.
 var MagnetHandler = {};
+let protocolHandler = MagnetProtocolWrapper();
 
 MagnetHandler.setActive = (activate) => {
 
     Util.log("Synoloader: attempting to register protocol");
 
     try {
-        let protocolHandler = Magnet_ProtocolWrapper();
         let proto = protocolHandler.prototype;
 
         if (activate) {

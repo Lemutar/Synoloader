@@ -1,10 +1,10 @@
 let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
+Cu.import("resource://SynoLoader/DownloadManager.js");
+Cu.import("resource://SynoLoader/Util.js");
+
 if (typeof SL_Overlay === "undefined") {
     var SL_Overlay = {};
-
-    Cu.import("resource://SynoLoader/DownloadManager.js", SL_Overlay);
-    Cu.import("resource://SynoLoader/Util.js", SL_Overlay);
 
     (function () {
         this.firstRun = (extensions) => {
@@ -30,12 +30,12 @@ if (typeof SL_Overlay === "undefined") {
                 label.setAttribute("value", "Loading...");
             }
 
-            this.DownloadManager.loadDownloadList(
+            DownloadManager.loadDownloadList(
                 (items) => {
                     let loadedList = {};
 
-                    if (typeof this.DownloadManager.protocol !== "undefined") {
-                        loadedList = this.DownloadManager.protocol.calcItems(items);
+                    if (typeof DownloadManager.protocol !== "undefined") {
+                        loadedList = DownloadManager.protocol.calcItems(items);
                     }
 
                     let count = list.itemCount;
@@ -70,7 +70,7 @@ if (typeof SL_Overlay === "undefined") {
         };
 
         this.onLoad = () => {
-            this.Util.log("SL_Overlay loaded");
+            Util.log("SL_Overlay loaded");
             if (Application.extensions) {
                 this.firstRun(Application.extensions);
             } else {
@@ -81,22 +81,22 @@ if (typeof SL_Overlay === "undefined") {
                 addEventListener("popupshowing", (event) => {
                     this.showFirefoxContextMenu(event);
                 }, false);
-            this.DownloadManager.connectToNas();
+            DownloadManager.connectToNas();
         };
 
         this.onMenuItemLinkCommand = (event) => {
-            if (this.DownloadManager.isConnected) {
-                window.open(this.DownloadManager.urlToConnect + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", this.strWindowFeatures);
+            if (DownloadManager.isConnected) {
+                window.open(DownloadManager.urlToConnect + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", this.strWindowFeatures);
             } else {
-                this.DownloadManager.Notification.show("No Connection");
+                DownloadManager.Notification.show("No Connection");
             }
         };
 
         this.onMenuItemCommand = (event) => {
-            if (this.DownloadManager.isConnected) {
-                this.DownloadManager.transferToNas(gContextMenu.linkURL);
+            if (DownloadManager.isConnected) {
+                DownloadManager.transferToNas(gContextMenu.linkURL);
             } else {
-                this.DownloadManager.Notification.show("No Connection");
+                DownloadManager.Notification.show("No Connection");
             }
         };
 

@@ -1,9 +1,9 @@
 let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
 
+Cu.import("resource://SynoLoader/DownloadManager.js");
+
 if (typeof SL_Options === "undefined") {
     var SL_Options = {};
-
-    Cu.import("resource://SynoLoader/DownloadManager.js", SL_Options);
 
     (function () {
         this.wasConnecting = false;
@@ -43,15 +43,15 @@ if (typeof SL_Options === "undefined") {
             let myLoginInfo = new loginInfo("chrome://SynoLoader.Pass", null, "User Registration", username.value, password.value, "", "");
             loginManager.addLogin(myLoginInfo);
 
-            this.DownloadManager.username = username.value;
-            this.DownloadManager.password = password.value;
+            DownloadManager.username = username.value;
+            DownloadManager.password = password.value;
 
             this.checkConnection();
         };
 
         this.checkConnection = () => {
-            if (!this.DownloadManager.isConnecting) {
-                this.DownloadManager.connectToNas();
+            if (!DownloadManager.isConnecting) {
+                DownloadManager.connectToNas();
                 this.updateStatus();
                 this.updateStatusInterval = setInterval(() => {
                     this.updateStatus();
@@ -64,11 +64,11 @@ if (typeof SL_Options === "undefined") {
         };
 
         this.updateStatus = () => {
-            if (this.DownloadManager.isConnecting) {
+            if (DownloadManager.isConnecting) {
                 this.wasConnecting = true;
                 this.setConnectionStatus("busy");
             } else if (this.wasConnecting) {
-                if (this.DownloadManager.isConnected) {
+                if (DownloadManager.isConnected) {
                     this.setConnectionStatus("succeeded");
                 } else {
                     this.setConnectionStatus("failed");
@@ -78,7 +78,7 @@ if (typeof SL_Options === "undefined") {
         };
 
         this.onLoad = () => {
-            if (this.DownloadManager.isConnected) {
+            if (DownloadManager.isConnected) {
                 this.setConnectionStatus("succeeded");
             }
             this.updateStatus();
