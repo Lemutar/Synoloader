@@ -23,6 +23,7 @@ if (typeof window == 'undefined')
 var Ci = Components.interfaces;
 
 var ns = {};
+Components.utils.import('resource://uxu-modules/lib/inherit.jsm', ns);
 Components.utils.import('resource://uxu-modules/lib/stringBundle.js', ns);
 Components.utils.import('resource://uxu-modules/utils.js', ns);
 Components.utils.import('resource://uxu-modules/diff.js', ns);
@@ -38,8 +39,7 @@ function Assertions()
 	this.resetSuccessCount();
 }
 
-Assertions.prototype = {
-	__proto__ : ns.EventTarget.prototype,
+Assertions.prototype = ns.inherit(ns.EventTarget.prototype, {
 
 	get successCount() {
 		return this._successCount;
@@ -502,18 +502,18 @@ Assertions.prototype = {
 			case 'string':
 			case 'number':
 				return (
-					aActual.name == aExpected ||
-					aActual.message == aExpected ||
-					aActual.name+': '+aActual.message == aExpected ||
+					aActual.name == String(aExpected) ||
+					aActual.message == String(aExpected) ||
+					aActual.name+': '+aActual.message == String(aExpected) ||
 					aActual.result == aExpected ||
-					(NSErrorName && NSErrorName == aExpected)
+					(NSErrorName !== null && NSErrorName == String(aExpected))
 				);
 
 			case 'function':
 				return aActual instanceof aExpected;
 
 			case 'object':
-				if (!aExpected)
+				if (aExpected === null)
 					return false;
 				switch (Object.prototype.toString.apply(aExpected))
 				{
@@ -523,11 +523,12 @@ Assertions.prototype = {
 							aExpected.test(aActual.message) ||
 							aExpected.test(aActual.name+': '+aActual.message) ||
 							aExpected.test(aActual.result) ||
-							(NSErrorName && aExpected.test(NSErrorName))
+							(NSErrorName !== null && aExpected.test(NSErrorName))
 						);
 
 					default:
-						let (checked = false) {
+						{
+							let checked = false;
 							for (let i in aExpected)
 							{
 								if (aExpected.hasOwnProperty(i) &&
@@ -953,12 +954,12 @@ Assertions.prototype = {
 	contains : function(aExpected, aActual, aMessage)
 	{
 		if (
-			(aActual instanceof Ci.nsIDOMRange) ?
-				!utils.isTargetInRange(aExpected, aActual) :
 			(aActual instanceof Ci.nsISelection) ?
 				!utils.isTargetInSelection(aExpected, aActual) :
-			(aActual instanceof Ci.nsIDOMNode) ?
+			utils.isDOMNode(aActual) ?
 				!utils.isTargetInSubTree(aExpected, aActual) :
+			utils.isDOMRange(aActual) ?
+				!utils.isTargetInRange(aExpected, aActual) :
 				(utils.isArray(aActual) ? aActual : String(aActual) ).indexOf(aExpected) < 0
 			)
 			this._fail({
@@ -976,12 +977,12 @@ Assertions.prototype = {
 	notContains : function(aExpected, aActual, aMessage)
 	{
 		if (
-			(aActual instanceof Ci.nsIDOMRange) ?
-				utils.isTargetInRange(aExpected, aActual) :
 			(aActual instanceof Ci.nsISelection) ?
 				utils.isTargetInSelection(aExpected, aActual) :
-			(aActual instanceof Ci.nsIDOMNode) ?
+			utils.isDOMNode(aActual) ?
 				utils.isTargetInSubTree(aExpected, aActual) :
+			utils.isDOMRange(aActual) ?
+				utils.isTargetInRange(aExpected, aActual) :
 				(utils.isArray(aActual) ? aActual : String(aActual) ).indexOf(aExpected) > -1
 			)
 			this._fail({
@@ -999,12 +1000,12 @@ Assertions.prototype = {
 	contained : function(aExpected, aActual, aMessage)
 	{
 		if (
-			(aExpected instanceof Ci.nsIDOMRange) ?
-				!utils.isTargetInRange(aActual, aExpected) :
 			(aExpected instanceof Ci.nsISelection) ?
 				!utils.isTargetInSelection(aActual, aExpected) :
-			(aExpected instanceof Ci.nsIDOMNode) ?
+			utils.isDOMNode(aExpected) ?
 				!utils.isTargetInSubTree(aActual, aExpected) :
+			utils.isDOMRange(aExpected) ?
+				!utils.isTargetInRange(aActual, aExpected) :
 				(utils.isArray(aExpected) ? aExpected : String(aExpected) ).indexOf(aActual) < 0
 			)
 			this._fail({
@@ -1021,12 +1022,12 @@ Assertions.prototype = {
 	notContained : function(aExpected, aActual, aMessage)
 	{
 		if (
-			(aExpected instanceof Ci.nsIDOMRange) ?
-				utils.isTargetInRange(aActual, aExpected) :
 			(aExpected instanceof Ci.nsISelection) ?
 				utils.isTargetInSelection(aActual, aExpected) :
-			(aExpected instanceof Ci.nsIDOMNode) ?
+			utils.isDOMNode(aExpected) ?
 				utils.isTargetInSubTree(aActual, aExpected) :
+			utils.isDOMRange(aExpected) ?
+				utils.isTargetInRange(aActual, aExpected) :
 				(utils.isArray(aExpected) ? aExpected : String(aExpected) ).indexOf(aActual) > -1
 			)
 			this._fail({
@@ -1269,7 +1270,7 @@ Assertions.prototype = {
 	{
 		if (aValue === null) return 'null';
 		if (aValue === void(0)) return 'undefined';
-		var args = (aValue instanceof Ci.nsIDOMNode) ?
+		var args = utils.isDOMNode(aValue) ?
 				[utils.inspectDOMNode(aValue), utils.inspect(aValue)] :
 				[utils.inspect(aValue), utils.inspectType(aValue)]
 		return bundle.getFormattedString('typed_value', args);
@@ -1324,4 +1325,4 @@ Assertions.prototype = {
 			})(aMethod, 'assert');
 		}
 	}
-};
+});

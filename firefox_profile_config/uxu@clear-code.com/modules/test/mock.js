@@ -46,6 +46,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 var ns = {};
+Components.utils.import('resource://uxu-modules/lib/inherit.jsm', ns);
 Components.utils.import('resource://uxu-modules/utils.js', ns);
 Components.utils.import('resource://uxu-modules/multiplexError.js', ns);
 Components.utils.import('resource://uxu-modules/test/assertions.js', ns);
@@ -1026,8 +1027,7 @@ function GetterMock(aName, aSource, aAssertions)
 	this.init(aName, aSource, aAssertions);
 	return this.createFunction();
 }
-GetterMock.prototype = {
-	__proto__ : FunctionMock.prototype,
+GetterMock.prototype = ns.inherit(FunctionMock.prototype, {
 	defaultName : bundle.getString('getter_mock_default_name'),
 	expect : function(aReturnValue)
 	{
@@ -1092,7 +1092,7 @@ GetterMock.prototype = {
 	{
 		this.assertInternal('getter_mock_assert_error', 'getter_mock_assert_fail');
 	}
-};
+});
 
 function SetterMock(aName, aSource, aAssertions)
 {
@@ -1101,8 +1101,7 @@ function SetterMock(aName, aSource, aAssertions)
 	this.init(aName, aSource, aAssertions);
 	return this.createFunction();
 }
-SetterMock.prototype = {
-	__proto__ : FunctionMock.prototype,
+SetterMock.prototype = ns.inherit(FunctionMock.prototype, {
 	defaultName : bundle.getString('setter_mock_default_name'),
 	expect : function(aArgument, aReturnValue)
 	{
@@ -1178,7 +1177,7 @@ SetterMock.prototype = {
 	{
 		this.assertInternal('setter_mock_assert_error', 'setter_mock_assert_fail');
 	}
-};
+});
 
 function HTTPServerMock(aName, aSource, aAssertions)
 {
@@ -1187,8 +1186,7 @@ function HTTPServerMock(aName, aSource, aAssertions)
 	this.init(aName, aSource, aAssertions);
 	return this.createFunction();
 }
-HTTPServerMock.prototype = {
-	__proto__ : FunctionMock.prototype,
+HTTPServerMock.prototype = ns.inherit(FunctionMock.prototype, {
 	defaultName : bundle.getString('server_mock_default_name'),
 	expect : function(aArgument, aReturnValue)
 	{
@@ -1345,7 +1343,7 @@ HTTPServerMock.prototype = {
 
 		return result;
 	}
-};
+});
 
 // JSMock API
 function TypeOf(aConstructor) {

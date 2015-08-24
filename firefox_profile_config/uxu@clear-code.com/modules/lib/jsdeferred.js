@@ -390,12 +390,15 @@ this.Deferred = Deferred;
 
 
 Deferred.postie_for_message_manager = function (manager) {
-	var ret = {
-			__proto__ : manager,
-			__noSuchMethod__ : function (name, args) {
-				return manager[name].apply(manager, args);
+	var ret = Object.create(manager, {
+			__noSuchMethod__ : {
+				writable     : true,
+				configurable : true,
+				value        : function (name, args) {
+					return manager[name].apply(manager, args);
+				}
 			}
-		};
+		});
 	var id  = 0;
 	var cb  = {};
 	var mm  = [];

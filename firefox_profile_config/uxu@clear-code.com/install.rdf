@@ -7,7 +7,7 @@
 
 		<em:id>uxu@clear-code.com</em:id>
 		<em:name>UxU - UnitTest.XUL</em:name>
-		<em:version>1.0.2</em:version>
+		<em:version>1.0.4</em:version>
 		<em:description>Provides features for unit tests and functional tests.</em:description>
 		<em:creator>ClearCode inc.</em:creator>
 		<em:optionsURL>chrome://uxu/content/ui/config.xul</em:optionsURL>
@@ -21,14 +21,14 @@
 		<em:targetApplication>
 			<!-- Firefox -->
 			<Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
-				em:minVersion="17.0"
-				em:maxVersion="31.0a1" />
+				em:minVersion="31.0"
+				em:maxVersion="40.0a1" />
 		</em:targetApplication>
 		<em:targetApplication>
 			<!-- Thunderbird -->
 			<Description em:id="{3550f703-e582-4d05-9a08-453d09bdfdc6}"
-				em:minVersion="17.0"
-				em:maxVersion="31.0a1" />
+				em:minVersion="31.0"
+				em:maxVersion="38.*" />
 		</em:targetApplication>
 		<em:targetApplication>
 			<!-- XULRunner Applications -->

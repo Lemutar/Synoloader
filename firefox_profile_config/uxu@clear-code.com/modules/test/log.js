@@ -184,7 +184,7 @@ TestLog.prototype = {
 					result.push(this.bundle.getFormattedString('log_test_diff', [aTopic.diff]));
 				if (aTopic.stackTrace && aTopic.stackTrace.length) {
 					result.push('');
-					result.push(aTopic.stackTrace);
+					result.push(aTopic.stackTrace.join('\n'));
 				}
 				aTopic.notifications.forEach(function(aNotification) {
 					if (!aNotification.description &&

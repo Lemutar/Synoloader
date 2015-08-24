@@ -41,6 +41,7 @@ var Cc = Components.classes;
 var Ci = Components.interfaces;
 
 var ns = {};
+Components.utils.import('resource://uxu-modules/lib/inherit.jsm', ns);
 Components.utils.import('resource://uxu-modules/eventTarget.js', ns);
 Components.utils.import('resource://uxu-modules/utils.js', ns);
 Components.utils.import('resource://uxu-modules/mail/observer.js', ns);
@@ -134,8 +135,7 @@ function MailUtils(aSuite)
 	this.compose = new Compose(this, aSuite);
 }
 
-MailUtils.prototype = {
-	__proto__ : EventTarget.prototype,
+MailUtils.prototype = ns.inherit(EventTarget.prototype, {
 
 	get deliveries() {
 		return this._observer.data;
@@ -358,4 +358,4 @@ MailUtils.prototype = {
 	);
 	*/
 
-};
+});

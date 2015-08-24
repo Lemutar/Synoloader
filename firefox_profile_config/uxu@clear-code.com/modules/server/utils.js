@@ -14,7 +14,7 @@
  * The Original Code is UxU - UnitTest.XUL.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <shimoda@clear-code.com>
@@ -37,6 +37,7 @@ if (typeof window == 'undefined')
 	this.EXPORTED_SYMBOLS = ['ServerUtils'];
 
 var ns = {};
+Components.utils.import('resource://uxu-modules/lib/inherit.jsm', ns);
 Components.utils.import('resource://uxu-modules/eventTarget.js', ns);
 Components.utils.import('resource://uxu-modules/utils.js', ns);
 Components.utils.import('resource://uxu-modules/multiplexError.js', ns);
@@ -58,8 +59,7 @@ function ServerUtils(aMockManager)
 	this._HTTPServerInstances = [];
 }
 
-ServerUtils.prototype = {
-	__proto__ : ns.EventTarget.prototype,
+ServerUtils.prototype = ns.inherit(ns.EventTarget.prototype, {
 
 	sendMessage : function(aMessage, aHost, aPort, aListener) 
 	{
@@ -216,4 +216,4 @@ ServerUtils.prototype = {
 		return this._HTTPServerInstances.length > 0;
 	},
 	isHTTPServerRunning : function() { return this.isHttpServerRunning.apply(this, arguments); }
-};
+});

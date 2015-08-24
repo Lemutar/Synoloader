@@ -15,7 +15,7 @@
  * The Original Code is UxU - UnitTest.XUL.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <shimoda@clear-code.com>
@@ -38,6 +38,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 Components.utils.import('resource://gre/modules/XPCOMUtils.jsm');
+Components.utils.import('resource://uxu-modules/lib/inherit.jsm');
 
 // default "@mozilla.org/network/protocol;1?name=http" class id
 const DEFAULT_HTTP_PROTOCOL_HANDLER = Components.classesByID['{4f47e42e-4d23-4dd3-bfda-eb29255e9ea3}'];
@@ -278,26 +279,24 @@ ProtocolHandlerProxy.prototype.initProperties();
 function HttpProtocolHandlerProxy() { 
 	this.initNonSecure();
 }
-HttpProtocolHandlerProxy.prototype = {
+HttpProtocolHandlerProxy.prototype = inherit(ProtocolHandlerProxy.prototype, {
 	
 	classDescription : 'UxUHttpProtocolHandlerProxy', 
 	contractID : '@mozilla.org/network/protocol;1?name=http',
 	classID : Components.ID('{3d04c1d0-4e6c-11de-8a39-0800200c9a66}')
  
-}; 
-HttpProtocolHandlerProxy.prototype.__proto__ = ProtocolHandlerProxy.prototype;
+}); 
   
 function HttpsProtocolHandlerProxy() { 
 	this.initSecure();
 }
-HttpsProtocolHandlerProxy.prototype = {
+HttpsProtocolHandlerProxy.prototype = inherit(ProtocolHandlerProxy.prototype, {
 	
 	classDescription : 'UxUHttpsProtocolHandlerProxy', 
 	contractID : '@mozilla.org/network/protocol;1?name=https',
 	classID : Components.ID('{b81efa50-4e7d-11de-8a39-0800200c9a66}')
  
-}; 
-HttpsProtocolHandlerProxy.prototype.__proto__ = ProtocolHandlerProxy.prototype;
+}); 
    
 if (XPCOMUtils.generateNSGetFactory) 
 	var NSGetFactory = XPCOMUtils.generateNSGetFactory([HttpProtocolHandlerProxy, HttpsProtocolHandlerProxy]);

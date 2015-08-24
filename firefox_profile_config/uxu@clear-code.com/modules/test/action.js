@@ -15,7 +15,7 @@
  * The Original Code is UxU - UnitTest.XUL.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2010-2012
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): YUKI "Piro" Hiroshi <shimoda@clear-code.com>
@@ -39,6 +39,7 @@ if (typeof window == 'undefined')
 	this.EXPORTED_SYMBOLS = ['Action'];
 
 var ns = {};
+Components.utils.import('resource://uxu-modules/lib/inherit.jsm', ns);
 Components.utils.import('resource://uxu-modules/utils.js', ns);
 Components.utils.import('resource://uxu-modules/lib/action.jsm', ns);
 
@@ -361,11 +362,10 @@ readyToPromptPassword : function(aPassword, aOptions)
 {
 	this.readyToPrompt(
 		null,
-		{
+		ns.inherit(aOptions, {
 			password : aPassword,
-			inputFieldsType : 'password',
-			__proto__ : aOptions
-		}
+			inputFieldsType : 'password'
+		})
 	);
 },
  
@@ -373,12 +373,11 @@ readyToPromptUsernameAndPassword : function(aUsername, aPassword, aOptions)
 {
 	this.readyToPrompt(
 		null,
-		{
+		ns.inherit(aOptions, {
 			username : aUsername,
 			password : aPassword,
-			inputFieldsType : 'both',
-			__proto__ : aOptions
-		}
+			inputFieldsType : 'both'
+		})
 	);
 },
  

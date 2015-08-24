@@ -15,7 +15,7 @@
  * The Original Code is UxU - UnitTest.XUL.
  *
  * The Initial Developer of the Original Code is Kouhei Sutou.
- * Portions created by the Initial Developer are Copyright (C) 2010
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): Kouhei Sutou <kou@clear-code.com>
@@ -42,6 +42,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 var ns = {};
+Components.utils.import('resource://uxu-modules/lib/inherit.jsm', ns);
 Components.utils.import('resource://uxu-modules/eventTarget.js', ns);
 
 function Handler(aInput, aOutput)
@@ -63,8 +64,7 @@ function Handler(aInput, aOutput)
 	pump.asyncRead(this, null);
 }
 
-Handler.prototype = {
-	__proto__ : ns.EventTarget.prototype,
+Handler.prototype = ns.inherit(ns.EventTarget.prototype, {
 
 	destroy : function()
 	{
@@ -110,4 +110,4 @@ Handler.prototype = {
 		var input = this._input.read(aCount);
 		if (input) this.fireEvent('HandlerInput', input);
 	}
-};
+});

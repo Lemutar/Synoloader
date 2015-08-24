@@ -147,31 +147,36 @@ GreasemonkeyUtils.prototype = {
 
 		var sandbox = new Components.utils.Sandbox(win, { sandboxPrototype: win });
 
-		sandbox.unsafeWindow = win.wrappedJSObject,
-		sandbox.XPathResult  = Ci.nsIDOMXPathResult,
+		// see: https://bugzilla.mozilla.org/show_bug.cgi?id=1043958
+		var unsafeWindowGetter = new sandbox.Function('return window.wrappedJSObject || window;');
+		Object.defineProperty(sandbox, 'unsafeWindow', { get: unsafeWindowGetter });
+
+		sandbox.XPathResult = Ci.nsIDOMXPathResult;
 		sandbox.console = { log : this._suite.bind(this.GM_log, self) };
 
-		sandbox.importFunction(this._suite.bind(this.GM_addStyle, self), "GM_addStyle");
-		sandbox.importFunction(this._suite.bind(this.GM_log, self), "GM_log");
-		sandbox.importFunction(this._suite.bind(this.GM_registerMenuCommand, self), "GM_registerMenuCommand");
+		sandbox.GM_addStyle = this._suite.bind(this.GM_addStyle, self);
+		sandbox.GM_log = this._suite.bind(this.GM_log, self);
+		sandbox.GM_registerMenuCommand = this._suite.bind(this.GM_registerMenuCommand, self);
 
-		sandbox.importFunction(this._suite.bind(this.GM_deleteValue, self), "GM_deleteValue");
-		sandbox.importFunction(this._suite.bind(this.GM_getValue, self), "GM_getValue");
-		sandbox.importFunction(this._suite.bind(this.GM_setValue, self), "GM_setValue");
+		sandbox.GM_deleteValue = this._suite.bind(this.GM_deleteValue, self);
+		sandbox.GM_getValue = this._suite.bind(this.GM_getValue, self);
+		sandbox.GM_setValue = this._suite.bind(this.GM_setValue, self);
 
 		// Resource (TODO: sandbox.GM_headers allows users to modify the content of GM_headers)
 		var headers = [];
 		sandbox.GM_headers = headers;
-		sandbox.importFunction(function(aKey) {
+		sandbox.GM_getResourceURL = function(aKey) {
 			return self.GM_getResourceURL.call(self, aKey, headers);
-		}, "GM_getResourceURL");
-		sandbox.importFunction(function(aKey) {
+		};
+		sandbox.GM_getResourceText = function(aKey) {
 			return self.GM_getResourceText.call(self, aKey, headers);
-		}, "GM_getResourceText");
+		};
 
-		sandbox.GM_listValues           = this._suite.bind(this.GM_listValues, self);
-		sandbox.GM_openInTab            = this._suite.bind(this.GM_openInTab, self);
-		sandbox.GM_xmlhttpRequest       = function(aDetails) {
+		sandbox.GM_listValues     = this._suite.bind(this.GM_listValues, self);
+		sandbox.GM_openInTab      = this._suite.bind(this.GM_openInTab, self);
+		sandbox.GM_xmlhttpRequest = function(aDetails) {
+			// we need to unwrap it to get functional properties...
+			aDetails = XPCNativeWrapper.unwrap(aDetails);
 			return self.GM_xmlhttpRequest(aDetails, sandbox);
 		};
 

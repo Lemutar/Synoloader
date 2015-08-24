@@ -15,7 +15,7 @@
  * The Original Code is UxU - UnitTest.XUL.
  *
  * The Initial Developer of the Original Code is Kouhei Sutou.
- * Portions created by the Initial Developer are Copyright (C) 2010-2011
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): Kouhei Sutou <kou@clear-code.com>
@@ -48,9 +48,10 @@ Components.utils.import('resource://uxu-modules/test/action.js', ns);
 Components.utils.import('resource://uxu-modules/test/runner.js', ns);
 Components.utils.import('resource://uxu-modules/server/reporter.js', ns);
 Components.utils.import('resource://uxu-modules/lib/ijs.js', ns);
+Components.utils.import('resource://uxu-modules/lib/inherit.jsm', ns);
 
 var utils = ns.utils;
-var action = new ns.Action({ __proto__ : utils, utils : utils });
+var action = new ns.Action(ns.inherit(utils, { utils : utils }));
 
 var WindowManager = Cc['@mozilla.org/appshell/window-mediator;1']
 		.getService(Ci.nsIWindowMediator);
@@ -59,15 +60,13 @@ function Context(aEnvironment)
 {
 	this.initListeners();
 
-	this.environment = aEnvironment;
-	this.environment.__proto__ = this;
+	this.environment = ns.inherit(this, aEnvironment);
 
 	this._buffer = '';
 	this._lastEvaluatedScript = '';
 }
 
-Context.prototype = {
-	__proto__ : ns.EventTarget.prototype,
+Context.prototype = ns.inherit(ns.EventTarget.prototype, {
 
 	RETURNABLE_SYNTAX_ERROR : 'returnable syntax error',
 	QUIT_MESSAGE : '\u001A__QUIT__',
@@ -193,4 +192,4 @@ Context.prototype = {
 				this._buffer = code;
 		}
 	}
-};
+});

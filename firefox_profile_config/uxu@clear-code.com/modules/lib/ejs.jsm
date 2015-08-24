@@ -1,22 +1,23 @@
 /**
- * @fileOverview Embedded JavaScript Template Library for Firefox 3.5 or later
+ * @fileOverview Embedded JavaScript Template Library for Firefox 4 or later
  * @author       ClearCode Inc.
- * @version      2
+ * @version      3
  *
  * @license
- *   The MIT License, Copyright (c) 2010 ClearCode Inc.
- *   http://www.clear-code.com/repos/svn/js-codemodules/license.txt
- * @url http://www.clear-code.com/repos/svn/js-codemodules/ejs.jsm
- * @url http://www.clear-code.com/repos/svn/js-codemodules/ejs.test.js
+ *   The MIT License, Copyright (c) 2010-2014 ClearCode Inc.
+ *   https://github.com/clear-code/js-codemodules/blob/master/license.txt
+ * @url https://github.com/clear-code/js-codemodules/blob/master/ejs.jsm
+ * @url https://github.com/clear-code/js-codemodules/blob/master/ejs.test.js
  */
 
-if (typeof window == 'undefined')
+if (typeof window == 'undefined' ||
+	(window && typeof window.constructor == 'function'))
 	this.EXPORTED_SYMBOLS = ['EJS'];
 
 // var namespace;
 if (typeof namespace == 'undefined') {
 	// If namespace.jsm is available, export symbols to the shared namespace.
-	// See: http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/namespace.jsm
+	// See: https://github.com/piroor/fxaddonlibs/blob/master/namespace.jsm
 	try {
 		let ns = {};
 		Components.utils.import('resource://uxu-modules/lib/namespace.jsm', ns);
@@ -29,7 +30,7 @@ if (typeof namespace == 'undefined') {
 
 var EJS;
 (function() {
-	const currentRevision = 2;
+	const currentRevision = 3;
 
 	var loadedRevision = 'EJS' in namespace ?
 			namespace.EJS.revision :
@@ -95,12 +96,14 @@ var EJS;
 					__processTemplate__codes.push(codePart);
 				}
 			});
+			var sandboxPrototype = { __processTemplate__results : [] };
+			if (aScope)
+				sandboxPrototype = Object.create(aScope, {
+					__processTemplate__results : Object.getOwnPropertyDescriptor(sandboxPrototype, '__processTemplate__results')
+				});
 			var sandbox = new Components.utils.Sandbox(this._global, {
-				sandboxPrototype: {
-					__processTemplate__results : []
-				}
+				sandboxPrototype : sandboxPrototype
 			});
-			if (aScope) sandbox.__proto__.__proto__ = aScope;
 			Components.utils.evalInSandbox(__processTemplate__codes.join('\n'), sandbox);
 			return sandbox.__processTemplate__results.join('');
 		},

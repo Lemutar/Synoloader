@@ -1,26 +1,24 @@
 /*
- "getBoxObjectFor()" compatibility library for Firefox 3.6 or later
+ "getBoxObjectFor()" compatibility library for Firefox 31 or later
 
  Usage:
    // use instead of HTMLDocument.getBoxObjectFor(HTMLElement)
    var boxObject = window['piro.sakura.ne.jp']
                          .boxObject
-                         .getBoxObjectFor(HTMLElement);
+                         .getBoxObjectFor(HTMLElementOrRange);
 
- license: The MIT License, Copyright (c) 2009-2010 YUKI "Piro" Hiroshi
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
+ license: The MIT License, Copyright (c) 2009-2014 YUKI "Piro" Hiroshi
  original:
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/boxObject.js
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/boxObject.test.js
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/fixtures/box.html
+   http://github.com/piroor/fxaddonlib-boxobject
 */
 
 /* To work as a JS Code Module */
-if (typeof window == 'undefined') {
+if (typeof window == 'undefined' ||
+	(window && typeof window.constructor == 'function')) {
 	this.EXPORTED_SYMBOLS = ['boxObject'];
 
 	// If namespace.jsm is available, export symbols to the shared namespace.
-	// See: http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/namespace.jsm
+	// See: http://github.com/piroor/fxaddonlibs/blob/master/namespace.jsm
 	try {
 		let ns = {};
 		Components.utils.import('resource://uxu-modules/lib/namespace.jsm', ns);
@@ -32,7 +30,7 @@ if (typeof window == 'undefined') {
 }
 
 (function() {
-	const currentRevision = 6;
+	const currentRevision = 9;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -49,11 +47,15 @@ if (typeof window == 'undefined') {
 	window['piro.sakura.ne.jp'].boxObject = {
 		revision : currentRevision,
 
-		getBoxObjectFor : function(aNode, aUnify)
+		getBoxObjectFor : function(aNodeOrRange, aUnify)
 		{
-			return ('getBoxObjectFor' in aNode.ownerDocument) ?
-					this.getBoxObjectFromBoxObjectFor(aNode, aUnify) :
-					this.getBoxObjectFromClientRectFor(aNode, aUnify) ;
+			var d = aNodeOrRange.ownerDocument;
+			return (d &&
+					typeof d.defaultView.Node == 'function' &&
+					aNodeOrRange instanceof d.defaultView.Node &&
+					'getBoxObjectFor' in d) ?
+					this.getBoxObjectFromBoxObjectFor(aNodeOrRange, aUnify) :
+					this.getBoxObjectFromClientRectFor(aNodeOrRange, aUnify) ;
 		},
 
 		getBoxObjectFromBoxObjectFor : function(aNode, aUnify)
@@ -66,7 +68,8 @@ if (typeof window == 'undefined') {
 					height  : boxObject.height,
 					screenX : boxObject.screenX,
 					screenY : boxObject.screenY,
-					element : aNode
+					element : aNode,
+					fixed   : false
 				};
 			if (!aUnify) return box;
 
@@ -76,6 +79,7 @@ if (typeof window == 'undefined') {
 			if (style.getPropertyValue('position') == 'fixed') {
 				box.left -= frame.scrollX;
 				box.top  -= frame.scrollY;
+				box.fixed = true;
 			}
 			box.right  = box.left + box.width;
 			box.bottom = box.top + box.height;
@@ -83,7 +87,7 @@ if (typeof window == 'undefined') {
 			return box;
 		},
 
-		getBoxObjectFromClientRectFor : function(aNode, aUnify)
+		getBoxObjectFromClientRectFor : function(aNodeOrRange, aUnify)
 		{
 			var box = {
 					x       : 0,
@@ -92,12 +96,20 @@ if (typeof window == 'undefined') {
 					height  : 0,
 					screenX : 0,
 					screenY : 0,
-					element : aNode
+					element : null,
+					range   : null,
+					fixed   : false
 				};
 			try {
-				var zoom = this.getZoom(aNode.ownerDocument.defaultView);
+				var frame = (aNodeOrRange.startContainer || aNodeOrRange).ownerDocument.defaultView;
+				var zoom = this.getZoom(frame) ;
 
-				var rect = aNode.getBoundingClientRect();
+				if (aNodeOrRange instanceof frame.Node)
+					box.element = aNodeOrRange;
+				if (aNodeOrRange instanceof frame.Range)
+					box.range = aNodeOrRange;
+
+				var rect = aNodeOrRange.getBoundingClientRect();
 				if (aUnify) {
 					box.left   = rect.left;
 					box.top    = rect.top;
@@ -105,15 +117,38 @@ if (typeof window == 'undefined') {
 					box.bottom = rect.bottom;
 				}
 
-				var style = this._getComputedStyle(aNode);
-				var frame = aNode.ownerDocument.defaultView;
+				box.x = rect.left;
+				box.y = rect.top;
 
-				// "x" and "y" are offset positions of the "padding-box" from the document top-left edge.
-				box.x = rect.left + this._getPropertyPixelValue(style, 'border-left-width');
-				box.y = rect.top + this._getPropertyPixelValue(style, 'border-top-width');
-				if (style.getPropertyValue('position') != 'fixed') {
-					box.x += frame.scrollX;
-					box.y += frame.scrollY;
+				if (box.element) {
+					let style = this._getComputedStyle(aNodeOrRange);
+
+					// "x" and "y" are offset positions of the "padding-box" from the document top-left edge.
+					box.x += this._getPropertyPixelValue(style, 'border-left-width');
+					box.y += this._getPropertyPixelValue(style, 'border-top-width');
+
+					if (style.getPropertyValue('position') != 'fixed') {
+						box.x += frame.scrollX;
+						box.y += frame.scrollY;
+					}
+				}
+				else {
+					let node = aNodeOrRange.startContainer;
+					if (node.nodeType != Ci.nsIDOMNode.ELEMENT_NODE)
+						node = node.parentNode;
+					do {
+						let style = this._getComputedStyle(node);
+						if (style.getPropertyValue('position') == 'fixed') {
+							box.fixed = true;
+							break;
+						}
+						node = node.offsetParent;
+					}
+					while (node);
+					if (!box.fixed) {
+						box.x += frame.scrollX;
+						box.y += frame.scrollY;
+					}
 				}
 
 				// "width" and "height" are sizes of the "border-box".
@@ -127,6 +162,7 @@ if (typeof window == 'undefined') {
 				box.screenY += frame.mozInnerScreenY * zoom;
 			}
 			catch(e) {
+				Components.utils.reportError(e);
 			}
 
 			'x,y,screenX,screenY,width,height,left,top,right,bottom'
@@ -160,13 +196,17 @@ if (typeof window == 'undefined') {
 					return 1;
 			}
 			catch(e) {
+				Components.utils.reportError(e);
 				return 1;
 			}
 			var markupDocumentViewer = aFrame.top
 					.QueryInterface(Ci.nsIInterfaceRequestor)
 					.getInterface(Ci.nsIWebNavigation)
 					.QueryInterface(Ci.nsIDocShell)
-					.contentViewer
+					.contentViewer;
+			// no need to QI for Firefox 35, but this is still required for old environments.
+			if (!('fullZoom' in markupDocumentViewer))
+				markupDocumentViewer = markupDocumentViewer
 					.QueryInterface(Ci.nsIMarkupDocumentViewer);
 			return markupDocumentViewer.fullZoom;
 		}

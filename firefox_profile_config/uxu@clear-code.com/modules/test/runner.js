@@ -15,7 +15,7 @@
  * The Original Code is UxU - UnitTest.XUL.
  *
  * The Initial Developer of the Original Code is Kouhei Sutou.
- * Portions created by the Initial Developer are Copyright (C) 2010-2012
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): Kouhei Sutou <kou@clear-code.com>
@@ -41,6 +41,7 @@ if (typeof window == 'undefined')
 const Ci = Components.interfaces;
 
 var ns = {};
+Components.utils.import('resource://uxu-modules/lib/inherit.jsm', ns);
 Components.utils.import('resource://uxu-modules/lib/stringBundle.js', ns);
 Components.utils.import('resource://uxu-modules/lib/jstimer.jsm', ns);
 Components.utils.import('resource://uxu-modules/utils.js', ns);
@@ -72,8 +73,7 @@ function TestRunner(aOptions/*, aFile, ...*/)
 	this._stoppers = [];
 	this._log = new ns.TestLog();
 }
-TestRunner.prototype = {
-	__proto__ : ns.EventTarget.prototype,
+TestRunner.prototype = ns.inherit(ns.EventTarget.prototype, {
 	
 	run : function(aMasterPriority) 
 	{
@@ -494,5 +494,5 @@ TestRunner.prototype = {
 		return suite;
 	}
    
-}; 
+}); 
    

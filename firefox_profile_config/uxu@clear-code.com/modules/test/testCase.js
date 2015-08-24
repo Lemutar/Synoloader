@@ -28,6 +28,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 var ns = {};
+Components.utils.import('resource://uxu-modules/lib/inherit.jsm', ns);
 Components.utils.import('resource://uxu-modules/lib/stringBundle.js', ns);
 Components.utils.import('resource://uxu-modules/lib/jstimer.jsm', ns);
 Components.utils.import('resource://uxu-modules/lib/jsdeferred.js', ns);
@@ -85,7 +86,7 @@ function TestCase(aTitle, aOptions)
 {
 	if (!aOptions) aOptions = {};
 
-	this._utils = { __proto__ : ns.utils };
+	this._utils = ns.inherit(ns.utils, {});
 
 	this.initListeners();
 
@@ -113,8 +114,7 @@ function TestCase(aTitle, aOptions)
 	this.notifications = [];
 	this.addListener(this);
 }
-TestCase.prototype = {
-	__proto__ : ns.EventTarget.prototype,
+TestCase.prototype = ns.inherit(ns.EventTarget.prototype, {
 	
 	REMOTE_PROFILE_PREFIX : 'uxu-test-profile', 
 	TESTCASE_STARTED      : '/* uxu-testcase-started */',
@@ -1125,7 +1125,7 @@ TestCase.prototype = {
 		profile.remove(true);
 		this._utils.cosmeticClone(this._profile, profile.parent, profile.leafName);
 
-		// Às‚Ì—Dæ“xŒvZ‚Ì‚½‚ß‚É•K—v
+		// å®Ÿè¡Œæ™‚ã®å„ªå…ˆåº¦è¨ˆç®—ã®ãŸã‚ã«å¿…è¦
 		this._utils.dbFile.copyTo(profile, this._utils.dbFile.leafName);
 
 		if (!this._utils.getPref('extensions.uxu.global')) {
@@ -1529,5 +1529,5 @@ TestCase.prototype = {
 		}
 	}
    
-}; 
+}); 
  

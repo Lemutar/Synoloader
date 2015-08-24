@@ -15,7 +15,7 @@
  * The Original Code is UxU - UnitTest.XUL.
  *
  * The Initial Developer of the Original Code is Kouhei Sutou.
- * Portions created by the Initial Developer are Copyright (C) 2010
+ * Portions created by the Initial Developer are Copyright (C) 2010-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s): Kouhei Sutou <kou@clear-code.com>
@@ -42,6 +42,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 var ns = {};
+Components.utils.import('resource://uxu-modules/lib/inherit.jsm', ns);
 Components.utils.import('resource://uxu-modules/eventTarget.js', ns);
 Components.utils.import('resource://uxu-modules/utils.js', ns);
 Components.utils.import('resource://uxu-modules/server/handler.js', ns);
@@ -59,8 +60,7 @@ function Server(aPort)
 	this._handlers = [];
 }
 
-Server.prototype = {
-	__proto__ : ns.EventTarget.prototype,
+Server.prototype = ns.inherit(ns.EventTarget.prototype, {
 
 	get port() {
 		return this.socket ? this.socket.port : this._port ;
@@ -157,4 +157,4 @@ Server.prototype = {
 	{
 		this.stop();
 	}
-};
+});
