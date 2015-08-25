@@ -24,11 +24,10 @@ install:
   - npm install
 
 before_script:
-  - mkdir ff
-  - mozilla-download --branch "$FirefoxVersion" --product firefox ff
+  - mozilla-download --branch "$FirefoxVersion" --product firefox .
 
 script:
-  - export FirefoxTest=ff/firefox/firefox
+  - export FirefoxTest=./firefox/firefox
   - $FirefoxTest --version
   - sleep 2
   - grunt
