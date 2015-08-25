@@ -1,9 +1,9 @@
 /*  Toolbar icon.  */
 #sl-toolbar {
-  list-style-image: url(chrome://Synoloader/skin/synoloader.png);
+  list-style-image: url(chrome://Synoloader/skin/synoloader24.png);
 }
 toolbar[iconsize="small"] #sl-toolbar {
-  list-style-image: url(chrome://Synoloader/skin/synoloader_small.png);
+  list-style-image: url(chrome://Synoloader/skin/synoloader16.png);
 }
 
 /* Overlay panel. */

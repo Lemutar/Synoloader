@@ -16,7 +16,7 @@ if (typeof Notification === "undefined") {
         this.show = (title, text) => {
             if (this.showNotif) {
                 try {
-                    alertInterface.showAlertNotification("chrome://SynoLoader/skin/Syno.png", title, text, false, "", null);
+                    alertInterface.showAlertNotification("chrome://SynoLoader/skin/synoloader32.png", title, text, false, "", null);
                 } catch (e) {
                     // Prevents runtime error on platforms that don't implement nsIAlertsService, like Mac OSX.
                 }

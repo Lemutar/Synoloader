@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://SynoLoader/skin/SynoDownloads.css" type="text/css"?>
+<?xml-stylesheet href="chrome://SynoLoader/skin/options.css" type="text/css"?>
 <!DOCTYPE prefwindow SYSTEM "chrome://SynoLoader/locale/options.dtd">
 
 <prefwindow id="sl-options" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="&prefwindow.title;" flex="1">
