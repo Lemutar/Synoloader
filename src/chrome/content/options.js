@@ -17,10 +17,10 @@ if (typeof SL_Options === "undefined") {
                 .getService(Ci.nsILoginManager);
 
             let loginInfo = new Components.Constructor(
-                    "@mozilla.org/login-manager/loginInfo;1",
-                    Ci.nsILoginInfo,
-                    "init"
-                );
+                "@mozilla.org/login-manager/loginInfo;1",
+                Ci.nsILoginInfo,
+                "init"
+            );
 
             // Ask for credentials
             let prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
