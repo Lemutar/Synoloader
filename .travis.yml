@@ -21,7 +21,8 @@ before_script:
    - "mozinstall ./firefox.tar.bz2 --destination=./test_browser"
    - "export FirefoxTest=./test_browser/firefox/firefox"
    - "export DISPLAY=:99.0"
-   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+   - "xvfb -screen 0 1024x768x24"
+#   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
 
 script:
   - sleep 2
