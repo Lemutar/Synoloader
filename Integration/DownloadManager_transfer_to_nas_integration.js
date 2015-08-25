@@ -37,22 +37,6 @@ function setUpNotificationMock(title, text) {
 }
 
 
-test_Protocol_DownloadManager_transferToNas_torrent_file.description = "test_Protocol_DownloadManager_transferToNas_torrent_file";
-
-function test_Protocol_DownloadManager_transferToNas_torrent_file() {
-    setUpNotificationMock("Send torrent file to NAS", "http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");
-    DownloadManager.transferToNas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");
-    utils.wait(loaded);
-}
-
-test_Protocol_DownloadManager_transferToNas_link.description = "test_Protocol_DownloadManager_transferToNas_link";
-
-function test_Protocol_DownloadManager_transferToNas_link() {
-    setUpNotificationMock("Send link", "http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso");
-    DownloadManager.transferToNas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso");
-    utils.wait(loaded);
-}
-
 test_DownloadManager_loadDownloadList.description = "test_DownloadManager_loadDownloadList";
 test_DownloadManager_loadDownloadList.priority = "low";
 
@@ -68,4 +52,20 @@ function test_DownloadManager_loadDownloadList() {
 
     utils.wait(loaded);
     assert.equals(2, downloadItems.length);
+}
+
+test_Protocol_DownloadManager_transferToNas_torrent_file.description = "test_Protocol_DownloadManager_transferToNas_torrent_file";
+
+function test_Protocol_DownloadManager_transferToNas_torrent_file() {
+    setUpNotificationMock("Send torrent file to NAS", "http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");
+    DownloadManager.transferToNas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso.torrent");
+    utils.wait(loaded);
+}
+
+test_Protocol_DownloadManager_transferToNas_link.description = "test_Protocol_DownloadManager_transferToNas_link";
+
+function test_Protocol_DownloadManager_transferToNas_link() {
+    setUpNotificationMock("Send link", "http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso");
+    DownloadManager.transferToNas("http://releases.ubuntu.com/14.04/ubuntu-14.04-desktop-amd64.iso");
+    utils.wait(loaded);
 }
