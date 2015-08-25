@@ -4,8 +4,8 @@ node_js:
   - "0.10"
 
 env:
-  - Firefox_Version=28.0
-  - Firefox_Version=37.0
+  - FirefoxVersion=28.0
+  - FirefoxVersion=37.0
 
 #cache:
 #  directories:
@@ -24,7 +24,7 @@ install:
 
 before_script:
   - cd ..
-  - mozilla-download --branch fx-team --product firefox $TRAVIS_BUILD_DIR/../
+  - mozilla-download --branch $FirefoxVersion --product firefox $TRAVIS_BUILD_DIR/../
   - cd $TRAVIS_BUILD_DIR
 
 script:
