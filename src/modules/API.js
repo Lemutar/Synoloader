@@ -290,12 +290,14 @@ var Protocol = function (version, baseURL, timeout, username, password) {
                     break;
 
                 case "delete":
-                    param = "&force_complete=false";
-                    // Don't break!
                 case "resume":
                 case "pause":
                     method = "get";
                     param = apiGetParameter("download", "task", {action: action, id: parameterEnc}) + param;
+
+                    if (action === "delete") {
+                        param += "&force_complete=false";
+                    }
 
                     Util.log("try to " + action + " " + parameter + ": " + param);
                     break;
@@ -305,8 +307,12 @@ var Protocol = function (version, baseURL, timeout, username, password) {
                     apiResponseCallback(callback, response, apiResponse, "download");
                 });
             switch (method) {
-                case "get": request.get(); break;
-                case "post": request.post(); break;
+                case "get":
+                    request.get();
+                    break;
+                case "post":
+                    request.post();
+                    break;
             }
         }
     };

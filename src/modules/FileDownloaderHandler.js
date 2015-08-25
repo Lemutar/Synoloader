@@ -9,7 +9,7 @@ if (typeof FileDownloaderHandler === "undefined") {
 
     (function () {
         this.getFileContent = (source, destination, succeeded) => {
-            Task.spawn(function () {
+            Task.spawn(function*() {
                 yield Downloads.fetch(source, destination);
             }).then(succeeded, Cu.reportError);
         };

@@ -11,14 +11,10 @@ module.exports = function(grunt) {
             }
         },
         jsbeautifier: {
-            files: ['Gruntfile.js', 'src/**/*.js']
+            files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js']
         }
     });
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-jsbeautifier');
-
-
-
     grunt.registerTask('default', ['jsbeautifier', 'jshint']);
-
 };

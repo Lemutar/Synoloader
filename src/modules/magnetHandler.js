@@ -95,8 +95,8 @@ MagnetHandler.setActive = (activate) => {
 
 MagnetHandler.createObserver = () => {
     return ({
-        observe: (subject, topic, data) => {},
-        QueryInterface: (iid) => {
+        observe: function (subject, topic, data) {},
+        QueryInterface: function (iid) {
             if (!iid.equals(Ci.nsIObserver) &&
                 !iid.equals(Ci.nsISupportsWeakReference) &&
                 !iid.equals(Ci.nsISupports)) {
