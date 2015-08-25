@@ -21,6 +21,7 @@ install:
   - npm install -g npm@latest
   - npm install -g grunt-cli
   - npm install -g mozilla-download
+  - npm install
 
 before_script:
   - mkdir ff
