@@ -17,11 +17,12 @@ install:
   - npm install
 
 before_script:
+   - "export AUDIODEV=null"
+   - "export DISPLAY=:99.0"
+   - "sh -e /etc/init.d/xvfb -ac -screen 0 1024x768x24"
    - "mozdownload --version=$Firefox_Version --destination=./firefox.tar.bz2 --extension=tar.bz2"
    - "mozinstall ./firefox.tar.bz2 --destination=./test_browser"
    - "export FirefoxTest=./test_browser/firefox/firefox"
-   - "export DISPLAY=:99.0"
-   - "sh -e /etc/init.d/xvfb start"
 
 script:
   - sleep 2
