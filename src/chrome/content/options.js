@@ -1,31 +1,36 @@
-let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
 Cu.import("resource://SynoLoader/DownloadManager.js");
 
 if (typeof SL_Options === "undefined") {
     var SL_Options = {};
 
-    (function () {
+    (function() {
         this.wasConnecting = false;
 
         this.setUsernamePassword = () => {
-            let loginManager = Cc["@mozilla.org/login-manager;1"].
-                                   getService(Ci.nsILoginManager),
-                // create instance of LoginInfo
-                loginInfo = new Components.Constructor(
+            let loginManager = Cc["@mozilla.org/login-manager;1"]
+                .getService(Ci.nsILoginManager);
+
+            let loginInfo = new Components.Constructor(
                     "@mozilla.org/login-manager/loginInfo;1",
                     Ci.nsILoginInfo,
                     "init"
-                ),
-                // ask for credentials
-                prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"].
-                               getService(Ci.nsIPromptService),
-                username = {
-                    value: ""
-                },
-                password = {
-                    value: ""
-                };
+                );
+
+            // Ask for credentials
+            let prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
+                .getService(Ci.nsIPromptService);
+            let username = {
+                value: ""
+            };
+            let password = {
+                value: ""
+            };
 
             let logins = loginManager.findLogins({}, "chrome://SynoLoader.Pass", null, "User Registration");
             for (let i = 0; i < logins.length; i++) {
@@ -85,9 +90,8 @@ if (typeof SL_Options === "undefined") {
         };
     }).apply(SL_Options);
 
-    window.addEventListener("load", function load (e) {
+    window.addEventListener("load", function load(e) {
         window.removeEventListener("load", load, false); //remove listener, no longer needed
         SL_Options.onLoad();
     }, false);
 }
-

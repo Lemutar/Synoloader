@@ -1,11 +1,15 @@
-let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
 Cu.import("resource://SynoLoader/DownloadManager.js");
 
 if (typeof SL_Download === "undefined") {
     var SL_Download = {};
 
-    (function () {
+    (function() {
         this.onaccept = (event) => {
             if (document.getElementById("mode").value === "SynoLoader") {
                 DownloadManager.transferToNas(dialog.mLauncher.source.spec);

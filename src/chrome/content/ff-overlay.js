@@ -1,4 +1,8 @@
-let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
 Cu.import("resource://SynoLoader/DownloadManager.js");
 Cu.import("resource://SynoLoader/Notification.js");
@@ -7,7 +11,7 @@ Cu.import("resource://SynoLoader/Util.js");
 if (typeof SL_Overlay === "undefined") {
     var SL_Overlay = {};
 
-    (function () {
+    (function() {
         this.firstRun = (extensions) => {
             let firstRunPref = "extensions.SynoLoader.firstRunDone";
 
@@ -56,8 +60,7 @@ if (typeof SL_Overlay === "undefined") {
                     }
                     list.removeItemFromSelection(0);
                     panel.moveTo(-1, -1);
-                },
-                (response) => {
+                }, (response) => {
                     box.setAttribute("hidden", "false");
                     label.setAttribute("value", "No Connection, please set correct Preferences");
                     clearInterval(this.updateListPanelInterval);
@@ -78,8 +81,8 @@ if (typeof SL_Overlay === "undefined") {
                 Application.getExtensions(this.firstRun);
             }
 
-            document.getElementById("contentAreaContextMenu").
-                addEventListener("popupshowing", (event) => {
+            document.getElementById("contentAreaContextMenu")
+                .addEventListener("popupshowing", (event) => {
                     this.showFirefoxContextMenu(event);
                 }, false);
             DownloadManager.connectToNas();
@@ -118,7 +121,7 @@ if (typeof SL_Overlay === "undefined") {
 
     }).apply(SL_Overlay);
 
-    window.addEventListener("load", function load (event) {
+    window.addEventListener("load", function load(event) {
         window.removeEventListener("load", load, false); //remove listener, no longer needed
         SL_Overlay.onLoad();
     }, false);
