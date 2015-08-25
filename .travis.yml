@@ -1,5 +1,7 @@
 sudo: false
-language: python
+language: node_js
+node_js:
+  - "0.10"
 
 env:
   - Firefox_Version=28.0
@@ -15,25 +17,20 @@ before_install:
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16 -extension RANDR"
 
 install:
-  - pip install mozdownload==1.17 --upgrade
-  - pip install mozinstall
   - npm install -g npm@latest
   - npm install -g grunt-cli
+  - npm install -g mozilla-download
   - npm install
 
 before_script:
-   - "mozdownload --version=$Firefox_Version --destination=./firefox.tar.bz2 --extension=tar.bz2"
-   - "mozinstall ./firefox.tar.bz2 --destination=./test_browser"
-   - "export FirefoxTest=./test_browser/firefox/firefox"
+  - cd ..
+  - mozilla-download --branch fx-team --product firefox $TRAVIS_BUILD_DIR/../
+  - cd $TRAVIS_BUILD_DIR
 
 script:
+  - export FirefoxTest=$TRAVIS_BUILD_DIR/../firefox/firefox
   - sleep 2
   - grunt
   - $FirefoxTest --version
   - ./run_test.sh
   - ./run_integration_test.sh
-
-after_script:
-  - sh -e /etc/init.d/xvfb stop
-  - rm ./firefox.tar.bz2
-  - rm ./test_browser -rf
