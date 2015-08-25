@@ -36,14 +36,14 @@ test_FileDownloader_get_file_content.priority = "must";
 function test_FileDownloader_get_file_content() {
     utils.writeTo("42", "../fixtures/test_file.txt");
 
-    let file = Cc["@mozilla.org/file/directory_service;1"].
-        getService(Ci.nsIProperties).
-        get("TmpD", Ci.nsIFile);
+    let file = Cc["@mozilla.org/file/directory_service;1"]
+        .getService(Ci.nsIProperties)
+        .get("TmpD", Ci.nsIFile);
 
-    let uuidString = Cc["@mozilla.org/uuid-generator;1"].
-        getService(Ci.nsIUUIDGenerator).
-        generateUUID().
-        toString();
+    let uuidString = Cc["@mozilla.org/uuid-generator;1"]
+        .getService(Ci.nsIUUIDGenerator)
+        .generateUUID()
+        .toString();
 
     file.append("synoloader" + uuidString + ".torrent");
     file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0666);

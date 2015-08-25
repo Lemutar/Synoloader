@@ -1,12 +1,15 @@
 var EXPORTED_SYMBOLS = ["Notification"];
-let { classes: Cc, interfaces: Ci } = Components;
+let {
+    classes: Cc,
+    interfaces: Ci
+} = Components;
 
 if (typeof Notification === "undefined") {
     var Notification = {};
 
-    (function () {
-        let alertInterface = Cc["@mozilla.org/alerts-service;1"].
-                                  getService(Ci.nsIAlertsService);
+    (function() {
+        let alertInterface = Cc["@mozilla.org/alerts-service;1"]
+            .getService(Ci.nsIAlertsService);
 
         this.showNotif = false;
 

@@ -1,5 +1,9 @@
 var EXPORTED_SYMBOLS = ["Protocol"];
-let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
 Cu.import("resource://SynoLoader/Request.js");
 Cu.import("resource://SynoLoader/Util.js");
@@ -153,7 +157,7 @@ const apiAllResponseCallbacks = {
     }
 };
 
-var Protocol = function (version, baseURL, timeout, username, password) {
+var Protocol = function(version, baseURL, timeout, username, password) {
     let connectionID = "",
         connectionIDEnc = "",
         usernameEnc = encodeURIComponent(username),
@@ -172,7 +176,7 @@ var Protocol = function (version, baseURL, timeout, username, password) {
         let hasErrorCode = (typeof errorCode !== "undefined"),
             hasModule = (typeof module !== "undefined");
 
-        if(typeof apiErrorTexts[module][errorCode] !== "undefined") {
+        if (typeof apiErrorTexts[module][errorCode] !== "undefined") {
             response.error_text = apiErrorTexts[module][errorCode];
         } else if (typeof apiErrorTexts.common[errorCode] !== "undefined") {
             response.error_text = apiErrorTexts.common[errorCode];
@@ -221,15 +225,14 @@ var Protocol = function (version, baseURL, timeout, username, password) {
         Util.log("try to connect: " + this.baseURL);
 
         let response = {
-                success: false,
-                id: "",
-                error_text: ""
-            };
+            success: false,
+            id: "",
+            error_text: ""
+        };
 
         new Request(this.baseURL + apiEndpoints.auth,
             apiGetParameter("auth"),
-            timeout,
-            (apiResponse) => {
+            timeout, (apiResponse) => {
                 apiResponseCallback(callback, response, apiResponse, "auth");
             }
         ).get();
@@ -278,8 +281,8 @@ var Protocol = function (version, baseURL, timeout, username, password) {
 
                 case "addfile":
                     method = "post";
-                    param = Cc["@mozilla.org/files/formdata;1"].
-                                       createInstance(Ci.nsIDOMFormData);
+                    param = Cc["@mozilla.org/files/formdata;1"]
+                        .createInstance(Ci.nsIDOMFormData);
                     param.append("api", "SYNO.DownloadStation.Task");
                     param.append("version", "1");
                     param.append("method", "create");
@@ -293,7 +296,10 @@ var Protocol = function (version, baseURL, timeout, username, password) {
                 case "resume":
                 case "pause":
                     method = "get";
-                    param = apiGetParameter("download", "task", {action: action, id: parameterEnc}) + param;
+                    param = apiGetParameter("download", "task", {
+                        action: action,
+                        id: parameterEnc
+                    }) + param;
 
                     if (action === "delete") {
                         param += "&force_complete=false";
@@ -304,8 +310,8 @@ var Protocol = function (version, baseURL, timeout, username, password) {
             }
 
             let request = new Request(url, param, timeout, (apiResponse) => {
-                    apiResponseCallback(callback, response, apiResponse, "download");
-                });
+                apiResponseCallback(callback, response, apiResponse, "download");
+            });
             switch (method) {
                 case "get":
                     request.get();
@@ -330,10 +336,10 @@ var Protocol = function (version, baseURL, timeout, username, password) {
     };
 
     this.calcItems = (items) => {
-        let doc = Cc["@mozilla.org/appshell/window-mediator;1"].
-                      getService(Ci.nsIWindowMediator).
-                      getMostRecentWindow("navigator:browser").document,
-            listitems = [];
+        let doc = Cc["@mozilla.org/appshell/window-mediator;1"]
+            .getService(Ci.nsIWindowMediator)
+            .getMostRecentWindow("navigator:browser").document;
+        let listitems = [];
         items.forEach((item) => {
             let listitem = doc.createElement("richlistitem");
             listitem.setAttribute("id", "sl-item-" + item.id);

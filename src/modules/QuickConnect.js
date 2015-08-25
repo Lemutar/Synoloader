@@ -1,18 +1,22 @@
 var EXPORTED_SYMBOLS = ["QuickConnect"];
-let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
 Cu.import("resource://SynoLoader/Request.js");
 
 if (typeof QuickConnect === "undefined") {
-    var QuickConnect = function (timeoutRelay, timeoutInternal, protocol, port) {
+    var QuickConnect = function(timeoutRelay, timeoutInternal, protocol, port) {
         this.relayServer = "https://ukc.synology.com/Serv.php";
 
         this.getServerInfo = (quickConnectID, callback) => {
             let response = {
-                    success: false,
-                    internalIP: [],
-                    externalIP: ""
-                };
+                success: false,
+                internalIP: [],
+                externalIP: ""
+            };
 
             new Request(
                 this.relayServer,
@@ -22,8 +26,7 @@ if (typeof QuickConnect === "undefined") {
                     serverID: quickConnectID,
                     id: "dsm_https"
                 }),
-                timeoutRelay,
-                (relayResponse) => {
+                timeoutRelay, (relayResponse) => {
                     if (relayResponse.status === 200) {
                         if (relayResponse.json.errno === 0) {
                             response.success = true;
@@ -51,8 +54,7 @@ if (typeof QuickConnect === "undefined") {
                 new Request(
                     protocol + ip + ":" + port + "/webapi/query.cgi",
                     "api=SYNO.API.Info&version=1&method=query&query=api=SYNO.API.Info&version=1&method=query&query=SYNO.API.Auth,SYNO.DownloadStation.Task",
-                    timeoutInternal,
-                    (apiResponse) => {
+                    timeoutInternal, (apiResponse) => {
                         if (apiResponse.status === 200) {
                             if (first && apiResponse.json.success) {
                                 first = false;
@@ -74,9 +76,9 @@ if (typeof QuickConnect === "undefined") {
 
         this.get = (quickConnectID, callback) => {
             let response = {
-                    success: false,
-                    ip: ""
-                };
+                success: false,
+                ip: ""
+            };
 
             this.getServerInfo(quickConnectID, (serverInfoResponse) => {
                 if (serverInfoResponse.success) {

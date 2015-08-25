@@ -1,12 +1,16 @@
 var EXPORTED_SYMBOLS = ["Util"];
-let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
 Cu.import("resource://gre/modules/devtools/Console.jsm");
 
 if (typeof Util === "undefined") {
     var Util = {};
 
-    (function () {
+    (function() {
         this.showLog = true;
 
         this.log = (msg, doit) => {

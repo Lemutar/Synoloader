@@ -1,5 +1,9 @@
 var EXPORTED_SYMBOLS = ["DownloadManager"];
-let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
 Cu.import("resource://SynoLoader/FileDownloaderHandler.js");
 Cu.import("resource://SynoLoader/MagnetHandler.js");
@@ -10,14 +14,16 @@ Cu.import("resource://SynoLoader/Util.js");
 if (typeof DownloadManager === "undefined") {
     var DownloadManager = {};
 
-    (function () {
-        let quickConnectRelayTimeOutInMs = 8000,
-            quickConnectLocalTimeOutInMs = 8000,
-            loginManager = Cc["@mozilla.org/login-manager;1"].
-                               getService(Ci.nsILoginManager),
-            prefs = Cc["@mozilla.org/preferences-service;1"].
-                        getService(Ci.nsIPrefService).
-                        getBranch("extensions.SynoLoader.");
+    (function() {
+        let quickConnectRelayTimeOutInMs = 8000;
+        let quickConnectLocalTimeOutInMs = 8000;
+
+        let loginManager = Cc["@mozilla.org/login-manager;1"]
+            .getService(Ci.nsILoginManager);
+
+        let prefs = Cc["@mozilla.org/preferences-service;1"]
+            .getService(Ci.nsIPrefService)
+            .getBranch("extensions.SynoLoader.");
 
         this.isConnected = false;
         this.isConnecting = false;
@@ -93,15 +99,15 @@ if (typeof DownloadManager === "undefined") {
             this.isConnecting = true;
             this.convertOldURL(prefs.getCharPref("url"));
 
-            let protocol = prefs.getCharPref("protocol"),
-                port = prefs.getCharPref("port"),
-                host = prefs.getCharPref("host");
+            let protocol = prefs.getCharPref("protocol");
+            let port = prefs.getCharPref("port");
+            let host = prefs.getCharPref("host");
             let quickConnect = new QuickConnect(
-                    quickConnectRelayTimeOutInMs,
-                    quickConnectLocalTimeOutInMs,
-                    protocol + "://",
-                    port
-                );
+                quickConnectRelayTimeOutInMs,
+                quickConnectLocalTimeOutInMs,
+                protocol + "://",
+                port
+            );
 
             this.urlToConnect = protocol + "://";
             quickConnect.get(host, (response) => {
@@ -119,22 +125,23 @@ if (typeof DownloadManager === "undefined") {
         };
 
         this.transferToNas = (link) => {
-            if (link.toLowerCase().endsWith(".torrent") ) {
-                let file = Cc["@mozilla.org/file/directory_service;1"].
-                               getService(Ci.nsIProperties).
-                               get("TmpD", Ci.nsIFile),
-                    uuid = Cc["@mozilla.org/uuid-generator;1"].
-                               getService(Ci.nsIUUIDGenerator).
-                               generateUUID().
-                               toString().
-                               replace("{", "").
-                               replace("}", "");
+            if (link.toLowerCase().endsWith(".torrent")) {
+                let file = Cc["@mozilla.org/file/directory_service;1"]
+                    .getService(Ci.nsIProperties)
+                    .get("TmpD", Ci.nsIFile);
+
+                let uuid = Cc["@mozilla.org/uuid-generator;1"]
+                    .getService(Ci.nsIUUIDGenerator)
+                    .generateUUID()
+                    .toString()
+                    .replace("{", "")
+                    .replace("}", "");
+
                 file.append("synoloader" + uuid + ".torrent");
                 file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0666);
                 FileDownloaderHandler.getFileContent(
                     link,
-                    file.path,
-                    () => {
+                    file.path, () => {
                         this.protocol.task_action(
                             (response) => {
                                 if (response.success) {
@@ -171,8 +178,7 @@ if (typeof DownloadManager === "undefined") {
                         Util.log("delete " + item.id);
                         this.protocol.task_action(() => {}, "delete", item.id);
                     });
-                },
-                (response) => {
+                }, (response) => {
                     Util.log("loadDownloadList: " + response.error_text);
                 }
             );
@@ -219,9 +225,9 @@ if (typeof DownloadManager === "undefined") {
             }
         };
 
-        Cc["@mozilla.org/observer-service;1"].
-            getService(Ci.nsIObserverService).
-            addObserver(this.httpResponseObserver, "magnet-on-open-uri", false);
+        Cc["@mozilla.org/observer-service;1"]
+            .getService(Ci.nsIObserverService)
+            .addObserver(this.httpResponseObserver, "magnet-on-open-uri", false);
 
     }).apply(DownloadManager);
 }

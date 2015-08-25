@@ -1,6 +1,10 @@
 /* This js module doesn't export anything, it's meant to handle the magnet protocol registration/unregistration. */
 var EXPORTED_SYMBOLS = ["MagnetHandler"];
-let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
 Cu.import("resource://SynoLoader/Util.js");
 // Our XPCOM components to handle the protocols.
@@ -8,8 +12,8 @@ Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 
 let manager = Components.manager.QueryInterface(Ci.nsIComponentRegistrar);
 
-function MagnetProtocolWrapper () {
-    let myHandler = function () {};
+function MagnetProtocolWrapper() {
+    let myHandler = function() {};
 
     myHandler.prototype = {
         QueryInterface: XPCOMUtils.generateQI([Ci.nsIProtocolHandler]),
@@ -35,20 +39,20 @@ function MagnetProtocolWrapper () {
 
         // Create dummy nsIURI and nsIChannel instances.
         newURI: (aSpec, aCharset, aBaseURI) => {
-            let uri = Cc["@mozilla.org/network/simple-uri;1"].
-                createInstance(Ci.nsIURI);
+            let uri = Cc["@mozilla.org/network/simple-uri;1"]
+                .createInstance(Ci.nsIURI);
             uri.spec = aSpec;
             return uri;
         },
 
         newChannel: (aURI) => {
-            Cc["@mozilla.org/observer-service;1"].
-                getService(Ci.nsIObserverService).
-                notifyObservers(aURI, "magnet-on-open-uri", "magnet");
+            Cc["@mozilla.org/observer-service;1"]
+                .getService(Ci.nsIObserverService)
+                .notifyObservers(aURI, "magnet-on-open-uri", "magnet");
 
-            return Cc["@mozilla.org/network/io-service;1"].
-                getService(Ci.nsIIOService).
-                newChannel("javascript:void()", null, null);
+            return Cc["@mozilla.org/network/io-service;1"]
+                .getService(Ci.nsIIOService)
+                .newChannel("javascript:void()", null, null);
         },
 
         scheme: "magnet",
@@ -95,8 +99,8 @@ MagnetHandler.setActive = (activate) => {
 
 MagnetHandler.createObserver = () => {
     return ({
-        observe: function (subject, topic, data) {},
-        QueryInterface: function (iid) {
+        observe: function(subject, topic, data) {},
+        QueryInterface: function(iid) {
             if (!iid.equals(Ci.nsIObserver) &&
                 !iid.equals(Ci.nsISupportsWeakReference) &&
                 !iid.equals(Ci.nsISupports)) {

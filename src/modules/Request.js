@@ -1,17 +1,21 @@
 var EXPORTED_SYMBOLS = ["Request"];
-let { classes: Cc, interfaces: Ci, utils: Cu } = Components;
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
 if (typeof Request === "undefined") {
-    var Request = function (url, parameter, timeout, callback) {
-        this.httpRequest = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].
-                               createInstance(Ci.nsIXMLHttpRequest);
+    var Request = function(url, parameter, timeout, callback) {
+        this.httpRequest = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"]
+            .createInstance(Ci.nsIXMLHttpRequest);
 
         let response = {
-                text: "",
-                statusText: "",
-                status: 0,
-                json: {}
-            };
+            text: "",
+            statusText: "",
+            status: 0,
+            json: {}
+        };
 
         this.httpRequest.timeout = timeout;
         this.httpRequest.ontimeout = () => {

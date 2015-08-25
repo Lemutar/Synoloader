@@ -24,9 +24,9 @@ function tearDown() {}
 function startUp() {
     server = utils.setUpHttpServer(4445, "../fixtures");
 
-    prefs = Cc["@mozilla.org/preferences-service;1"].
-        getService(Ci.nsIPrefService).
-        getBranch("extensions.SynoLoader.");
+    prefs = Cc["@mozilla.org/preferences-service;1"]
+        .getService(Ci.nsIPrefService)
+        .getBranch("extensions.SynoLoader.");
 
     prefs.setCharPref("dsm_version", 2);
 }
@@ -47,11 +47,11 @@ function setUpAPI() {
 
 function setUpNotificationMock(title, text) {
     let NotificationMock = new Mock(Notification);
-    NotificationMock.expect("show", [title, text], null).
-    andStub(() => {
-        loaded.value = true;
-    }).
-    times(1);
+    NotificationMock.expect("show", [title, text], null)
+        .andStub(() => {
+            loaded.value = true;
+        })
+        .times(1);
     Notification = NotificationMock;
 }
 
