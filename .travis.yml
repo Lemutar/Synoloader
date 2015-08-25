@@ -6,9 +6,9 @@ node_js:
 env:
   global:
     - DISPLAY=:99.0
-    - export FirefoxTest=$TRAVIS_BUILD_DIR/../firefox/firefox
+    - export FirefoxTest=$TRAVIS_BUILD_DIR/firefox/firefox
   matrix:
-    - FirefoxVersion=28.0
+    #- FirefoxVersion=28.0
     - FirefoxVersion=37.0
 
 cache:
@@ -25,11 +25,9 @@ install:
   - npm install
 
 before_script:
-  - echo $PWD
-  - echo $TRAVIS_BUILD_DIR
-  - cd ..
-  - mozilla-download --branch fx-team --product firefox $TRAVIS_BUILD_DIR/../
-  - cd $TRAVIS_BUILD_DIR
+  - echo PWD
+  - echo TRAVIS_BUILD_DIR
+  - mozilla-download --branch fx-team --product firefox $TRAVIS_BUILD_DIR/
 
 script:
   - $FirefoxTest --version
