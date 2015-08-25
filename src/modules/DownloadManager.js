@@ -27,6 +27,7 @@ if (typeof DownloadManager === "undefined") {
 
         this.isConnected = false;
         this.isConnecting = false;
+        this.urlToConnect = "";
         this.password = "";
         this.username = "";
         this.protocol = "undefined";
@@ -83,6 +84,7 @@ if (typeof DownloadManager === "undefined") {
         this.setProtocol = () => {
             switch (prefs.getCharPref("dsm_version")) {
                 case "1":
+                    // @todo
                     Util.log("Set Protocol to < DSM 4.1");
                     Cu.import("resource://SynoLoader/Protocol.js");
                     this.protocol = Protocol(this.urlToConnect, 30000, this.username, this.password);
