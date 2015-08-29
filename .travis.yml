@@ -7,7 +7,6 @@ env:
   global:
     - DISPLAY=:99.0
   matrix:
-    - FirefoxVersion=24.8.1esr
     - FirefoxVersion=31.8.0esr
     - FirefoxVersion=38.2.1esr
     - FirefoxVersion=40.0
@@ -38,3 +37,4 @@ script:
   - grunt
   - ./run_test.sh
   - ./run_integration_test.sh
+  - ls -l
