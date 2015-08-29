@@ -7,9 +7,9 @@ env:
   global:
     - DISPLAY=:99.0
   matrix:
-    - FirefoxVersion=24.8.1esr
-    - FirefoxVersion=31.8.0esr
-    - FirefoxVersion=38.2.1esr
+    #- FirefoxVersion=24.8.1esr
+    #- FirefoxVersion=31.8.0esr
+    #- FirefoxVersion=38.2.1esr
     - FirefoxVersion=40.0
 
 cache:
@@ -18,12 +18,15 @@ cache:
     - firefoxes
 
 before_install:
-  - mkdir -p firefoxes
-  - mkdir -p firefoxes/$FirefoxVersion
-  - wget -O firefoxes/$FirefoxVersion/firefox-$FirefoxVersion.tar.bz2 http://releases.mozilla.org/pub/firefox/releases/$FirefoxVersion/linux-x86_64/en-US/firefox-$FirefoxVersion.tar.bz2
-  - tar xjf firefoxes/$FirefoxVersion/firefox-$FirefoxVersion.tar.bz2
-  - export FirefoxTest=firefoxes/$FirefoxVersion/firefox/firefox
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+  - echo $PWD
+  - mkdir firefoxes
+  - cd firefoxes
+  - mkdir $FirefoxVersion
+  - cd $FirefoxVersion
+  - wget -O firefox-$FirefoxVersion.tar.bz2 http://releases.mozilla.org/pub/firefox/releases/$FirefoxVersion/linux-x86_64/en-US/firefox-$FirefoxVersion.tar.bz2
+  - tar xjf firefox-$FirefoxVersion.tar.bz2
+  - export FirefoxTest=$PWD/firefox/firefox
 
 install:
   - npm install -g npm@latest
@@ -31,8 +34,8 @@ install:
   - npm install
 
 script:
+  - cd ../../
   - $FirefoxTest --version
-  - sleep 2
   - grunt
   - ./run_test.sh
   - ./run_integration_test.sh
