@@ -243,7 +243,7 @@ var Protocol = function(version, baseURL, timeout, username, password) {
         connectionIDEnc = encodeURIComponent(id);
     };
 
-    this.task_action = (callback, action, parameter) => {
+    this.taskAction = (callback, action, parameter) => {
         let response = {
                 success: false,
                 items: [],
@@ -254,7 +254,7 @@ var Protocol = function(version, baseURL, timeout, username, password) {
         if (Date.now() - this.connectTime > 1000 * 60 * 20) {
             this.connect((connectResponse) => {
                 if (connectResponse.success) {
-                    this.task_action(callback, action, parameter);
+                    this.taskAction(callback, action, parameter);
                 } else {
                     callback(connectResponse);
                 }
@@ -324,11 +324,11 @@ var Protocol = function(version, baseURL, timeout, username, password) {
     };
 
     this.onResume = (event) => {
-        this.task_action(() => {}, event.target.action, event.target.task.id);
+        this.taskAction(() => {}, event.target.action, event.target.task.id);
     };
 
     this.onDelete = (event) => {
-        this.task_action(() => {}, "delete", event.target.task.id);
+        this.taskAction(() => {}, "delete", event.target.task.id);
     };
 
     this.fileSizeSI = (a, b, c, d, e) => {

@@ -36,7 +36,7 @@ test_API_0_get_all_entries_empty_succeed_mock.priority = "must";
 function test_API_0_get_all_entries_empty_succeed_mock() {
     utils.writeTo('{"success":true,"items":[]}', "../fixtures/items.txt");
 
-    api.task_action(cb, "getall");
+    api.taskAction(cb, "getall");
 
     utils.wait(loaded);
     assert.equals(true, response.success);
@@ -76,7 +76,7 @@ function test_API_0_get_all_entries_succeed_mock() {
         '}';
     utils.writeTo(itemsFile, "../fixtures/items.txt");
 
-    api.task_action(cb, "getall");
+    api.taskAction(cb, "getall");
 
     utils.wait(loaded);
     assert.equals(true, response.success);

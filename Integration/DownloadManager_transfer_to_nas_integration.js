@@ -36,34 +36,58 @@ function setUpNotificationMock(title, text) {
     Notification = NotificationMock;
 }
 
+function getDownloadItems(title) {
+    let downloadItems = {};
+    DownloadManager.loadDownloadList((items) => {
+        downloadItems = items;
+        if (typeof title !== "undefined") {
+            downloadItems.some((item) => {
+                if (item.title === title) {
+                    title = true;
+                    return true;
+                }
+            });
+        } else {
+            title = null;
+        }
+        loaded.value = true;
+    }, (items) => {
+        downloadItems = null;
+        loaded.value = true;
+    });
+    utils.wait(loaded);
+    loaded.value = false;
+
+    if (title !== null) {
+        return (title === true);
+    }
+    return downloadItems;
+}
+
+
 test_Protocol_DownloadManager_transferToNas_torrent_file.description = "test_Protocol_DownloadManager_transferToNas_torrent_file";
 
 function test_Protocol_DownloadManager_transferToNas_torrent_file() {
-    setUpNotificationMock("Send torrent file to NAS", "http://releases.ubuntu.com/vivid/ubuntu-15.04-desktop-amd64.iso.torrent");
-    DownloadManager.transferToNas("http://releases.ubuntu.com/vivid/ubuntu-15.04-desktop-amd64.iso.torrent");
+    let file = {};
+    let t = Date.now();
+    setUpNotificationMock("Send torrent file to NAS", "http://releases.ubuntu.com/vivid/ubuntu-15.04-desktop-amd64.iso.torrent?" + t);
+    DownloadManager.transferToNas("http://releases.ubuntu.com/vivid/ubuntu-15.04-desktop-amd64.iso.torrent?" + t, file);
     utils.wait(loaded);
+    loaded.value = false;
+
+    // Can the filename that's been added be found in the list?
+    assert.isTrue(getDownloadItems(file.name));
 }
 
 test_Protocol_DownloadManager_transferToNas_link.description = "test_Protocol_DownloadManager_transferToNas_link";
 
 function test_Protocol_DownloadManager_transferToNas_link() {
-    setUpNotificationMock("Send link", "http://releases.ubuntu.com/vivid/ubuntu-15.04-desktop-amd64.iso");
-    DownloadManager.transferToNas("http://releases.ubuntu.com/vivid/ubuntu-15.04-desktop-amd64.iso");
+    let t = Date.now();
+    setUpNotificationMock("Send link", "http://releases.ubuntu.com/vivid/ubuntu-15.04-desktop-amd64.iso?" + t);
+    DownloadManager.transferToNas("http://releases.ubuntu.com/vivid/ubuntu-15.04-desktop-amd64.iso?" + t);
     utils.wait(loaded);
-}
+    loaded.value = false;
 
-test_DownloadManager_loadDownloadList.description = "test_DownloadManager_loadDownloadList";
-
-function test_DownloadManager_loadDownloadList() {
-    let downloadItems = {};
-    DownloadManager.loadDownloadList((items) => {
-        downloadItems = items;
-        loaded.value = true;
-    }, (items) => {
-        downloadItems.length = 99;
-        loaded.value = true;
-    });
-
-    utils.wait(loaded);
-    assert.equals(2, downloadItems.length);
+    // Can the filename that's been added be found in the list?
+    assert.isTrue(getDownloadItems("ubuntu-15.04-desktop-amd64.iso?" + t));
 }
