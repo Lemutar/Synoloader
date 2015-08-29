@@ -24,8 +24,8 @@ before_install:
   - mkdir -p $FirefoxVersion
   - cd $FirefoxVersion
   - if [ ! -f firefox-$FirefoxVersion.tar.bz2 ]; then
-      wget -O firefox-$FirefoxVersion.tar.bz2 http://releases.mozilla.org/pub/firefox/releases/$FirefoxVersion/linux-x86_64/en-US/firefox-$FirefoxVersion.tar.bz2
-      tar xjf firefox-$FirefoxVersion.tar.bz2
+      wget -O firefox-$FirefoxVersion.tar.bz2 http://releases.mozilla.org/pub/firefox/releases/$FirefoxVersion/linux-x86_64/en-US/firefox-$FirefoxVersion.tar.bz2;
+      tar xjf firefox-$FirefoxVersion.tar.bz2;
     fi
   - export FirefoxTest=$PWD/firefox/firefox
 
