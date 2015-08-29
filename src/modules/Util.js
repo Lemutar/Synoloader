@@ -13,9 +13,9 @@ if (typeof Util === "undefined") {
     (function() {
         this.showLog = true;
 
-        this.log = (msg, doit) => {
-            if (this.showLog || doit === true) {
-                console.log("SynoLoader : " + msg);
+        this.log = (msg, force) => {
+            if (this.showLog || force) {
+                console.log('SL: ' + msg);
             }
         };
 

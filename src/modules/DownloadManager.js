@@ -127,7 +127,8 @@ if (typeof DownloadManager === "undefined") {
         };
 
         this.transferToNas = (link) => {
-            if (link.toLowerCase().endsWith(".torrent")) {
+            let filename = link.split("?")[0];
+            if (filename.toLowerCase().endsWith(".torrent")) {
                 let file = Cc["@mozilla.org/file/directory_service;1"]
                     .getService(Ci.nsIProperties)
                     .get("TmpD", Ci.nsIFile);
@@ -151,6 +152,12 @@ if (typeof DownloadManager === "undefined") {
                                 } else {
                                     Notification.show("Send link failed", response.error_text);
                                 }
+                                // Remove the local temporary file.
+                                try {
+                                    file.remove(0);
+                                } catch(e) {
+                                    Util.log(e);
+                                }
                             },
                             "addfile",
                             file
@@ -172,8 +179,8 @@ if (typeof DownloadManager === "undefined") {
             }
         };
 
-        this.delete_all = () => {
-            Util.log("delete_all");
+        this.deleteAll = () => {
+            Util.log("delete all");
             this.loadDownloadList(
                 (items) => {
                     items.forEach((item) => {
