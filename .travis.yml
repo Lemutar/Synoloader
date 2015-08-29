@@ -7,25 +7,26 @@ env:
   global:
     - DISPLAY=:99.0
   matrix:
-    #- FirefoxVersion=24.8.1esr
-    #- FirefoxVersion=31.8.0esr
-    #- FirefoxVersion=38.2.1esr
+    - FirefoxVersion=24.8.1esr
+    - FirefoxVersion=31.8.0esr
+    - FirefoxVersion=38.2.1esr
     - FirefoxVersion=40.0
 
 cache:
   directories:
     - node_modules
-    #- firefoxes
+    - firefoxes
 
 before_install:
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
-  - echo $PWD
-  - mkdir firefoxes
+  - mkdir -p firefoxes
   - cd firefoxes
-  - mkdir $FirefoxVersion
+  - mkdir -p $FirefoxVersion
   - cd $FirefoxVersion
-  - wget -O firefox-$FirefoxVersion.tar.bz2 http://releases.mozilla.org/pub/firefox/releases/$FirefoxVersion/linux-x86_64/en-US/firefox-$FirefoxVersion.tar.bz2
-  - tar xjf firefox-$FirefoxVersion.tar.bz2
+  - if [ ! -f firefox-$FirefoxVersion.tar.bz2 ]; then
+      wget -O firefox-$FirefoxVersion.tar.bz2 http://releases.mozilla.org/pub/firefox/releases/$FirefoxVersion/linux-x86_64/en-US/firefox-$FirefoxVersion.tar.bz2
+      tar xjf firefox-$FirefoxVersion.tar.bz2
+    fi
   - export FirefoxTest=$PWD/firefox/firefox
 
 install:
