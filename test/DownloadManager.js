@@ -57,7 +57,6 @@ function setUpNotificationMock(title, text) {
 
 
 test_DownloadManager_transferToNas_failed_mock.description = "test_DownloadManager_transferToNas_failed_mock";
-test_DownloadManager_transferToNas_failed_mock.priority = "must";
 
 function test_DownloadManager_transferToNas_failed_mock() {
     utils.writeTo('{"error":{"code":105},"success":false}', "../fixtures/action.txt");
@@ -72,7 +71,6 @@ function test_DownloadManager_transferToNas_failed_mock() {
 }
 
 test_DownloadManager_transferToNas_link_success_mock.description = "test_DownloadManager_transferToNas_link_success_mock";
-test_DownloadManager_transferToNas_link_success_mock.priority = "must";
 
 function test_DownloadManager_transferToNas_link_success_mock() {
     utils.writeTo('{"success":true}', "../fixtures/action.txt");
@@ -87,7 +85,6 @@ function test_DownloadManager_transferToNas_link_success_mock() {
 }
 
 test_DownloadManager_transferToNas_torrent_file_success_mock.description = "test_DownloadManager_transferToNas_torrent_file_success_mock";
-test_DownloadManager_transferToNas_torrent_file_success_mock.priority = "must";
 
 function test_DownloadManager_transferToNas_torrent_file_success_mock() {
     utils.writeTo("42", "../fixtures/test_torrent.txt");
@@ -95,6 +92,7 @@ function test_DownloadManager_transferToNas_torrent_file_success_mock() {
 
     utils.writeTo('{"success":true}', "../fixtures/action.txt");
     server.expect("/webapi/DownloadStation/task.cgi", 200, "/action.txt");
+
 
     setUpAPI();
     setUpNotificationMock("Send torrent file to NAS", "http://localhost:4445/test.torrent");
@@ -105,7 +103,6 @@ function test_DownloadManager_transferToNas_torrent_file_success_mock() {
 }
 
 test_DownloadManager_convertOldURL_host.description = "test_DownloadManager_convertOldURL_host";
-test_DownloadManager_convertOldURL_host.priority = "must";
 
 function test_DownloadManager_convertOldURL_host() {
     prefs.setCharPref("protocol", "test");
@@ -116,7 +113,6 @@ function test_DownloadManager_convertOldURL_host() {
 }
 
 test_DownloadManager_not_convertOldURL_protocol.description = "test_DownloadManager_not_convertOldURL_protocol";
-test_DownloadManager_not_convertOldURL_protocol.priority = "must";
 
 function test_DownloadManager_not_convertOldURL_protocol() {
     prefs.setCharPref("protocol", "test");
@@ -127,7 +123,6 @@ function test_DownloadManager_not_convertOldURL_protocol() {
 }
 
 test_DownloadManager_convertOldURL_port.description = "test_DownloadManager_not_convertOldURL_port";
-test_DownloadManager_convertOldURL_port.priority = "must";
 
 function test_DownloadManager_convertOldURL_port() {
     prefs.setCharPref("port", "test");
@@ -138,7 +133,6 @@ function test_DownloadManager_convertOldURL_port() {
 }
 
 test_DownloadManager_convertOldURL_ip_port.description = "test_DownloadManager_convertOldURL_ip_port";
-test_DownloadManager_convertOldURL_ip_port.priority = "must";
 
 function test_DownloadManager_convertOldURL_ip_port() {
     prefs.setCharPref("port", "test");

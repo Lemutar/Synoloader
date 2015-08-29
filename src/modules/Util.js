@@ -30,5 +30,9 @@ if (typeof Util === "undefined") {
             }
             return scope;
         };
+
+        this.defaultFor = (arg, val) => {
+            return (typeof arg !== 'undefined') ? arg : val;
+        };
     }).apply(Util);
 }

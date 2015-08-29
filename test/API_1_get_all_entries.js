@@ -31,7 +31,6 @@ function shutDown() {
 
 
 test_API_1_get_all_entries_empty_succeed_mock.description = "test_API_1_get_all_entries_empty_succeed_mock";
-test_API_1_get_all_entries_empty_succeed_mock.priority = "must";
 
 function test_API_1_get_all_entries_empty_succeed_mock() {
     utils.writeTo('{"data":{"offeset":0,"tasks":[],"total":0},"success":true}', "../fixtures/items.txt");
@@ -44,7 +43,6 @@ function test_API_1_get_all_entries_empty_succeed_mock() {
 }
 
 test_API_1_get_all_entries_succeed_mock.description = "test_API_1_get_all_entries_succeed_mock";
-test_API_1_get_all_entries_succeed_mock.priority = "must";
 
 function test_API_1_get_all_entries_succeed_mock() {
     let itemsFile = '{' +

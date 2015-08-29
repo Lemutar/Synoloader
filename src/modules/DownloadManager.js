@@ -126,10 +126,12 @@ if (typeof DownloadManager === "undefined") {
             });
         };
 
-        this.transferToNas = (link, oFile) => {
-            let filename = link.split("?")[0];
-            if (filename.toLowerCase().endsWith(".torrent")) {
-                let file = Cc["@mozilla.org/file/directory_service;1"]
+        this.transferToNas = (link, file) => {
+            link = Util.defaultFor(link, "");
+            file = Util.defaultFor(file, {});
+
+            if (link.split("?")[0].toLowerCase().endsWith(".torrent")) {
+                let torrentFile = Cc["@mozilla.org/file/directory_service;1"]
                     .getService(Ci.nsIProperties)
                     .get("TmpD", Ci.nsIFile);
 
@@ -139,15 +141,15 @@ if (typeof DownloadManager === "undefined") {
                     .toString()
                     .replace("{", "")
                     .replace("}", "");
-                oFile.link = link;
-                oFile.name = "synoloader" + uuid + ".torrent";
-                oFile.path = file.path;
+                file.link = link;
+                file.name = "synoloader" + uuid + ".torrent";
+                file.path = torrentFile.path;
 
-                file.append(oFile.name);
-                file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0666);
+                torrentFile.append(file.name);
+                torrentFile.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0666);
                 FileDownloaderHandler.getFileContent(
                     link,
-                    file.path, () => {
+                    torrentFile.path, () => {
                         this.protocol.taskAction(
                             (response) => {
                                 if (response.success) {
@@ -157,13 +159,13 @@ if (typeof DownloadManager === "undefined") {
                                 }
                                 // Remove the local temporary file.
                                 try {
-                                    file.remove(0);
+                                    torrentFile.remove(0);
                                 } catch (e) {
                                     Util.log(e);
                                 }
                             },
                             "addfile",
-                            file
+                            torrentFile
                         );
                     }
                 );

@@ -25,7 +25,6 @@ function shutDown() {}
 
 
 test_quick_connect_get_nas_info.description = "test_quick_connect_get_nas_info";
-test_quick_connect_get_nas_info.priority = "must";
 
 function test_quick_connect_get_nas_info() {
     let quickConnectResponse = '{"version":1,"command":"get_server_info","errno":0,"server"' +
@@ -49,7 +48,6 @@ function test_quick_connect_get_nas_info() {
 }
 
 test_quick_connect_get_nas_info_fail.description = "test_quick_connect_get_nas_info_fail";
-test_quick_connect_get_nas_info_fail.priority = "must";
 
 function test_quick_connect_get_nas_info_fail() {
     let quickConnectResponse = '{"version":1,"command":"get_server_info","errno":1,"server"' +
@@ -70,7 +68,6 @@ function test_quick_connect_get_nas_info_fail() {
 }
 
 test_quick_connect_get_nas_info_fail_no_answer.description = "test_quick_connect_get_nas_info_fail_no_answer";
-test_quick_connect_get_nas_info_fail_no_answer.priority = "must";
 
 function test_quick_connect_get_nas_info_fail_no_answer() {
     quickConnect = QuickConnect(1000, 200, "http://", 4445);
@@ -82,7 +79,6 @@ function test_quick_connect_get_nas_info_fail_no_answer() {
 }
 
 test_quick_connect_checkInternalIPs.description = "test_quick_connect_checkInternalIPs";
-test_quick_connect_checkInternalIPs.priority = "must";
 
 function test_quick_connect_checkInternalIPs() {
     let internalIPs = ["localhost:4445/ip_1", "localhost:4445/ip_2"];
@@ -106,7 +102,6 @@ function test_quick_connect_checkInternalIPs() {
 }
 
 test_quick_connect_checkInternalIPs_timeout.description = "test_quick_connect_checkInternalIPs_timeout";
-test_quick_connect_checkInternalIPs_timeout.priority = "must";
 
 function test_quick_connect_checkInternalIPs_timeout() {
     let internalIPs = ["localhost:4445/ip_1", "localhost:4445/ip_2"];
@@ -130,7 +125,6 @@ function test_quick_connect_checkInternalIPs_timeout() {
 }
 
 test_quick_connect_checkInternalIPs_fail.description = "test_quick_connect_checkInternalIPs_fail";
-test_quick_connect_checkInternalIPs_fail.priority = "must";
 
 function test_quick_connect_checkInternalIPs_fail() {
     let internalIPs = ["localhost:4445/ip_1", "localhost:4445/ip_2"];
@@ -143,7 +137,6 @@ function test_quick_connect_checkInternalIPs_fail() {
 }
 
 test_quick_connect_internal.description = "test_quick_connect_internal";
-test_quick_connect_internal.priority = "must";
 
 function test_quick_connect_internal() {
     quickConnect = QuickConnect(1000, 200);
@@ -175,7 +168,6 @@ function test_quick_connect_internal() {
 }
 
 test_quick_connect_server_info_fail.description = "test_quick_connect_server_info_fail";
-test_quick_connect_server_info_fail.priority = "must";
 
 function test_quick_connect_server_info_fail() {
     quickConnect = QuickConnect(1000, 200);
@@ -198,7 +190,6 @@ function test_quick_connect_server_info_fail() {
 }
 
 test_quick_connect_external.description = "test_quick_connect_external";
-test_quick_connect_external.priority = "must";
 
 function test_quick_connect_external() {
     quickConnect = QuickConnect(1000, 200);

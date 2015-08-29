@@ -37,7 +37,6 @@ function doConnect(successful, str, responseKey) {
 
 
 test_API_0_connect_succeed_mock.description = "test_API_0_connect_succeed_mock";
-test_API_0_connect_succeed_mock.priority = "must";
 
 function test_API_0_connect_succeed_mock() {
     utils.writeTo('{"id":"CONNECTION_ID","login_success":true,"success":true}', "../fixtures/connect.txt");
@@ -45,7 +44,6 @@ function test_API_0_connect_succeed_mock() {
 }
 
 test_API_0_connect_fail_minus2_mock.description = "test_API_0_connect_fail_minus2_mock";
-test_API_0_connect_fail_minus2_mock.priority = "must";
 
 function test_API_0_connect_fail_minus2_mock() {
     utils.writeTo('{"errcode":-2,"login_success":false,"success":false}', "../fixtures/connect.txt");
@@ -53,7 +51,6 @@ function test_API_0_connect_fail_minus2_mock() {
 }
 
 test_API_0_connect_fail_minus5_mock.description = "test_API_0_connect_fail_minus5_mock";
-test_API_0_connect_fail_minus5_mock.priority = "must";
 
 function test_API_0_connect_fail_minus5_mock() {
     utils.writeTo('{"errcode":-5,"login_success":false,"success":false}', "../fixtures/connect.txt");

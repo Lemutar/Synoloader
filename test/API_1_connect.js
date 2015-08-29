@@ -37,7 +37,6 @@ function doConnect(successful, str, responseKey) {
 
 
 test_API_1_connect_succeed_mock.description = "test_API_1_connect_succeed_mock";
-test_API_1_connect_succeed_mock.priority = "must";
 
 function test_API_1_connect_succeed_mock() {
     utils.writeTo('{"data":{"sid":"CONNECTION_ID"},"success":true}', "../fixtures/connect.txt");
@@ -45,7 +44,6 @@ function test_API_1_connect_succeed_mock() {
 }
 
 test_API_1_connect_fail_400_mock.description = "test_API_1_connect_fail_400_mock";
-test_API_1_connect_fail_400_mock.priority = "must";
 
 function test_API_1_connect_fail_400_mock() {
     utils.writeTo('{"error":{"code":400},"success":false}', "../fixtures/connect.txt");
@@ -53,7 +51,6 @@ function test_API_1_connect_fail_400_mock() {
 }
 
 test_API_1_connect_fail_401_mock.description = "test_API_1_connect_fail_401_mock";
-test_API_1_connect_fail_401_mock.priority = "must";
 
 function test_API_1_connect_fail_401_mock() {
     utils.writeTo('{"error":{"code":401},"success":false}', "../fixtures/connect.txt");
@@ -61,7 +58,6 @@ function test_API_1_connect_fail_401_mock() {
 }
 
 test_API_1_connect_fail_402_mock.description = "test_API_1_connect_fail_402_mock";
-test_API_1_connect_fail_402_mock.priority = "must";
 
 function test_API_1_connect_fail_402_mock() {
     utils.writeTo('{"error":{"code":402},"success":false}', "../fixtures/connect.txt");
@@ -69,7 +65,6 @@ function test_API_1_connect_fail_402_mock() {
 }
 
 test_API_1_connect_fail_403_mock.description = "test_API_1_connect_fail_403_mock";
-test_API_1_connect_fail_403_mock.priority = "must";
 
 function test_API_1_connect_fail_403_mock() {
     utils.writeTo('{"error":{"code":403},"success":false}', "../fixtures/connect.txt");
@@ -77,7 +72,6 @@ function test_API_1_connect_fail_403_mock() {
 }
 
 test_API_1_connect_fail_404_mock.description = "test_API_1_connect_fail_404_mock";
-test_API_1_connect_fail_404_mock.priority = "must";
 
 function test_API_1_connect_fail_404_mock() {
     utils.writeTo('{"error":{"code":404},"success":false}', "../fixtures/connect.txt");

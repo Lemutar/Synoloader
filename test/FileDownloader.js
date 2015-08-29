@@ -31,7 +31,6 @@ function shutDown() {
 
 
 test_FileDownloader_get_file_content.description = "test_FileDownloader_get_file_content";
-test_FileDownloader_get_file_content.priority = "must";
 
 function test_FileDownloader_get_file_content() {
     utils.writeTo("42", "../fixtures/test_file.txt");

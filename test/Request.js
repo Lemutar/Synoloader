@@ -26,7 +26,6 @@ function shutDown() {
 }
 
 test_Request_succeed_post.description = "test_Request_succeed_post";
-test_Request_succeed_post.priority = "must";
 
 function test_Request_succeed_post() {
     utils.writeTo("test text", "../fixtures/test.txt");
@@ -40,7 +39,6 @@ function test_Request_succeed_post() {
 }
 
 test_Request_succeed_get.description = "test_Request_succeed_get";
-test_Request_succeed_get.priority = "must";
 
 function test_Request_succeed_get() {
     utils.writeTo("test text", "../fixtures/test.txt");
@@ -54,7 +52,6 @@ function test_Request_succeed_get() {
 }
 
 test_Request_succeed_JSON.description = "test_Request_succeed_JSON";
-test_Request_succeed_JSON.priority = "must";
 
 function test_Request_succeed_JSON() {
     utils.writeTo('{"test":true}', "../fixtures/test.txt");
@@ -68,7 +65,6 @@ function test_Request_succeed_JSON() {
 }
 
 test_Request_receive_404.description = "test_Request_receive_404";
-test_Request_receive_404.priority = "must";
 
 function test_Request_receive_404() {
     utils.writeTo('{"id":"CONNECTION_ID","login_success":true,"success":true}', "../fixtures/test.txt");
@@ -82,7 +78,6 @@ function test_Request_receive_404() {
 }
 
 test_Request_timeout.description = "test_Request_timeout";
-test_Request_timeout.priority = "must";
 
 function test_Request_timeout() {
     utils.writeTo('{"id":"CONNECTION_ID","login_success":true,"success":true}', "../fixtures/test.txt");
