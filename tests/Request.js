@@ -18,7 +18,7 @@ function setUp() {
 function tearDown() {}
 
 function startUp() {
-    server = utils.setUpHttpServer(4445, "../fixtures");
+    server = utils.setUpHttpServer(4445, "fixtures");
 }
 
 function shutDown() {
@@ -28,7 +28,7 @@ function shutDown() {
 test_Request_succeed_post.description = "test_Request_succeed_post";
 
 function test_Request_succeed_post() {
-    utils.writeTo("test text", "../fixtures/test.txt");
+    utils.writeTo("test text", "fixtures/test.txt");
     server.expect("/download", 200, "/test.txt");
 
     request.post();
@@ -41,7 +41,7 @@ function test_Request_succeed_post() {
 test_Request_succeed_get.description = "test_Request_succeed_get";
 
 function test_Request_succeed_get() {
-    utils.writeTo("test text", "../fixtures/test.txt");
+    utils.writeTo("test text", "fixtures/test.txt");
     server.expect("/download", 200, "/test.txt");
 
     request.get();
@@ -54,7 +54,7 @@ function test_Request_succeed_get() {
 test_Request_succeed_JSON.description = "test_Request_succeed_JSON";
 
 function test_Request_succeed_JSON() {
-    utils.writeTo('{"test":true}', "../fixtures/test.txt");
+    utils.writeTo('{"test":true}', "fixtures/test.txt");
     server.expect("/download", 200, "/test.txt");
 
     request.post();
@@ -67,7 +67,7 @@ function test_Request_succeed_JSON() {
 test_Request_receive_404.description = "test_Request_receive_404";
 
 function test_Request_receive_404() {
-    utils.writeTo('{"id":"CONNECTION_ID","login_success":true,"success":true}', "../fixtures/test.txt");
+    utils.writeTo('{"id":"CONNECTION_ID","login_success":true,"success":true}', "fixtures/test.txt");
     server.expect("/download", 404, "/test.txt");
 
     request.post();
@@ -80,7 +80,7 @@ function test_Request_receive_404() {
 test_Request_timeout.description = "test_Request_timeout";
 
 function test_Request_timeout() {
-    utils.writeTo('{"id":"CONNECTION_ID","login_success":true,"success":true}', "../fixtures/test.txt");
+    utils.writeTo('{"id":"CONNECTION_ID","login_success":true,"success":true}', "fixtures/test.txt");
     // Make sure the delay is larger than the timeout of the request!
     server.expect("/download", 200, {
         path: "/test.txt",

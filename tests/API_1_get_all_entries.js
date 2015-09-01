@@ -21,8 +21,8 @@ function setUp() {
 function tearDown() {}
 
 function startUp() {
-    server = utils.setUpHttpServer(4445, "../fixtures");
-    utils.writeTo('{"data":{"sid":"CONNECTION_ID"},"success":true}', "../fixtures/connect.txt");
+    server = utils.setUpHttpServer(4445, "fixtures");
+    utils.writeTo('{"data":{"sid":"CONNECTION_ID"},"success":true}', "fixtures/connect.txt");
 }
 
 function shutDown() {
@@ -33,7 +33,7 @@ function shutDown() {
 test_API_1_get_all_entries_empty_succeed_mock.description = "test_API_1_get_all_entries_empty_succeed_mock";
 
 function test_API_1_get_all_entries_empty_succeed_mock() {
-    utils.writeTo('{"data":{"offeset":0,"tasks":[],"total":0},"success":true}', "../fixtures/items.txt");
+    utils.writeTo('{"data":{"offeset":0,"tasks":[],"total":0},"success":true}', "fixtures/items.txt");
 
     api.taskAction(cb, "getall");
 
@@ -46,7 +46,7 @@ test_API_1_get_all_entries_succeed_mock.description = "test_API_1_get_all_entrie
 
 function test_API_1_get_all_entries_succeed_mock() {
     let itemsFile = '{"data":{"offeset":0,"tasks":[{"additional":{"transfer":{"size_downloaded":"0","size_uploaded":"0","speed_download":0,"speed_upload":0}},"id":"dbid_1","size":"1","status":"paused","status_extra":null,"title":"file1","type":"http","username":"username"}],"total":1},"success":true}';
-    utils.writeTo(itemsFile, "../fixtures/items.txt");
+    utils.writeTo(itemsFile, "fixtures/items.txt");
 
     api.taskAction(cb, "getall");
 

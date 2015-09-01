@@ -22,7 +22,7 @@ function setUp() {
 function tearDown() {}
 
 function startUp() {
-    server = utils.setUpHttpServer(4445, "../fixtures");
+    server = utils.setUpHttpServer(4445, "fixtures");
 
     prefs = Cc["@mozilla.org/preferences-service;1"]
         .getService(Ci.nsIPrefService)
@@ -62,7 +62,7 @@ function setUpNotificationMock(title, text) {
 test_DownloadManager_transferToNas_failed_mock.description = "test_DownloadManager_transferToNas_failed_mock";
 
 function test_DownloadManager_transferToNas_failed_mock() {
-    utils.writeTo('{"error":{"code":105},"success":false}', "../fixtures/action.txt");
+    utils.writeTo('{"error":{"code":105},"success":false}', "fixtures/action.txt");
     server.expect("/webapi/DownloadStation/task.cgi", 200, "/action.txt");
 
     setUpAPI();
@@ -76,7 +76,7 @@ function test_DownloadManager_transferToNas_failed_mock() {
 test_DownloadManager_transferToNas_link_success_mock.description = "test_DownloadManager_transferToNas_link_success_mock";
 
 function test_DownloadManager_transferToNas_link_success_mock() {
-    utils.writeTo('{"success":true}', "../fixtures/action.txt");
+    utils.writeTo('{"success":true}', "fixtures/action.txt");
     server.expect("/webapi/DownloadStation/task.cgi", 200, "/action.txt");
 
     setUpAPI();
@@ -90,10 +90,10 @@ function test_DownloadManager_transferToNas_link_success_mock() {
 test_DownloadManager_transferToNas_torrent_file_success_mock.description = "test_DownloadManager_transferToNas_torrent_file_success_mock";
 
 function test_DownloadManager_transferToNas_torrent_file_success_mock() {
-    utils.writeTo("42", "../fixtures/test_torrent.txt");
+    utils.writeTo("42", "fixtures/test_torrent.txt");
     server.expect("/test.torrent", 200, "/test_torrent.txt");
 
-    utils.writeTo('{"success":true}', "../fixtures/action.txt");
+    utils.writeTo('{"success":true}', "fixtures/action.txt");
     server.expect("/webapi/DownloadStation/task.cgi", 200, "/action.txt");
 
     setUpAPI();

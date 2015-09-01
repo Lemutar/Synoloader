@@ -22,7 +22,7 @@ function setUp() {
 function tearDown() {}
 
 function startUp() {
-    server = utils.setUpHttpServer(4445, "../fixtures");
+    server = utils.setUpHttpServer(4445, "fixtures");
 }
 
 function shutDown() {
@@ -33,7 +33,7 @@ function shutDown() {
 test_FileDownloader_get_file_content.description = "test_FileDownloader_get_file_content";
 
 function test_FileDownloader_get_file_content() {
-    utils.writeTo("42", "../fixtures/test_file.txt");
+    utils.writeTo("42", "fixtures/test_file.txt");
 
     let file = Cc["@mozilla.org/file/directory_service;1"]
         .getService(Ci.nsIProperties)

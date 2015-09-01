@@ -3,14 +3,13 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
 
         jshint: {
-            files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js', 'Integration/**/*.js'],
+            files: ['Gruntfile.js', 'src/**/*.js', 'tests*/**/*.js'],
             options: {
-                jshintrc: '.jshintrc' // relative to Gruntfile
-                    // options here to override JSHint defaults
+                jshintrc: '.jshintrc'
             }
         },
         jsbeautifier: {
-            files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js', 'Integration/**/*.js']
+            files: ['Gruntfile.js', 'src/**/*.js', 'tests*/**/*.js']
         }
     });
     grunt.loadNpmTasks('grunt-contrib-jshint');

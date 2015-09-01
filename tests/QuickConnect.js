@@ -12,7 +12,7 @@ function setUp() {
         value: false
     };
 
-    server = utils.setUpHttpServer(4445, "../fixtures");
+    server = utils.setUpHttpServer(4445, "fixtures");
 }
 
 function tearDown() {
@@ -33,7 +33,7 @@ function test_quick_connect_get_nas_info() {
         '"mask":"255.255.255.0","name":"eth0"},{"ip":"192.168.0.150","ipv6":[{"addr_type":32,"address":"fe80::211:32ff:fe0a:d061","prefix_length":64,"scope":"link"}],' +
         '"mask":"255.255.255.0","name":"eth0"}],"external":{"ip":"217.162.254.219"},"behind_nat":true,"udp_punch_port":41864,"tcp_punch_port":0,"ds_state":"OFFLINE"},' +
         '"client":{"external":{"ip":"217.162.254.219"}},"env":{"relay_region":"de","control_host":"dec.quickconnect.to"},"service":{"port":5001,"ext_port":0,"pingpong":"UNKNOWN"}}';
-    utils.writeTo(quickConnectResponse, "../fixtures/connect.txt");
+    utils.writeTo(quickConnectResponse, "fixtures/connect.txt");
     server.expect("/relayServer.php", 200, "/connect.txt");
 
     quickConnect = QuickConnect(1000, 200, "http://", 4445);
@@ -56,7 +56,7 @@ function test_quick_connect_get_nas_info_fail() {
         '"mask":"255.255.255.0","name":"eth0"},{"ip":"192.168.0.150","ipv6":[{"addr_type":32,"address":"fe80::211:32ff:fe0a:d061","prefix_length":64,"scope":"link"}],' +
         '"mask":"255.255.255.0","name":"eth0"}],"external":{"ip":"217.162.254.219"},"behind_nat":true,"udp_punch_port":41864,"tcp_punch_port":0,"ds_state":"OFFLINE"},' +
         '"client":{"external":{"ip":"217.162.254.219"}},"env":{"relay_region":"de","control_host":"dec.quickconnect.to"},"service":{"port":5001,"ext_port":0,"pingpong":"UNKNOWN"}}';
-    utils.writeTo(quickConnectResponse, "../fixtures/connect.txt");
+    utils.writeTo(quickConnectResponse, "fixtures/connect.txt");
     server.expect("/relayServer.php", 200, "/connect.txt");
 
     quickConnect = QuickConnect(1000, 200, "http://", 4445);
@@ -83,7 +83,7 @@ test_quick_connect_checkInternalIPs.description = "test_quick_connect_checkInter
 function test_quick_connect_checkInternalIPs() {
     let internalIPs = ["localhost:4445/ip_1", "localhost:4445/ip_2"];
 
-    utils.writeTo('{"data":2,"success":true}', "../fixtures/connect.txt");
+    utils.writeTo('{"data":2,"success":true}', "fixtures/connect.txt");
     server.expect("/ip_1:4445/webapi/query.cgi", 200, {
         path: "/connect.txt",
         delay: 100
@@ -106,7 +106,7 @@ test_quick_connect_checkInternalIPs_timeout.description = "test_quick_connect_ch
 function test_quick_connect_checkInternalIPs_timeout() {
     let internalIPs = ["localhost:4445/ip_1", "localhost:4445/ip_2"];
 
-    utils.writeTo('{"data":2,"success":true}', "../fixtures/connect.txt");
+    utils.writeTo('{"data":2,"success":true}', "fixtures/connect.txt");
     server.expect("/ip_1:4445/webapi/query.cgi", 200, {
         path: "/connect.txt",
         delay: 300

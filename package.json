@@ -13,6 +13,6 @@
     "istanbul": "~0.1.24"
   },
   "scripts": {
-    "test": "./run_test.sh"
+    "test": "bin/run_test.sh"
   }
 }

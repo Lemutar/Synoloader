@@ -1,3 +1,4 @@
-fixtures
-firefox_profile
+tests/fixtures/*.txt
+bin/firefox_profile_test
+bin/test_result.json
 node_modules
