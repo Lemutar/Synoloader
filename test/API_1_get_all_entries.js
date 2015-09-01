@@ -45,35 +45,12 @@ function test_API_1_get_all_entries_empty_succeed_mock() {
 test_API_1_get_all_entries_succeed_mock.description = "test_API_1_get_all_entries_succeed_mock";
 
 function test_API_1_get_all_entries_succeed_mock() {
-    let itemsFile = '{' +
-        '"data":{' +
-        '"offeset":0,' +
-        '"tasks":[{' +
-        '"additional":{' +
-        '"transfer":{' +
-        '"size_downloaded":"2266112",' +
-        '"size_uploaded":"0",' +
-        '"speed_download":0,' +
-        '"speed_upload":0' +
-        '}' +
-        '},' +
-        '"id":"dbid_140",' +
-        '"size":"1054867456",' +
-        '"status":"paused",' +
-        '"status_extra":null,' +
-        '"title":"ubuntu-14.04.3-desktop-amd64.iso",' +
-        '"type":"http",' +
-        '"username":"synotest"' +
-        '}],' +
-        '"total":1' +
-        '},' +
-        '"success":true' +
-        '}';
+    let itemsFile = '{"data":{"offeset":0,"tasks":[{"additional":{"transfer":{"size_downloaded":"0","size_uploaded":"0","speed_download":0,"speed_upload":0}},"id":"dbid_1","size":"1","status":"paused","status_extra":null,"title":"file1","type":"http","username":"username"}],"total":1},"success":true}';
     utils.writeTo(itemsFile, "../fixtures/items.txt");
 
     api.taskAction(cb, "getall");
 
     utils.wait(loaded);
     assert.equals(true, response.success);
-    assert.equals("ubuntu-14.04.3-desktop-amd64.iso", response.items[0].title);
+    assert.equals("file1", response.items[0].title);
 }

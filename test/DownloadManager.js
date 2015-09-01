@@ -29,6 +29,7 @@ function startUp() {
         .getBranch("extensions.SynoLoader.");
 
     prefs.setCharPref("dsm_version", 2);
+    prefs.setBoolPref("show_debug", true);
 }
 
 function shutDown() {
@@ -55,7 +56,9 @@ function setUpNotificationMock(title, text) {
     Notification = NotificationMock;
 }
 
-
+/*
+ * Create download tasks.
+ */
 test_DownloadManager_transferToNas_failed_mock.description = "test_DownloadManager_transferToNas_failed_mock";
 
 function test_DownloadManager_transferToNas_failed_mock() {
@@ -93,7 +96,6 @@ function test_DownloadManager_transferToNas_torrent_file_success_mock() {
     utils.writeTo('{"success":true}', "../fixtures/action.txt");
     server.expect("/webapi/DownloadStation/task.cgi", 200, "/action.txt");
 
-
     setUpAPI();
     setUpNotificationMock("Send torrent file to NAS", "http://localhost:4445/test.torrent");
 
@@ -102,6 +104,9 @@ function test_DownloadManager_transferToNas_torrent_file_success_mock() {
     utils.wait(loaded);
 }
 
+/*
+ * URL conversions.
+ */
 test_DownloadManager_convertOldURL_host.description = "test_DownloadManager_convertOldURL_host";
 
 function test_DownloadManager_convertOldURL_host() {

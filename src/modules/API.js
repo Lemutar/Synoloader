@@ -245,11 +245,11 @@ var Protocol = function(version, baseURL, timeout, username, password) {
 
     this.taskAction = (callback, action, parameter) => {
         let response = {
-                success: false,
-                items: [],
-                error_text: ""
-            },
-            parameterEnc = encodeURIComponent(parameter);
+            success: false,
+            items: [],
+            error_text: ""
+        };
+        let parameterEnc = encodeURIComponent(parameter);
 
         if (Date.now() - this.connectTime > 1000 * 60 * 20) {
             this.connect((connectResponse) => {
