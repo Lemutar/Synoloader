@@ -1,6 +1,13 @@
 {
   "name": "Synoloader",
   "version": "2.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lemutar/Synoloader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Lemutar/Synoloader/issues"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jshint": "^0.10.0",
@@ -13,6 +20,6 @@
     "istanbul": "~0.1.24"
   },
   "scripts": {
-    "test": "cd bin; ./run_tests.sh; ./run_integration_tests.sh"
+    "test": "cd bin; ./run_tests.sh; ./run_tests.sh integration"
   }
 }
