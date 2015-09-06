@@ -3,9 +3,9 @@
 echo "Getting which test to run"
 
 case "${1-default}" in
-  default) TestToRun="Run default tests"; TestsFolder="../tests/" ;;
-  integration) TestToRun="Run integration tests"; TestsFolder="../tests-integration" ;;
-  local-integration) TestToRun="Run local integration tests"; TestsFolder="../tests-integration-local" ;;
+  default) TestToRun="Run default tests"; TestsFolder="../test/" ;;
+  integration) TestToRun="Run integration tests"; TestsFolder="../test-integration" ;;
+  local-integration) TestToRun="Run local integration tests"; TestsFolder="../test-integration-local" ;;
   *) echo "Invalid option. Valid are: default (or empty), integration, local-integration"; exit 1 ;;
 esac
 
