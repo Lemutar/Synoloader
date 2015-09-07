@@ -1,26 +1,26 @@
 var EXPORTED_SYMBOLS = ["Notification"];
+let {
+    classes: Cc,
+    interfaces: Ci
+} = Components;
 
-var ww = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
-    .getService(Components.interfaces.nsIWindowWatcher);
+if (typeof Notification === "undefined") {
+    var Notification = {};
 
+    (function() {
+        let alertInterface = Cc["@mozilla.org/alerts-service;1"]
+            .getService(Ci.nsIAlertsService);
 
-Notification = function() {
+        this.showNotif = false;
 
-};
-try {
-    Notification.AlertInterface = Components.classes['@mozilla.org/alerts-service;1'].getService(Components.interfaces.nsIAlertsService);
-
-} catch (e) {
-    // prevents runtime error on platforms that don't implement nsIAlertsService
+        this.show = (title, text) => {
+            if (this.showNotif) {
+                try {
+                    alertInterface.showAlertNotification("chrome://SynoLoader/skin/synoloader32.png", title, text, false, "", null);
+                } catch (e) {
+                    // Prevents runtime error on platforms that don't implement nsIAlertsService, like Mac OSX.
+                }
+            }
+        };
+    }).apply(Notification);
 }
-
-Notification.show_not = false;
-Notification.show = function(title, text) {
-    if (this.show_not) {
-        try {
-            this.AlertInterface.showAlertNotification("chrome://SynoLoader/skin/Syno.png", title, text, false, '', null);
-        } catch (e) {
-            // prevents runtime error on platforms that don't implement nsIAlertsService
-        }
-    }
-};

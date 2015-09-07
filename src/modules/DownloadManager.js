@@ -1,49 +1,54 @@
-var EXPORTED_SYMBOLS = ["SynoLoader_DownloadManager"];
+var EXPORTED_SYMBOLS = ["DownloadManager"];
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
+Cu.import("resource://SynoLoader/FileDownloaderHandler.js");
+Cu.import("resource://SynoLoader/MagnetHandler.js");
+Cu.import("resource://SynoLoader/Notification.js");
+Cu.import("resource://SynoLoader/QuickConnect.js");
+Cu.import("resource://SynoLoader/Util.js");
 
-if (typeof SynoLoader_DownloadManager == "undefined") {
-    var SynoLoader_DownloadManager = {};
-
-    Components.utils.import("resource://SynoLoader/FileDownloaderHandler.js", SynoLoader_DownloadManager);
-    Components.utils.import("resource://SynoLoader/Util.js", SynoLoader_DownloadManager);
-    Components.utils.import("resource://SynoLoader/Notification.js", SynoLoader_DownloadManager);
-    Components.utils.import("resource://SynoLoader/magnetHandler.js", SynoLoader_DownloadManager);
-    Components.utils.import("resource://SynoLoader/QuickConnect.js", SynoLoader_DownloadManager);
+if (typeof DownloadManager === "undefined") {
+    var DownloadManager = {};
 
     (function() {
+        let quickConnectRelayTimeOutInMs = 8000;
+        let quickConnectLocalTimeOutInMs = 8000;
 
-        var quickConnectRelayTimeOutInMs = 8000;
-        var quickConnectLocalTimeOutInMs = 8000;
-        this.connecting = false;
-        this.password = "";
-        this.username = "";
-        this.is_connect = false;
-        this.list = [];
-        this.protocol = "undefined";
-        this.preferences = Components.classes["@mozilla.org/preferences-service;1"]
-            .getService(Components.interfaces.nsIPrefService)
+        let loginManager = Cc["@mozilla.org/login-manager;1"]
+            .getService(Ci.nsILoginManager);
+
+        let prefs = Cc["@mozilla.org/preferences-service;1"]
+            .getService(Ci.nsIPrefService)
             .getBranch("extensions.SynoLoader.");
 
-        this.preferences.QueryInterface(Components.interfaces.nsIPrefBranch2);
-        this.preferences.addObserver("", this, false);
-        SynoLoader_DownloadManager.Notification.show_not = this.preferences.getBoolPref('show_not');
-        SynoLoader_DownloadManager.Util.show_log = this.preferences.getBoolPref('show_dbg');
-        SynoLoader_DownloadManager.magnetHandler.set_active(SynoLoader_DownloadManager.preferences.getBoolPref('use_magnet'));
+        this.isConnected = false;
+        this.isConnecting = false;
+        this.urlToConnect = "";
+        this.password = "";
+        this.username = "";
+        this.protocol = "undefined";
 
+        prefs.QueryInterface(Ci.nsIPrefBranch2);
+        prefs.addObserver("", this, false);
 
-        var LoginManager = Components.classes["@mozilla.org/login-manager;1"].
-        getService(Components.interfaces.nsILoginManager);
+        Notification.showNotif = prefs.getBoolPref("show_notif");
+        Util.showLog = prefs.getBoolPref("show_debug");
+        MagnetHandler.setActive(prefs.getBoolPref("use_magnet"));
 
         // Find users for the given parameters
-        var logins = LoginManager.findLogins({}, 'chrome://SynoLoader.Pass', null, 'User Registration');
+        let logins = loginManager.findLogins({}, "chrome://SynoLoader.Pass", null, "User Registration");
         if (logins.length > 0) {
-            SynoLoader_DownloadManager.username = logins[0].username;
-            SynoLoader_DownloadManager.password = logins[0].password;
+            this.username = logins[0].username;
+            this.password = logins[0].password;
         }
 
-        this.parse_url = function parse_url(url) {
-            var pattern = RegExp("^(.*:)//([A-Za-z0-9\-\.]+)(:[0-9]+)?(.*)$");
-            var matches = url.match(pattern);
+        this.parseURL = (url) => {
+            let pattern = RegExp("^(.*:)//([A-Za-z0-9\-\.]+)(:[0-9]+)?(.*)$");
+            let matches = url.match(pattern);
             if (matches === null) {
                 return {
                     protocol: undefined,
@@ -58,177 +63,185 @@ if (typeof SynoLoader_DownloadManager == "undefined") {
             };
         };
 
-        this.convert_old_url = function(url_string) {
-            if (this.preferences.getCharPref('host') === "") {
-                SynoLoader_DownloadManager.Util.log(url_string);
-                var url = this.parse_url(url_string);
-                if (url.protocol !== undefined) {
-                    this.preferences.setCharPref('protocol', url.protocol.replace(":", ""));
+        this.convertOldURL = (url) => {
+            if (prefs.getCharPref("host") === "") {
+                let newurl = this.parseURL(url);
+
+                if (newurl.protocol !== undefined) {
+                    prefs.setCharPref("protocol", newurl.protocol.replace(":", ""));
                 }
 
-                if (url.port !== undefined) {
-                    this.preferences.setCharPref('port', url.port.replace(":", ""));
-                    SynoLoader_DownloadManager.Util.log(url.port);
+                if (newurl.host !== undefined) {
+                    prefs.setCharPref("host", newurl.host);
                 }
 
-                if (url.host !== undefined) {
-                    this.preferences.setCharPref('host', url.host);
+                if (newurl.port !== undefined) {
+                    prefs.setCharPref("port", newurl.port.replace(":", ""));
                 }
             }
         };
 
-        this.set_protocol = function() {
-            switch (this.preferences.getCharPref('dsm_version')) {
+        this.setProtocol = () => {
+            switch (prefs.getCharPref("dsm_version")) {
                 case "1":
-                    SynoLoader_DownloadManager.Util.log("Set Protocol to < DSM 4.1");
-                    Components.utils.import("resource://SynoLoader/Protocol.js", SynoLoader_DownloadManager);
-                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url_to_connect, 50000, SynoLoader_DownloadManager.username, SynoLoader_DownloadManager.password);
+                    // @todo
+                    Util.log("Set Protocol to < DSM 4.1");
+                    Cu.import("resource://SynoLoader/Protocol.js");
+                    this.protocol = Protocol(this.urlToConnect, 30000, this.username, this.password);
                     break;
                 case "2":
-                    SynoLoader_DownloadManager.Util.log("Set Protocol to > DSM 4.1");
-                    Components.utils.import("resource://SynoLoader/Protocol_API.js", SynoLoader_DownloadManager);
-                    this.protocol = SynoLoader_DownloadManager.Protocol(this.url_to_connect, 50000, SynoLoader_DownloadManager.username, SynoLoader_DownloadManager.password);
+                    Util.log("Set Protocol to >= DSM 4.1");
+                    Cu.import("resource://SynoLoader/API.js");
+                    this.protocol = new Protocol(1, this.urlToConnect, 30000, this.username, this.password);
                     break;
             }
         };
 
-        this.connect_to_nas = function() {
-            SynoLoader_DownloadManager.connecting = true;
-            this.convert_old_url(this.preferences.getCharPref('url'));
-            var protocol = this.preferences.getCharPref('protocol');
-            var port = this.preferences.getCharPref('port');
-            var host = this.preferences.getCharPref('host');
-            quick_connect = SynoLoader_DownloadManager.QuickConnect(
+        this.connectToNas = () => {
+            this.isConnecting = true;
+            this.convertOldURL(prefs.getCharPref("url"));
+
+            let protocol = prefs.getCharPref("protocol");
+            let port = prefs.getCharPref("port");
+            let host = prefs.getCharPref("host");
+            let quickConnect = new QuickConnect(
                 quickConnectRelayTimeOutInMs,
                 quickConnectLocalTimeOutInMs,
                 protocol + "://",
-                port);
-            SynoLoader_DownloadManager.url_to_connect = protocol + "://";
-            quick_connect.get(host, function(response) {
+                port
+            );
+
+            this.urlToConnect = protocol + "://";
+            quickConnect.get(host, (response) => {
                 if (response.success) {
-                    SynoLoader_DownloadManager.url_to_connect += response.ip + ":" + port;
+                    this.urlToConnect += response.ip + ":" + port;
                 } else {
-                    SynoLoader_DownloadManager.url_to_connect += host + ":" + port;
+                    this.urlToConnect += host + ":" + port;
                 }
-                SynoLoader_DownloadManager.set_protocol();
-                SynoLoader_DownloadManager.protocol.password = SynoLoader_DownloadManager.password;
-                SynoLoader_DownloadManager.protocol.username = SynoLoader_DownloadManager.username;
-                SynoLoader_DownloadManager.protocol.connect(function(response) {
-                    SynoLoader_DownloadManager.is_connect = response.success;
-                    SynoLoader_DownloadManager.connecting = false;
+                this.setProtocol();
+                this.protocol.connect((response) => {
+                    this.isConnected = response.success;
+                    this.isConnecting = false;
                 });
             });
         };
 
-        this.transfer_to_nas = function(link) {
-            if (link.toLowerCase().endsWith(".torrent") && SynoLoader_DownloadManager.protocol.version > 0) {
-                var file = Components.classes["@mozilla.org/file/directory_service;1"]
-                    .getService(Components.interfaces.nsIProperties)
-                    .get("TmpD", Components.interfaces.nsIFile);
-                var uuidGenerator = Components.classes["@mozilla.org/uuid-generator;1"]
-                    .getService(Components.interfaces.nsIUUIDGenerator);
-                var uuid = uuidGenerator.generateUUID();
-                var uuidString = uuid.toString();
-                uuidString = uuidString.replace('{', '').replace('}', '');
-                file.append("synoloader" + uuidString + ".torrent");
-                file.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0666);
-                SynoLoader_DownloadManager.FileDownloaderHandler.get_file_content(link, file.path,
-                    function() {
-                        SynoLoader_DownloadManager.protocol.task_action(function(response) {
+        this.transferToNas = (link, file) => {
+            link = Util.defaultFor(link, "");
+            file = Util.defaultFor(file, {});
 
-                                if (response.success === true) {
-                                    SynoLoader_DownloadManager.Notification.show("Send torrent file to NAS", link);
+            if (link.split("?")[0].toLowerCase().endsWith(".torrent")) {
+                let torrentFile = Cc["@mozilla.org/file/directory_service;1"]
+                    .getService(Ci.nsIProperties)
+                    .get("TmpD", Ci.nsIFile);
+
+                let uuid = Cc["@mozilla.org/uuid-generator;1"]
+                    .getService(Ci.nsIUUIDGenerator)
+                    .generateUUID()
+                    .toString()
+                    .replace("{", "")
+                    .replace("}", "");
+                file.link = link;
+                file.name = "synoloader" + uuid + ".torrent";
+                file.path = torrentFile.path;
+
+                torrentFile.append(file.name);
+                torrentFile.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0666);
+                FileDownloaderHandler.getFileContent(
+                    link,
+                    torrentFile.path, () => {
+                        this.protocol.taskAction(
+                            (response) => {
+                                if (response.success) {
+                                    Notification.show("Send torrent file to NAS", link);
                                 } else {
-                                    SynoLoader_DownloadManager.Notification.show("Send link failed", response.error_text);
+                                    Notification.show("Send link failed", response.error_text);
                                 }
-
+                                // Remove the local temporary file.
+                                try {
+                                    torrentFile.remove(0);
+                                } catch (e) {
+                                    Util.log(e);
+                                }
                             },
-                            'add_file',
-                            file);
-                    });
-            } else {
-                this.protocol.task_action(function(response) {
-                        if (response.success === true) {
-                            SynoLoader_DownloadManager.Notification.show("Send link", link);
-                        } else {
-                            SynoLoader_DownloadManager.Notification.show("Send link failed", response.error_text);
-                        }
-
-                    },
-                    'addurl',
-                    link);
-
-            }
-
-
-        };
-
-        this.delete_all = function() {
-            SynoLoader_DownloadManager.Util.log("delete_all");
-            SynoLoader_DownloadManager.load_download_list(function(items) {
-                items.forEach(function(item) {
-                    SynoLoader_DownloadManager.Util.log("delete " + item.id);
-                    SynoLoader_DownloadManager.protocol.task_action(function() {}, 'delete', item.id);
-                });
-
-            }, function(response) {
-                SynoLoader_DownloadManager.Util.log("load_download_list: " + response.error_text);
-            });
-
-        };
-
-        this.load_download_list = function(manage_items_success, manage_items_fail) {
-            this.protocol.task_action(function(response) {
-                    if (response.success === true) {
-                        manage_items_success(response.items);
-                    } else {
-                        manage_items_fail(response);
+                            "addfile",
+                            torrentFile
+                        );
                     }
+                );
+            } else {
+                this.protocol.taskAction(
+                    (response) => {
+                        if (response.success) {
+                            Notification.show("Send link", link);
+                        } else {
+                            Notification.show("Send link failed", response.error_text);
+                        }
+                    },
+                    "addurl",
+                    link
+                );
+            }
+        };
 
+        this.deleteAll = () => {
+            Util.log("delete all");
+            this.loadDownloadList(
+                (items) => {
+                    items.forEach((item) => {
+                        Util.log("delete " + item.id);
+                        this.protocol.taskAction(() => {}, "delete", item.id);
+                    });
+                }, (response) => {
+                    Util.log("loadDownloadList: " + response.error_text);
+                }
+            );
+        };
+
+        this.loadDownloadList = (manageItemsSuccessCB, manageItemsFailCB) => {
+            this.protocol.taskAction(
+                (response) => {
+                    if (response.success) {
+                        manageItemsSuccessCB(response.items);
+                    } else {
+                        manageItemsFailCB(response);
+                    }
                 },
-                'getall');
+                "getall"
+            );
         };
 
-
-        this.get_list = function() {
-            return this.list;
-        };
-
-
-        this.observe = function(subject, topic, data) {
-            if (topic == "nsPref:changed") {
+        this.observe = (subject, topic, data) => {
+            if (topic === "nsPref:changed") {
                 switch (data) {
-                    case 'show_not':
-                        SynoLoader_DownloadManager.Notification.show_not = SynoLoader_DownloadManager.preferences.getBoolPref('show_not');
+                    case "show_notif":
+                        Notification.showNotif = prefs.getBoolPref("show_notif");
                         break;
-                    case 'show_dbg':
-                        SynoLoader_DownloadManager.Util.show_log = SynoLoader_DownloadManager.preferences.getBoolPref('show_dbg');
+                    case "show_debug":
+                        Util.showLog = prefs.getBoolPref("show_debug");
                         break;
-                    case 'use_magnet':
-                        SynoLoader_DownloadManager.magnetHandler.set_active(SynoLoader_DownloadManager.preferences.getBoolPref('use_magnet'));
+                    case "use_magnet":
+                        MagnetHandler.setActive(prefs.getBoolPref("use_magnet"));
                         break;
                 }
             }
         };
 
-        this.httpResponseObserver = SynoLoader_DownloadManager.magnetHandler.createObserver();
-        this.httpResponseObserver.observe = function(aSubject, aTopic, aData) {
-            SynoLoader_DownloadManager.Util.log("observer");
-            if (aTopic == 'magnet-on-open-uri') {
-                var aURI = aSubject.QueryInterface(Components.interfaces.nsIURI);
-                if (!aURI) return;
-                var uriText = aURI.spec;
-                SynoLoader_DownloadManager.transfer_to_nas(uriText);
+        this.httpResponseObserver = MagnetHandler.createObserver();
+        this.httpResponseObserver.observe = (subject, topic, data) => {
+            Util.log("observer");
+            if (topic === "magnet-on-open-uri") {
+                let aURI = subject.QueryInterface(Ci.nsIURI);
+                if (!aURI) {
+                    return;
+                }
+                this.transferToNas(aURI.spec);
             }
         };
 
-        this.observerService = Components.classes["@mozilla.org/observer-service;1"]
-            .getService(Components.interfaces.nsIObserverService);
+        Cc["@mozilla.org/observer-service;1"]
+            .getService(Ci.nsIObserverService)
+            .addObserver(this.httpResponseObserver, "magnet-on-open-uri", false);
 
-        this.observerService.addObserver(SynoLoader_DownloadManager.httpResponseObserver, "magnet-on-open-uri", false);
-
-
-    }).apply(SynoLoader_DownloadManager);
-
-
+    }).apply(DownloadManager);
 }

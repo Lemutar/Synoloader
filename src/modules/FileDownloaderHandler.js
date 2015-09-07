@@ -1,26 +1,21 @@
 var EXPORTED_SYMBOLS = ["FileDownloaderHandler"];
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
+Cu.import("resource://gre/modules/Downloads.jsm");
+Cu.import("resource://gre/modules/Task.jsm");
 
-
-
-if (typeof FileDownloaderHandler == "undefined") {
+if (typeof FileDownloaderHandler === "undefined") {
     var FileDownloaderHandler = {};
 
-
-    Components.utils.import("resource://gre/modules/Downloads.jsm");
-    Components.utils.import("resource://gre/modules/Task.jsm");
-
     (function() {
-
-
-        this.get_file_content = function(source, destination, succeded) {
-            Task.spawn(function() {
-                /*jshint moz: true */
+        this.getFileContent = (source, destination, succeeded) => {
+            Task.spawn(function*() {
                 yield Downloads.fetch(source, destination);
-            }).then(succeded, Components.utils.reportError);
+            }).then(succeeded, Cu.reportError);
         };
-
     }).apply(FileDownloaderHandler);
-
-
 }

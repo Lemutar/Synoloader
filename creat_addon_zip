@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# pull the svn files
-cd src
-rm test.xpi
-zip -9 -r test.xpi .
-

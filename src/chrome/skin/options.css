@@ -1,0 +1,30 @@
+
+prefpane > .content-box,
+prefwindow > .paneDeckContainer {
+    overflow: visible;
+}
+
+#sl-options row {
+  line-height: 1.4em;
+}
+
+#sl-options row > label {
+  line-height: 2em;
+}
+
+#sl-connection-status-image[status="test"] {
+  list-style-image: url(chrome://SynoLoader/skin/test-tube.png);
+}
+
+#sl-connection-status-image[status="busy"] {
+  list-style-image: url(chrome://SynoLoader/skin/hourglass.png);
+}
+
+#sl-connection-status-image[status="succeeded"] {
+  list-style-image: url(chrome://SynoLoader/skin/approval.png);
+}
+
+#sl-connection-status-image[status="failed"] {
+  list-style-image: url(chrome://SynoLoader/skin/error.png);
+}
+

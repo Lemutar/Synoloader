@@ -1,27 +1,38 @@
-language: python
+sudo: false
 
-install:
-  - pip install mozdownload==1.17 --upgrade
-  - pip install mozinstall
+language: node_js
+
+node_js:
+  - "0.10"
 
 env:
-  - Firefox_Version=28.0
-  - Firefox_Version=37.0
+  global:
+    - DISPLAY=:99.0
+  matrix:
+    - FirefoxVersion=31.8.0esr
+    - FirefoxVersion=38.2.1esr
+    - FirefoxVersion=40.0
 
-before_script:
-   - "mozdownload --version=$Firefox_Version --destination=./firefox.tar.bz2 --extension=tar.bz2"
-   - "mozinstall ./firefox.tar.bz2 --destination=./test_browser"
-   - "export FirfoxTest=./test_browser/firefox/firefox" 
-   - "export DISPLAY=:99.0"
-   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
- 
+cache:
+  directories:
+    - node_modules
+
+before_install:
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+  - mkdir -p firefoxes/$FirefoxVersion
+  - cd firefoxes/$FirefoxVersion
+  - wget -O firefox-$FirefoxVersion.tar.bz2 http://releases.mozilla.org/pub/firefox/releases/$FirefoxVersion/linux-x86_64/en-US/firefox-$FirefoxVersion.tar.bz2
+  - tar xjf firefox-$FirefoxVersion.tar.bz2
+  - export FirefoxBin=$PWD/firefox/firefox
+
+install:
+  - npm install -g npm@latest
+  - npm install -g grunt-cli
+  - npm install
+
 script:
-  - sleep 2
-  - $FirfoxTest --version 
-  - ./run_test.sh
-  - ./run_integration_test.sh
-
-after_script:
-  - sh -e /etc/init.d/xvfb stop
-  - rm ./firefox.tar.bz2
-  - rm ./test_browser -rf
+  - cd $TRAVIS_BUILD_DIR/bin
+  - $FirefoxBin --version
+  - grunt
+  - ./run_tests.sh
+  - ./run_tests.sh integration

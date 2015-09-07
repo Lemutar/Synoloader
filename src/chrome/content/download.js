@@ -1,11 +1,22 @@
-var SynoLoader = {};
-Components.utils.import("resource://SynoLoader/DownloadManager.js", SynoLoader);
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
-onaccept = function(event) {
-    if (document.getElementById("mode").value == "SynoLoader") {
-        SynoLoader.SynoLoader_DownloadManager.transfer_to_nas(dialog.mLauncher.source.spec);
-        return dialog.onCancel();
-    } else {
-        return dialog.onOK();
-    }
-};
+Cu.import("resource://SynoLoader/DownloadManager.js");
+
+if (typeof SL_Download === "undefined") {
+    var SL_Download = {};
+
+    (function() {
+        this.onaccept = (event) => {
+            if (document.getElementById("mode").value === "SynoLoader") {
+                DownloadManager.transferToNas(dialog.mLauncher.source.spec);
+                return dialog.onCancel();
+            } else {
+                return dialog.onOK();
+            }
+        };
+    }).apply(SL_Download);
+}

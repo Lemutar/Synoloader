@@ -1,12 +1,65 @@
-/* This is just an example.  You shouldn't do this. */
-
-
-#SynoLoader_status_image[status="connect"] {
-src:"chrome://SynoLoader/skin/connect.png";
+/*  Toolbar icon.  */
+#sl-toolbar {
+  list-style-image: url(chrome://Synoloader/skin/synoloader24.png);
+}
+toolbar[iconsize="small"] #sl-toolbar {
+  list-style-image: url(chrome://Synoloader/skin/synoloader16.png);
 }
 
-#SynoLoader_status_image[status="not_connect"] {
-src:"chrome://SynoLoader/skin/notconnect.png";
+/* Overlay panel. */
+#sl-toolbar-panel-title {
+  font-size: 24px;
+  font-weight: bold;
 }
 
+#sl-toolbar-panel-label {
+  font: normal 24px;
+  text-align: center;
+}
+
+#sl-toolbar-panel-options {
+  list-style-image: url(chrome://Synoloader/skin/settings.png);
+  width: 35px;
+  height: 35px;
+  float: right;
+}
+
+/* List items. */
+.sl-item {
+  color: #000;
+  background-color: #fff;
+}
+
+.sl-item:nth-child(even) {
+  background-color: rgba(0,0,0,.05);
+}
+
+.sl-item[selected="true"] {
+  background-color: rgba(0,0,0,.1);
+}
+
+.sl-item:hover {
+  background-color: rgba(0,0,0,.15);
+}
+
+.sl-item-info {
+  width: 500px;
+}
+
+.sl-item-title {
+  font-weight: bolder;
+}
+
+.sl-item-progress {
+  height: 12px;
+}
+
+.sl-item-meta {
+  font-size: .8em;
+}
+
+.sl-item-resume,
+.sl-item-delete {
+  cursor: pointer;
+}
 

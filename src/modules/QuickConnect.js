@@ -1,97 +1,103 @@
 var EXPORTED_SYMBOLS = ["QuickConnect"];
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
+Cu.import("resource://SynoLoader/Request.js");
 
-Components.utils.import("resource://SynoLoader/Request.js");
+if (typeof QuickConnect === "undefined") {
+    var QuickConnect = function(timeoutRelay, timeoutInternal, protocol, port) {
+        this.relayServer = "https://ukc.synology.com/Serv.php";
 
-var QuickConnect = function(timeout_relay, timeout_internal, protocol, port) {
-    var return_quick_connect = function() {};
+        this.getServerInfo = (quickConnectID, callback) => {
+            let response = {
+                success: false,
+                internalIP: [],
+                externalIP: ""
+            };
 
-
-    return_quick_connect.relai_server = 'https://ukc.synology.com/Serv.php';
-    return_quick_connect.get_server_info = function(quick_connect_id, callback) {
-        var get_server_info_response = {
-            success: false,
-            internal_ip: [],
-            external_ip: '',
-        };
-        var get_server = Request(return_quick_connect.relai_server,
-            JSON.stringify({
-                version: "1",
-                command: "get_server_info",
-                serverID: quick_connect_id,
-                id: "dsm_https"
-            }),
-            timeout_relay,
-            function(response) {
-                if (response.status === 200) {
-                    if (response.json.errno === 0) {
-                        get_server_info_response.success = true;
-                        response.json.server.interface.forEach(function(entry) {
-                            get_server_info_response.internal_ip.push(entry.ip);
-                        });
-                        get_server_info_response.external_ip = response.json.server.external.ip;
+            new Request(
+                this.relayServer,
+                JSON.stringify({
+                    version: "1",
+                    command: "get_server_info",
+                    serverID: quickConnectID,
+                    id: "dsm_https"
+                }),
+                timeoutRelay, (relayResponse) => {
+                    if (relayResponse.status === 200) {
+                        if (relayResponse.json.errno === 0) {
+                            response.success = true;
+                            relayResponse.json.server.interface.forEach((entry) => {
+                                response.internalIP.push(entry.ip);
+                            });
+                            response.externalIP = relayResponse.json.server.external.ip;
+                        }
                     }
+                    callback(response);
                 }
-                callback(get_server_info_response);
+            ).post();
+        };
+
+
+        this.checkInternalIPs = (internalIPs, callback) => {
+            let first = true,
+                errorCount = 0,
+                response = {
+                    success: false,
+                    ip: ""
+                };
+
+            internalIPs.forEach((ip) => {
+                new Request(
+                    protocol + ip + ":" + port + "/webapi/query.cgi",
+                    "api=SYNO.API.Info&version=1&method=query&query=api=SYNO.API.Info&version=1&method=query&query=SYNO.API.Auth,SYNO.DownloadStation.Task",
+                    timeoutInternal, (apiResponse) => {
+                        if (apiResponse.status === 200) {
+                            if (first && apiResponse.json.success) {
+                                first = false;
+                                response.success = true;
+                                response.ip = ip;
+                                callback(response);
+                            }
+                        } else {
+                            errorCount++;
+                            if (errorCount >= internalIPs.length) {
+                                callback(response);
+                            }
+                        }
+                    }
+                ).post();
             });
-        get_server.post();
-    };
-
-
-    return_quick_connect.check_internal_ips = function(internal_ips, callback) {
-        var check_internal_ips_response = {
-            success: false,
-            ip: "",
         };
-        var not_first = false;
-        var error_count = 0;
-        internal_ips.forEach(function(ip) {
-            var get_server = Request(protocol + ip + ":" + port + "/webapi/query.cgi", "api=SYNO.API.Info&version=1&method=query&query=api=SYNO.API.Info&version=1&method=query&query=SYNO.API.Auth,SYNO.DownloadStation.Task",
-                timeout_internal,
-                function(response) {
-                    if (response.status == 200) {
-                        if (not_first === false && response.json.success === true) {
-                            not_first = true;
-                            check_internal_ips_response.success = true;
-                            check_internal_ips_response.ip = ip;
-                            callback(check_internal_ips_response);
+
+
+        this.get = (quickConnectID, callback) => {
+            let response = {
+                success: false,
+                ip: ""
+            };
+
+            this.getServerInfo(quickConnectID, (serverInfoResponse) => {
+                if (serverInfoResponse.success) {
+                    this.checkInternalIPs(serverInfoResponse.internalIP, (response_ip) => {
+                        response.success = true;
+                        if (response_ip.success) {
+                            response.ip = response_ip.ip;
+                        } else {
+                            response.ip = serverInfoResponse.externalIP;
                         }
-                    } else {
-                        error_count++;
-                        if (error_count >= internal_ips.length) {
-                            callback(check_internal_ips_response);
-                        }
-                    }
-
-                });
-            get_server.post();
-        });
-    };
-
-
-    return_quick_connect.get = function(quick_connect_id, callback) {
-        var get_response = {
-            success: false,
-            ip: "",
+                        callback(response);
+                    });
+                } else {
+                    response.ip = quickConnectID;
+                    callback(response);
+                }
+            });
         };
-        return_quick_connect.get_server_info(quick_connect_id, function(response_info) {
-            if (response_info.success === true) {
-                return_quick_connect.check_internal_ips(response_info.internal_ip, function(response_ip) {
-                    get_response.success = true;
-                    if (response_ip.success === true) {
-                        get_response.ip = response_ip.ip;
-                    } else {
-                        get_response.ip = response_info.external_ip;
-                    }
-                    callback(get_response);
-                });
-            } else {
-                get_response.ip = quick_connect_id;
-                callback(get_response);
-            }
-        });
+
+        return this;
     };
-
-    return return_quick_connect;
-
-};
+}

@@ -1,71 +1,61 @@
 var EXPORTED_SYMBOLS = ["Request"];
-Components.utils.import("resource://SynoLoader/Util.js");
+let {
+    classes: Cc,
+    interfaces: Ci,
+    utils: Cu
+} = Components;
 
+if (typeof Request === "undefined") {
+    var Request = function(url, parameter, timeout, callback) {
+        this.httpRequest = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"]
+            .createInstance(Ci.nsIXMLHttpRequest);
 
-var Request = function(url, parameter, timeout, callback) {
-    var return_request = function() {};
-    return_request.http_request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
-        .createInstance(Components.interfaces.nsIXMLHttpRequest);
-    return_request.response = {
-        text: "",
-        statusText: "",
-        status: 0,
-        json: {}
-    };
+        let response = {
+            text: "",
+            statusText: "",
+            status: 0,
+            json: {}
+        };
 
+        this.httpRequest.timeout = timeout;
+        this.httpRequest.ontimeout = () => {
+            response.status = 408;
+            response.statusText = "Request Time-out";
+            callback(response);
+        };
 
+        this.httpRequest.onreadystatechange = () => {
+            if (this.httpRequest.readyState === 4) {
+                response.json = false;
+                response.status = this.httpRequest.status;
+                response.statusText = this.httpRequest.statusText;
+                response.text = this.httpRequest.responseText;
 
-    return_request.http_request.timeout = timeout;
-    return_request.http_request.ontimeout = function() {
+                switch (response.status) {
+                    case 0:
+                        response.statusText = "Couldn't connect to host.";
+                        break;
+                    case 200:
+                        try {
+                            response.json = JSON.parse(response.text);
+                        } catch (e) {}
+                        break;
+                }
 
-        return_request.response.status = 408;
-        return_request.response.statusText = "Request Time-out";
-        callback(return_request.response);
-    };
-
-
-
-    return_request.http_request.onreadystatechange = function() {
-
-        if (return_request.http_request.readyState == 4) {
-            switch (return_request.http_request.status) {
-                case 0:
-
-                    break;
-                case 200:
-                    return_request.response.text = return_request.http_request.responseText;
-                    try {
-                        return_request.response.json = JSON.parse(return_request.http_request.responseText);
-                    } catch (e) {}
-                    break;
-                default:
-                    break;
-
+                callback(response);
             }
+        };
 
-            return_request.response.statusText = return_request.http_request.statusText;
-            return_request.response.status = return_request.http_request.status;
-            callback(return_request.response);
+        this.get = () => {
+            this.httpRequest.open("GET", url + "?" + parameter, true);
+            this.httpRequest.send(null);
+        };
 
-        }
+        this.post = () => {
+            this.httpRequest.open("POST", url, true);
+            this.httpRequest.send(parameter);
+        };
 
+        return this;
     };
-
-
-    return_request.post = function() {
-        return_request.http_request.open('POST', url, true);
-        return_request.http_request.send(parameter);
-
-    };
-
-    return_request.get = function() {
-        return_request.http_request.open('GET', url + "?" + parameter, true);
-        return_request.http_request.send(null);
-
-    };
-
-
-
-
-    return return_request;
-};
+}
