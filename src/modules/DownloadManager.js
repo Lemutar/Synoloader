@@ -1,4 +1,5 @@
 var EXPORTED_SYMBOLS = ["DownloadManager"];
+
 let {
     classes: Cc,
     interfaces: Ci,
@@ -10,6 +11,7 @@ Cu.import("resource://SynoLoader/MagnetHandler.js");
 Cu.import("resource://SynoLoader/Notification.js");
 Cu.import("resource://SynoLoader/QuickConnect.js");
 Cu.import("resource://SynoLoader/Util.js");
+Cu.import("resource://SynoLoader/API.js");
 
 if (typeof DownloadManager === "undefined") {
     var DownloadManager = {};
@@ -82,19 +84,7 @@ if (typeof DownloadManager === "undefined") {
         };
 
         this.setProtocol = () => {
-            switch (prefs.getCharPref("dsm_version")) {
-                case "1":
-                    // @todo
-                    Util.log("Set Protocol to < DSM 4.1");
-                    Cu.import("resource://SynoLoader/Protocol.js");
-                    this.protocol = Protocol(this.urlToConnect, 30000, this.username, this.password);
-                    break;
-                case "2":
-                    Util.log("Set Protocol to >= DSM 4.1");
-                    Cu.import("resource://SynoLoader/API.js");
-                    this.protocol = new Protocol(1, this.urlToConnect, 30000, this.username, this.password);
-                    break;
-            }
+            this.protocol = new Protocol(this.urlToConnect, 30000, this.username, this.password);
         };
 
         this.connectToNas = () => {

@@ -15,158 +15,92 @@ try {
 }
 
 const apiAllErrorTexts = {
-    0: {
-        common: {
-            100: "Unknown error"
-        },
-        auth: {
-            "-2": "Incorrect password",
-            "-5": "No such account"
-        }
+    common: {
+        100: "Unknown error",
+        101: "Invalid parameter",
+        102: "The requested API does not exist",
+        103: "The requested method does not exist",
+        104: "The requested version does not support the functionality",
+        105: "The logged in session does not have permission",
+        106: "Session timeout",
+        107: "Session interrupted by duplicate login"
     },
-    1: {
-        common: {
-            100: "Unknown error",
-            101: "Invalid parameter",
-            102: "The requested API does not exist",
-            103: "The requested method does not exist",
-            104: "The requested version does not support the functionality",
-            105: "The logged in session does not have permission",
-            106: "Session timeout",
-            107: "Session interrupted by duplicate login"
-        },
-        auth: {
-            400: "No such account or incorrect password",
-            401: "Account disabled",
-            402: "Permission denied",
-            403: "2-step verification code required",
-            404: "Failed to authenticate 2-step verification code"
-        },
-        download: {
-            400: "File upload failed",
-            401: "Max number of tasks reached",
-            402: "Destination denied",
-            403: "Destination does not exist",
-            404: "Invalid task id",
-            405: "Invalid task action",
-            406: "No default destination"
-        }
+    auth: {
+        400: "No such account or incorrect password",
+        401: "Account disabled",
+        402: "Permission denied",
+        403: "2-step verification code required",
+        404: "Failed to authenticate 2-step verification code"
+    },
+    download: {
+        400: "File upload failed",
+        401: "Max number of tasks reached",
+        402: "Destination denied",
+        403: "Destination does not exist",
+        404: "Invalid task id",
+        405: "Invalid task action",
+        406: "No default destination"
     }
 };
 
 const apiAllEndpoints = {
-    0: {
-        auth: "/download/download_redirector.cgi",
-        download: {
-            task: "/download/download_redirector.cgi"
-        }
-    },
-    1: {
-        auth: "/webapi/auth.cgi",
-        download: {
-            task: "/webapi/DownloadStation/task.cgi"
-        }
+    auth: "/webapi/auth.cgi",
+    download: {
+        task: "/webapi/DownloadStation/task.cgi"
     }
 };
 
 const apiAllParameters = {
-    0: {
-        auth: "action=login&username=%username%&passwd=%password%",
-        download: {
-            base: "id=%sid%",
-            task: "&action=%action%&idList=%id%",
-            addurl: "&action=addurl&url=%uri%",
-            getall: "&action=getall"
-        }
-    },
-    1: {
-        auth: "api=SYNO.API.Auth&version=2&method=login&account=%username%&passwd=%password%&session=DownloadStation&format=sid",
-        download: {
-            base: "api=SYNO.DownloadStation.Task&version=1&_sid=%sid%",
-            task: "&method=%action%&id=%id%",
-            addurl: "&method=create&uri=%uri%",
-            getall: "&method=list&additional=transfer"
-        }
+    auth: "api=SYNO.API.Auth&version=2&method=login&account=%username%&passwd=%password%&session=DownloadStation&format=sid",
+    download: {
+        base: "api=SYNO.DownloadStation.Task&version=1&_sid=%sid%",
+        task: "&method=%action%&id=%id%",
+        addurl: "&method=create&uri=%uri%",
+        getall: "&method=list&additional=transfer"
     }
 };
 
 const apiAllResponseCallbacks = {
-    0: {
-        auth: (apiObj, response, apiResponse) => {
-            let apiJSON = apiResponse.json;
-            if (apiJSON !== false) {
-                response.success = apiJSON.login_success;
-                if (response.success && Util.val("id", apiJSON)) {
-                    response.id = apiJSON.id;
-                    apiObj.setConnectionID(apiJSON.id);
-                    apiObj.connectTime = Date.now();
-                } else if (Util.val("errcode", apiJSON)) {
-                    apiObj.setErrorText(response, apiJSON.errcode, "auth");
-                } else {
-                    apiObj.setErrorText(response, 100, "common");
-                }
+    auth: (apiObj, response, apiResponse) => {
+        let apiJSON = apiResponse.json;
+        if (apiJSON !== false) {
+            response.success = apiJSON.success;
+            if (response.success && Util.val("data.sid", apiJSON)) {
+                response.id = apiJSON.data.sid;
+                apiObj.setConnectionID(apiJSON.data.sid);
+                apiObj.connectTime = Date.now();
+            } else if (Util.val("error.code", apiJSON)) {
+                apiObj.setErrorText(response, apiJSON.error.code, "auth");
             } else {
                 apiObj.setErrorText(response, 100, "common");
             }
-        },
-        download: (apiObj, response, apiResponse) => {
-            let apiJSON = apiResponse.json;
-            response.success = (apiJSON && apiJSON.success);
-            if (response.success) {
-                if (Util.val("items", apiJSON)) {
-                    response.items = apiJSON.items;
-                }
-            } else if (Util.val("errcode", apiJSON)) {
-                apiObj.setErrorText(response, apiJSON.errcode, "download");
-            } else {
-                apiObj.setErrorText(response, 100, "common");
-            }
+        } else {
+            apiObj.setErrorText(response, 100, "common");
         }
     },
-    1: {
-        auth: (apiObj, response, apiResponse) => {
-            let apiJSON = apiResponse.json;
-            if (apiJSON !== false) {
-                response.success = apiJSON.success;
-                if (response.success && Util.val("data.sid", apiJSON)) {
-                    response.id = apiJSON.data.sid;
-                    apiObj.setConnectionID(apiJSON.data.sid);
-                    apiObj.connectTime = Date.now();
-                } else if (Util.val("error.code", apiJSON)) {
-                    apiObj.setErrorText(response, apiJSON.error.code, "auth");
-                } else {
-                    apiObj.setErrorText(response, 100, "common");
-                }
-            } else {
-                apiObj.setErrorText(response, 100, "common");
+    download: (apiObj, response, apiResponse) => {
+        let apiJSON = apiResponse.json;
+        response.success = (apiJSON && apiJSON.success);
+        if (response.success) {
+            if (Util.val("data.tasks", apiJSON)) {
+                response.items = apiJSON.data.tasks;
             }
-        },
-        download: (apiObj, response, apiResponse) => {
-            let apiJSON = apiResponse.json;
-            response.success = (apiJSON && apiJSON.success);
-            if (response.success) {
-                if (Util.val("data.tasks", apiJSON)) {
-                    response.items = apiJSON.data.tasks;
-                }
-            } else if (Util.val("error.code", apiJSON)) {
-                apiObj.setErrorText(response, apiJSON.error.code, "download");
-            } else {
-                apiObj.setErrorText(response, 100, "common");
-            }
+        } else if (Util.val("error.code", apiJSON)) {
+            apiObj.setErrorText(response, apiJSON.error.code, "download");
+        } else {
+            apiObj.setErrorText(response, 100, "common");
         }
     }
 };
 
-var Protocol = function(version, baseURL, timeout, username, password) {
+var Protocol = function(baseURL, timeout, username, password) {
     let connectionID = "",
         connectionIDEnc = "",
         usernameEnc = encodeURIComponent(username),
         passwordEnc = encodeURIComponent(password),
         // Version specific things.
-        apiEndpoints = apiAllEndpoints[version],
-        apiErrorTexts = apiAllErrorTexts[version];
-
-    this.ed2kDownloadFolder = "home";
+        apiEndpoints = apiAllEndpoints,
+        apiErrorTexts = apiAllErrorTexts;
 
     this.baseURL = baseURL;
 
@@ -186,7 +120,7 @@ var Protocol = function(version, baseURL, timeout, username, password) {
     };
 
     const apiGetParameter = (module, action, extra) => {
-        let taskParam = apiAllParameters[version][module],
+        let taskParam = apiAllParameters[module],
             param = "";
 
         switch (module) {
@@ -209,7 +143,7 @@ var Protocol = function(version, baseURL, timeout, username, password) {
     };
 
     const apiResponseCallback = (callback, response, apiResponse, module) => {
-        let responseCallback = apiAllResponseCallbacks[version][module];
+        let responseCallback = apiAllResponseCallbacks[module];
 
         if (apiResponse.status === 200) {
             responseCallback(this, response, apiResponse);

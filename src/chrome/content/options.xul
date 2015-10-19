@@ -42,15 +42,6 @@
             <label control="port">&port.label;</label>
             <textbox preference="port"/>
           </row>
-          <row>
-            <label control="dsm_version">&dsm_version.label;</label>
-            <menulist preference="dsm_version">
-              <menupopup>
-                <menuitem label="&dsm_version.menuitem1;" value="1"/>
-                <menuitem label="&dsm_version.menuitem2;" value="2"/>
-              </menupopup>
-            </menulist>
-          </row>
         </rows>
       </grid>
       <button label="&set_username_password.label;" oncommand="SL_Options.setUsernamePassword();"/>

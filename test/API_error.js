@@ -13,7 +13,7 @@ function setUp() {
         value: false
     };
 
-    api = new Protocol(1, "http://localhost:4445");
+    api = new Protocol("http://localhost:4445");
     api.connectTime = Date.now();
 }
 

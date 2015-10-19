@@ -5,9 +5,6 @@
 <!ENTITY host.label "IP, Host or QuickConnectID:">
 <!ENTITY port.label "Port of the NAS (default 5000):">
 <!ENTITY check_connection.label "Check Connection">
-<!ENTITY dsm_version.label "Set DSM Version:">
-<!ENTITY dsm_version.menuitem1 "DSM Version &lt; 4.1">
-<!ENTITY dsm_version.menuitem2 "DSM Version &gt;= 4.1">
 <!ENTITY set_username_password.label "Set Username and Password">
 <!ENTITY show_notif.label "Show 'Send Link' Notification">
 <!ENTITY show_debug.label "Show Debug Information">
