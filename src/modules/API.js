@@ -266,15 +266,14 @@ var Protocol = function(baseURL, timeout, username, password) {
     };
 
     this.formatBytes = (size_in_bytes) => {
-        if(size_in_bytes == 0)
-        {
+        if (size_in_bytes === 0) {
             return "0 B";
         }
         let k = 1024; //Or 1 kilo = 1000
         let sizes = ["B", "KB", "MB", "GB", "TB", "PB"];
         let i = Math.floor(Math.log(size_in_bytes) / Math.log(k));
         return parseFloat((size_in_bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-    }
+    };
 
     this.calcItems = (items) => {
         let doc = Cc["@mozilla.org/appshell/window-mediator;1"]
