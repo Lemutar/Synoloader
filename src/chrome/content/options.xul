@@ -17,7 +17,7 @@
       <preference id="use_magnet" name="extensions.SynoLoader.use_magnet" type="bool"/>
       <preference id="dsm_version" name="extensions.SynoLoader.dsm_version" type="string"/>
     </preferences>
-    <groupbox>
+    <groupbox flex="1"  width="600" >
       <caption label="&connection_details.title;"/>
       <grid>
         <columns>

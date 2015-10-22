@@ -265,9 +265,16 @@ var Protocol = function(baseURL, timeout, username, password) {
         this.taskAction(() => {}, "delete", event.target.task.id);
     };
 
-    this.fileSizeSI = (a, b, c, d, e) => {
-        return (b = Math, c = b.log, d = 1e3, e = c(a) / c(d) | 0, a / b.pow(d, e)).toFixed(2) + " " + (e ? "kMGTPEZY" [--e] + "B" : "Bytes");
-    };
+    this.formatBytes = (size_in_bytes) => {
+        if(size_in_bytes == 0)
+        {
+            return "0 B";
+        }
+        let k = 1024; //Or 1 kilo = 1000
+        let sizes = ["B", "KB", "MB", "GB", "TB", "PB"];
+        let i = Math.floor(Math.log(size_in_bytes) / Math.log(k));
+        return parseFloat((size_in_bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    }
 
     this.calcItems = (items) => {
         let doc = Cc["@mozilla.org/appshell/window-mediator;1"]
@@ -308,11 +315,13 @@ var Protocol = function(baseURL, timeout, username, password) {
             progress.setAttribute("value", item.slProgress);
             progress.setAttribute("flex", "1");
 
-            item.slSizeDownloaded = this.fileSizeSI(item.additional.transfer.size_downloaded);
-            item.slSizeTotal = this.fileSizeSI(item.size);
+            item.slSizeDownloaded = this.formatBytes(item.additional.transfer.size_downloaded);
+            item.slSizeTotal = this.formatBytes(item.size);
+            item.slDownloadSpeed = this.formatBytes(item.additional.transfer.speed_download);
+            item.slUploadSpeed = this.formatBytes(item.additional.transfer.speed_upload);
             let meta = doc.createElement("label");
             meta.setAttribute("id", "sl-item-meta-" + item.id);
-            meta.setAttribute("value", item.status + " - " + item.slSizeDownloaded + " of " + item.slSizeTotal + " - " + item.slProgress.toFixed(2) + "%");
+            meta.setAttribute("value", item.slSizeDownloaded + " of " + item.slSizeTotal + " - " + item.slProgress.toFixed(2) + "% UL:" + item.slUploadSpeed + " DL:" + item.slDownloadSpeed);
             meta.setAttribute("crop", "center");
 
             iteminfo.appendChild(title);
@@ -351,6 +360,7 @@ var Protocol = function(baseURL, timeout, username, password) {
                     break;
             }
             resumeButton.setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/" + resumeButton.action + ".png);");
+            wrapper.appendChild(resumeButton);
 
             let deleteButton = doc.createElement("toolbarbutton");
             deleteButton.task = item;
@@ -359,8 +369,6 @@ var Protocol = function(baseURL, timeout, username, password) {
             deleteButton.setAttribute("autocheck", "false");
             deleteButton.addEventListener("command", this.onDelete, true);
             deleteButton.setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/delete.png);");
-
-            wrapper.appendChild(resumeButton);
             wrapper.appendChild(deleteButton);
 
             listitem.appendChild(wrapper);
