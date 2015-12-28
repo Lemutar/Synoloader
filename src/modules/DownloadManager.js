@@ -87,7 +87,7 @@ if (typeof DownloadManager === "undefined") {
             this.protocol = new Protocol(this.urlToConnect, 30000, this.username, this.password);
         };
 
-        this.connectToNas = () => {
+        this.connectToNas = (cb) => {
             this.isConnecting = true;
             this.convertOldURL(prefs.getCharPref("url"));
 
@@ -112,6 +112,9 @@ if (typeof DownloadManager === "undefined") {
                 this.protocol.connect((response) => {
                     this.isConnected = response.success;
                     this.isConnecting = false;
+                    if (typeof cb === "function") {
+                        cb();
+                    }
                 });
             });
         };
