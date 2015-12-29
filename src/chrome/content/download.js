@@ -12,7 +12,10 @@ if (typeof SL_Download === "undefined") {
     (function() {
         this.onaccept = (event) => {
             if (document.getElementById("mode").value === "SynoLoader") {
-                DownloadManager.transferToNas(dialog.mLauncher.source.spec);
+                let linkURL = dialog.mLauncher.source.spec;
+                DownloadManager.connectAndRun(() => {
+                    DownloadManager.transferToNas(linkURL);
+                });
                 return dialog.onCancel();
             } else {
                 return dialog.onOK();

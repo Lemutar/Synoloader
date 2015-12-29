@@ -87,16 +87,8 @@ if (typeof SL_Overlay === "undefined") {
                 }, false);
         };
 
-        this.connectAndRun = (cb) => {
-            if (DownloadManager.isConnected) {
-                cb();
-            } else {
-                DownloadManager.connectToNas(cb);
-            }
-        };
-
         this.onMenuItemLinkCommand = (event) => {
-            this.connectAndRun(() => {
+            DownloadManager.connectAndRun(() => {
                 if (DownloadManager.isConnected) {
                     window.open(DownloadManager.urlToConnect + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", this.strWindowFeatures);
                 } else {
@@ -106,9 +98,11 @@ if (typeof SL_Overlay === "undefined") {
         };
 
         this.onMenuItemCommand = (event) => {
-            this.connectAndRun(() => {
+            let linkURL = gContextMenu.linkURL;
+            DownloadManager.connectAndRun(() => {
+                Util.log("gContextMenu.linkURL: " + linkURL);
                 if (DownloadManager.isConnected) {
-                    DownloadManager.transferToNas(gContextMenu.linkURL);
+                    DownloadManager.transferToNas(linkURL);
                 } else {
                     Notification.show("No Connection");
                 }
@@ -116,7 +110,7 @@ if (typeof SL_Overlay === "undefined") {
         };
 
         this.onToolBarDownloadInfo = (event) => {
-            this.connectAndRun(() => {
+            DownloadManager.connectAndRun(() => {
                 this.updateListPanel();
                 this.updateListPanelInterval = setInterval(() => {
                     this.updateListPanel();
