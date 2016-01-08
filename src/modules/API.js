@@ -266,7 +266,7 @@ var Protocol = function(baseURL, timeout, username, password) {
     };
 
     this.formatBytes = (size_in_bytes) => {
-        if (size_in_bytes === 0) {
+        if (parseInt(size_in_bytes) === 0) {
             return "0 B";
         }
         let k = 1024; //Or 1 kilo = 1000
@@ -307,7 +307,7 @@ var Protocol = function(baseURL, timeout, username, password) {
             title.setAttribute("value", item.title);
             title.setAttribute("crop", "center");
 
-            item.slProgress = (item.additional.transfer.size_downloaded / item.size) * 100;
+            item.slProgress = ((item.additional.transfer.size_downloaded / item.size) * 100) || 0;
             let progress = doc.createElement("progressmeter");
             progress.setAttribute("id", "sl-item-progress-" + item.id);
             progress.setAttribute("class", "sl-item-progress");
