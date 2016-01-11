@@ -266,7 +266,7 @@ var Protocol = function(baseURL, timeout, username, password) {
     };
 
     this.formatBytes = (size_in_bytes) => {
-        if (size_in_bytes === 0) {
+        if (parseInt(size_in_bytes) === 0) {
             return "0 B";
         }
         let k = 1024; //Or 1 kilo = 1000
@@ -293,6 +293,7 @@ var Protocol = function(baseURL, timeout, username, password) {
             statusButton.setAttribute("class", "sl-item-status");
             statusButton.setAttribute("style", "list-style-image: url(chrome://SynoLoader/skin/status_" + item.status + ".png);");
             statusButton.setAttribute("autocheck", "false");
+            statusButton.setAttribute("tooltiptext", item.status);
 
             wrapper.appendChild(statusButton);
 
@@ -306,8 +307,9 @@ var Protocol = function(baseURL, timeout, username, password) {
             title.setAttribute("class", "sl-item-title");
             title.setAttribute("value", item.title);
             title.setAttribute("crop", "center");
+            title.setAttribute("tooltiptext", item.title);
 
-            item.slProgress = (item.additional.transfer.size_downloaded / item.size) * 100;
+            item.slProgress = ((item.additional.transfer.size_downloaded / item.size) * 100) || 0;
             let progress = doc.createElement("progressmeter");
             progress.setAttribute("id", "sl-item-progress-" + item.id);
             progress.setAttribute("class", "sl-item-progress");
@@ -318,10 +320,29 @@ var Protocol = function(baseURL, timeout, username, password) {
             item.slSizeTotal = this.formatBytes(item.size);
             item.slDownloadSpeed = this.formatBytes(item.additional.transfer.speed_download);
             item.slUploadSpeed = this.formatBytes(item.additional.transfer.speed_upload);
-            let meta = doc.createElement("label");
+
+            let meta = doc.createElement("hbox");
+            meta.setAttribute("class", "sl-item-meta");
             meta.setAttribute("id", "sl-item-meta-" + item.id);
-            meta.setAttribute("value", item.slSizeDownloaded + " of " + item.slSizeTotal + " - " + item.slProgress.toFixed(2) + "% UL:" + item.slUploadSpeed + " DL:" + item.slDownloadSpeed);
-            meta.setAttribute("crop", "center");
+            meta.setAttribute("flex", "1");
+
+            let metaSizes = doc.createElement("label");
+            metaSizes.setAttribute("value", item.slProgress.toFixed(2) + "% - " + item.slSizeDownloaded + " of " + item.slSizeTotal);
+            metaSizes.setAttribute("flex", "1");
+
+            let metaULSpeed = doc.createElement("label");
+            metaULSpeed.setAttribute("class", "sl-item-meta-upload-speed");
+            metaULSpeed.setAttribute("value", "UL:" + item.slUploadSpeed);
+            metaULSpeed.setAttribute("tooltiptext", "Upload Speed");
+
+            let metaDLSpeed = doc.createElement("label");
+            metaDLSpeed.setAttribute("class", "sl-item-meta-download-speed");
+            metaDLSpeed.setAttribute("value", "DL:" + item.slDownloadSpeed);
+            metaDLSpeed.setAttribute("tooltiptext", "Download Speed");
+
+            meta.appendChild(metaSizes);
+            meta.appendChild(metaULSpeed);
+            meta.appendChild(metaDLSpeed);
 
             iteminfo.appendChild(title);
             iteminfo.appendChild(progress);

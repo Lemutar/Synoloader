@@ -58,6 +58,13 @@ toolbar[iconsize="small"] #sl-toolbar {
   font-size: .8em;
 }
 
+.sl-item-meta-upload-speed {
+  color: #0086e6;
+}
+.sl-item-meta-download-speed {
+  color: #1eb300;
+}
+
 .sl-item-resume,
 .sl-item-delete {
   cursor: pointer;
