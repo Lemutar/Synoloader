@@ -221,7 +221,7 @@ var Protocol = function(baseURL, timeout, username, password) {
                     param.append("version", "1");
                     param.append("method", "create");
                     param.append("_sid", connectionIDEnc);
-                    param.append("file", File(parameter.path));
+                    param.append("file", new File(parameter.path));
 
                     Util.log("try to add file to '" + parameter.path + "': " + param);
                     break;
