@@ -20,9 +20,6 @@ if (typeof DownloadManager === "undefined") {
         let quickConnectRelayTimeOutInMs = 8000;
         let quickConnectLocalTimeOutInMs = 8000;
 
-        let loginManager = Cc["@mozilla.org/login-manager;1"]
-            .getService(Ci.nsILoginManager);
-
         let prefs = Cc["@mozilla.org/preferences-service;1"]
             .getService(Ci.nsIPrefService)
             .getBranch("extensions.SynoLoader.");
@@ -40,13 +37,6 @@ if (typeof DownloadManager === "undefined") {
         Notification.showNotif = prefs.getBoolPref("show_notif");
         Util.showLog = prefs.getBoolPref("show_debug");
         MagnetHandler.setActive(prefs.getBoolPref("use_magnet"));
-
-        // Find users for the given parameters
-        let logins = loginManager.findLogins({}, "chrome://SynoLoader.Pass", null, "User Registration");
-        if (logins.length > 0) {
-            this.username = logins[0].username;
-            this.password = logins[0].password;
-        }
 
         this.parseURL = (url) => {
             let pattern = RegExp("^(.*:)//([A-Za-z0-9\-\.]+)(:[0-9]+)?(.*)$");
@@ -87,7 +77,27 @@ if (typeof DownloadManager === "undefined") {
             this.protocol = new Protocol(this.urlToConnect, 30000, this.username, this.password);
         };
 
-        this.connectToNas = () => {
+        this.connectAndRun = (cb) => {
+            if (this.isConnected) {
+                cb();
+            } else {
+                this.connectToNas(cb);
+            }
+        };
+
+        this.connectToNas = (cb) => {
+            // If the username and password haven't been set yet, do that first.
+            if ("" === this.username) {
+                let loginManager = Cc["@mozilla.org/login-manager;1"]
+                    .getService(Ci.nsILoginManager);
+                // Find users for the given parameters.
+                let logins = loginManager.findLogins({}, "chrome://SynoLoader.Pass", null, "User Registration");
+                if (logins.length > 0) {
+                    this.username = logins[0].username;
+                    this.password = logins[0].password;
+                }
+            }
+
             this.isConnecting = true;
             this.convertOldURL(prefs.getCharPref("url"));
 
@@ -112,6 +122,9 @@ if (typeof DownloadManager === "undefined") {
                 this.protocol.connect((response) => {
                     this.isConnected = response.success;
                     this.isConnecting = false;
+                    if (typeof cb === "function") {
+                        cb();
+                    }
                 });
             });
         };

@@ -80,30 +80,37 @@ if (typeof SL_Overlay === "undefined") {
                 .addEventListener("popupshowing", (event) => {
                     this.showFirefoxContextMenu(event);
                 }, false);
-            DownloadManager.connectToNas();
         };
 
         this.onMenuItemLinkCommand = (event) => {
-            if (DownloadManager.isConnected) {
-                window.open(DownloadManager.urlToConnect + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", this.strWindowFeatures);
-            } else {
-                Notification.show("No Connection");
-            }
+            DownloadManager.connectAndRun(() => {
+                if (DownloadManager.isConnected) {
+                    window.open(DownloadManager.urlToConnect + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", this.strWindowFeatures);
+                } else {
+                    Notification.show("No Connection");
+                }
+            });
         };
 
         this.onMenuItemCommand = (event) => {
-            if (DownloadManager.isConnected) {
-                DownloadManager.transferToNas(gContextMenu.linkURL);
-            } else {
-                Notification.show("No Connection");
-            }
+            let linkURL = gContextMenu.linkURL;
+            DownloadManager.connectAndRun(() => {
+                Util.log("gContextMenu.linkURL: " + linkURL);
+                if (DownloadManager.isConnected) {
+                    DownloadManager.transferToNas(linkURL);
+                } else {
+                    Notification.show("No Connection");
+                }
+            });
         };
 
         this.onToolBarDownloadInfo = (event) => {
-            this.updateListPanel();
-            this.updateListPanelInterval = setInterval(() => {
+            DownloadManager.connectAndRun(() => {
                 this.updateListPanel();
-            }, 2500);
+                this.updateListPanelInterval = setInterval(() => {
+                    this.updateListPanel();
+                }, 2500);
+            });
         };
 
         this.onToolBarDownloadInfoHidden = (event) => {
