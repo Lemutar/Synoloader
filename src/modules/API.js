@@ -1,15 +1,10 @@
 var EXPORTED_SYMBOLS = ["Protocol"];
-let {
-    classes: Cc,
-    interfaces: Ci,
-    utils: Cu
-} = Components;
 
-Cu.import("resource://SynoLoader/Request.js");
-Cu.import("resource://SynoLoader/Util.js");
+Components.utils.import("resource://SynoLoader/Request.js");
+Components.utils.import("resource://SynoLoader/Util.js");
 
 try {
-    Cu.importGlobalProperties(["File"]);
+    Components.utils.importGlobalProperties(["File"]);
 } catch (e) {
     Util.log("importGlobalProperties([\"File\"]) fail");
 }
@@ -215,8 +210,8 @@ var Protocol = function(baseURL, timeout, username, password) {
 
                 case "addfile":
                     method = "post";
-                    param = Cc["@mozilla.org/files/formdata;1"]
-                        .createInstance(Ci.nsIDOMFormData);
+                    param = Components.classes["@mozilla.org/files/formdata;1"]
+                        .createInstance(Components.interfaces.nsIDOMFormData);
                     param.append("api", "SYNO.DownloadStation.Task");
                     param.append("version", "1");
                     param.append("method", "create");
@@ -276,8 +271,8 @@ var Protocol = function(baseURL, timeout, username, password) {
     };
 
     this.calcItems = (items) => {
-        let doc = Cc["@mozilla.org/appshell/window-mediator;1"]
-            .getService(Ci.nsIWindowMediator)
+        let doc = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+            .getService(Components.interfaces.nsIWindowMediator)
             .getMostRecentWindow("navigator:browser").document;
         let listitems = [];
         items.forEach((item) => {

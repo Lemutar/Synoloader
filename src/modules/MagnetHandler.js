@@ -1,22 +1,17 @@
 /* This js module doesn't export anything, it's meant to handle the magnet protocol registration/unregistration. */
 var EXPORTED_SYMBOLS = ["MagnetHandler"];
-let {
-    classes: Cc,
-    interfaces: Ci,
-    utils: Cu
-} = Components;
 
-Cu.import("resource://SynoLoader/Util.js");
+Components.utils.import("resource://SynoLoader/Util.js");
 // Our XPCOM components to handle the protocols.
-Cu.import("resource://gre/modules/XPCOMUtils.jsm");
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 
-let manager = Components.manager.QueryInterface(Ci.nsIComponentRegistrar);
+let manager = Components.manager.QueryInterface(Components.interfaces.nsIComponentRegistrar);
 
 function MagnetProtocolWrapper() {
     let myHandler = function() {};
 
     myHandler.prototype = {
-        QueryInterface: XPCOMUtils.generateQI([Ci.nsIProtocolHandler]),
+        QueryInterface: XPCOMUtils.generateQI([Components.interfaces.nsIProtocolHandler]),
 
         _xpcom_factory: {
             singleton: null,
@@ -34,24 +29,24 @@ function MagnetProtocolWrapper() {
         // nsIProtocolHandler implementation:
 
         // Default attributes.
-        protocolFlags: Ci.nsIProtocolHandler.URI_LOADABLE_BY_ANYONE,
+        protocolFlags: Components.interfaces.nsIProtocolHandler.URI_LOADABLE_BY_ANYONE,
         defaultPort: -1,
 
         // Create dummy nsIURI and nsIChannel instances.
         newURI: (aSpec, aCharset, aBaseURI) => {
-            let uri = Cc["@mozilla.org/network/simple-uri;1"]
-                .createInstance(Ci.nsIURI);
+            let uri = Components.classes["@mozilla.org/network/simple-uri;1"]
+                .createInstance(Components.interfaces.nsIURI);
             uri.spec = aSpec;
             return uri;
         },
 
         newChannel: (aURI) => {
-            Cc["@mozilla.org/observer-service;1"]
-                .getService(Ci.nsIObserverService)
+            Components.classes["@mozilla.org/observer-service;1"]
+                .getService(Components.interfaces.nsIObserverService)
                 .notifyObservers(aURI, "magnet-on-open-uri", "magnet");
 
-            return Cc["@mozilla.org/network/io-service;1"]
-                .getService(Ci.nsIIOService)
+            return Components.classes["@mozilla.org/network/io-service;1"]
+                .getService(Components.interfaces.nsIIOService)
                 .newChannel("javascript:void()", null, null);
         },
 
@@ -101,9 +96,9 @@ MagnetHandler.createObserver = () => {
     return ({
         observe: function(subject, topic, data) {},
         QueryInterface: function(iid) {
-            if (!iid.equals(Ci.nsIObserver) &&
-                !iid.equals(Ci.nsISupportsWeakReference) &&
-                !iid.equals(Ci.nsISupports)) {
+            if (!iid.equals(Components.interfaces.nsIObserver) &&
+                !iid.equals(Components.interfaces.nsISupportsWeakReference) &&
+                !iid.equals(Components.interfaces.nsISupports)) {
                 throw Components.results.NS_ERROR_NO_INTERFACE;
             }
             return this;

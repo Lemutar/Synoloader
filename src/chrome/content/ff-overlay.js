@@ -1,7 +1,6 @@
-
-Cu.import("resource://SynoLoader/DownloadManager.js");
-Cu.import("resource://SynoLoader/Notification.js");
-Cu.import("resource://SynoLoader/Util.js");
+Components.utils.import("resource://SynoLoader/DownloadManager.js");
+Components.utils.import("resource://SynoLoader/Notification.js");
+Components.utils.import("resource://SynoLoader/Util.js");
 
 if (typeof SL_Overlay === "undefined") {
     var SL_Overlay = {};

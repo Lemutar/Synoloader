@@ -1,8 +1,4 @@
-let {
-    utils: Cu
-} = Components;
-
-Cu.import("resource://SynoLoader/DownloadManager.js");
+Components.utils.import("resource://SynoLoader/DownloadManager.js");
 
 if (typeof SL_Download === "undefined") {
     var SL_Download = {};

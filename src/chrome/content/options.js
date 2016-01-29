@@ -1,10 +1,4 @@
-let {
-    classes: Cc,
-    interfaces: Ci,
-    utils: Cu
-} = Components;
-
-Cu.import("resource://SynoLoader/DownloadManager.js");
+Components.utils.import("resource://SynoLoader/DownloadManager.js");
 
 if (typeof SL_Options === "undefined") {
     var SL_Options = {};
@@ -13,18 +7,18 @@ if (typeof SL_Options === "undefined") {
         this.wasConnecting = false;
 
         this.setUsernamePassword = () => {
-            let loginManager = Cc["@mozilla.org/login-manager;1"]
-                .getService(Ci.nsILoginManager);
+            let loginManager = Components.classes["@mozilla.org/login-manager;1"]
+                .getService(Components.interfaces.nsILoginManager);
 
             let loginInfo = new Components.Constructor(
                 "@mozilla.org/login-manager/loginInfo;1",
-                Ci.nsILoginInfo,
+                Components.interfaces.nsILoginInfo,
                 "init"
             );
 
             // Ask for credentials
-            let prompts = Cc["@mozilla.org/embedcomp/prompt-service;1"]
-                .getService(Ci.nsIPromptService);
+            let prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                .getService(Components.interfaces.nsIPromptService);
             let username = {
                 value: ""
             };
