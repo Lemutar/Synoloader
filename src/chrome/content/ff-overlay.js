@@ -1,8 +1,3 @@
-let {
-    classes: Cc,
-    interfaces: Ci,
-    utils: Cu
-} = Components;
 
 Cu.import("resource://SynoLoader/DownloadManager.js");
 Cu.import("resource://SynoLoader/Notification.js");
