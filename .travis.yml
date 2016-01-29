@@ -12,6 +12,7 @@ env:
     - FirefoxVersion=31.8.0esr
     - FirefoxVersion=38.2.1esr
     - FirefoxVersion=40.0
+    - FirefoxVersion=44.0
 
 cache:
   directories:
