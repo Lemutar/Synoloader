@@ -1,11 +1,6 @@
 var EXPORTED_SYMBOLS = ["QuickConnect"];
-let {
-    classes: Cc,
-    interfaces: Ci,
-    utils: Cu
-} = Components;
 
-Cu.import("resource://SynoLoader/Request.js");
+Components.utils.import("resource://SynoLoader/Request.js");
 
 if (typeof QuickConnect === "undefined") {
     var QuickConnect = function(timeoutRelay, timeoutInternal, protocol, port) {

@@ -1,17 +1,11 @@
 var EXPORTED_SYMBOLS = ["DownloadManager"];
 
-let {
-    classes: Cc,
-    interfaces: Ci,
-    utils: Cu
-} = Components;
-
-Cu.import("resource://SynoLoader/FileDownloaderHandler.js");
-Cu.import("resource://SynoLoader/MagnetHandler.js");
-Cu.import("resource://SynoLoader/Notification.js");
-Cu.import("resource://SynoLoader/QuickConnect.js");
-Cu.import("resource://SynoLoader/Util.js");
-Cu.import("resource://SynoLoader/API.js");
+Components.utils.import("resource://SynoLoader/FileDownloaderHandler.js");
+Components.utils.import("resource://SynoLoader/MagnetHandler.js");
+Components.utils.import("resource://SynoLoader/Notification.js");
+Components.utils.import("resource://SynoLoader/QuickConnect.js");
+Components.utils.import("resource://SynoLoader/Util.js");
+Components.utils.import("resource://SynoLoader/API.js");
 
 if (typeof DownloadManager === "undefined") {
     var DownloadManager = {};
@@ -20,11 +14,11 @@ if (typeof DownloadManager === "undefined") {
         let quickConnectRelayTimeOutInMs = 8000;
         let quickConnectLocalTimeOutInMs = 8000;
 
-        let loginManager = Cc["@mozilla.org/login-manager;1"]
-            .getService(Ci.nsILoginManager);
+        let loginManager = Components.classes["@mozilla.org/login-manager;1"]
+            .getService(Components.interfaces.nsILoginManager);
 
-        let prefs = Cc["@mozilla.org/preferences-service;1"]
-            .getService(Ci.nsIPrefService)
+        let prefs = Components.classes["@mozilla.org/preferences-service;1"]
+            .getService(Components.interfaces.nsIPrefService)
             .getBranch("extensions.SynoLoader.");
 
         this.isConnected = false;
@@ -34,7 +28,7 @@ if (typeof DownloadManager === "undefined") {
         this.username = "";
         this.protocol = "undefined";
 
-        prefs.QueryInterface(Ci.nsIPrefBranch2);
+        prefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
         prefs.addObserver("", this, false);
 
         Notification.showNotif = prefs.getBoolPref("show_notif");
@@ -121,12 +115,12 @@ if (typeof DownloadManager === "undefined") {
             file = Util.defaultFor(file, {});
 
             if (link.split("?")[0].toLowerCase().endsWith(".torrent")) {
-                let torrentFile = Cc["@mozilla.org/file/directory_service;1"]
-                    .getService(Ci.nsIProperties)
-                    .get("TmpD", Ci.nsIFile);
+                let torrentFile = Components.classes["@mozilla.org/file/directory_service;1"]
+                    .getService(Components.interfaces.nsIProperties)
+                    .get("TmpD", Components.interfaces.nsIFile);
 
-                let uuid = Cc["@mozilla.org/uuid-generator;1"]
-                    .getService(Ci.nsIUUIDGenerator)
+                let uuid = Components.classes["@mozilla.org/uuid-generator;1"]
+                    .getService(Components.interfaces.nsIUUIDGenerator)
                     .generateUUID()
                     .toString()
                     .replace("{", "")
@@ -136,7 +130,7 @@ if (typeof DownloadManager === "undefined") {
                 file.path = torrentFile.path;
 
                 torrentFile.append(file.name);
-                torrentFile.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0666);
+                torrentFile.createUnique(Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0666);
                 FileDownloaderHandler.getFileContent(
                     link,
                     torrentFile.path, () => {
@@ -221,7 +215,7 @@ if (typeof DownloadManager === "undefined") {
         this.httpResponseObserver.observe = (subject, topic, data) => {
             Util.log("observer");
             if (topic === "magnet-on-open-uri") {
-                let aURI = subject.QueryInterface(Ci.nsIURI);
+                let aURI = subject.QueryInterface(Components.interfaces.nsIURI);
                 if (!aURI) {
                     return;
                 }
@@ -229,8 +223,8 @@ if (typeof DownloadManager === "undefined") {
             }
         };
 
-        Cc["@mozilla.org/observer-service;1"]
-            .getService(Ci.nsIObserverService)
+        Components.classes["@mozilla.org/observer-service;1"]
+            .getService(Components.interfaces.nsIObserverService)
             .addObserver(this.httpResponseObserver, "magnet-on-open-uri", false);
 
     }).apply(DownloadManager);

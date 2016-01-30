@@ -1,12 +1,7 @@
 var EXPORTED_SYMBOLS = ["FileDownloaderHandler"];
-let {
-    classes: Cc,
-    interfaces: Ci,
-    utils: Cu
-} = Components;
 
-Cu.import("resource://gre/modules/Downloads.jsm");
-Cu.import("resource://gre/modules/Task.jsm");
+Components.utils.import("resource://gre/modules/Downloads.jsm");
+Components.utils.import("resource://gre/modules/Task.jsm");
 
 if (typeof FileDownloaderHandler === "undefined") {
     var FileDownloaderHandler = {};
@@ -15,7 +10,7 @@ if (typeof FileDownloaderHandler === "undefined") {
         this.getFileContent = (source, destination, succeeded) => {
             Task.spawn(function*() {
                 yield Downloads.fetch(source, destination);
-            }).then(succeeded, Cu.reportError);
+            }).then(succeeded, Components.utils.reportError);
         };
     }).apply(FileDownloaderHandler);
 }

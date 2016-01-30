@@ -1,14 +1,9 @@
 var EXPORTED_SYMBOLS = ["Request"];
-let {
-    classes: Cc,
-    interfaces: Ci,
-    utils: Cu
-} = Components;
 
 if (typeof Request === "undefined") {
     var Request = function(url, parameter, timeout, callback) {
-        this.httpRequest = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"]
-            .createInstance(Ci.nsIXMLHttpRequest);
+        this.httpRequest = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
+            .createInstance(Components.interfaces.nsIXMLHttpRequest);
 
         let response = {
             text: "",
