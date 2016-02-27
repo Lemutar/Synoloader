@@ -26,49 +26,6 @@ function contains(a, obj) {
     return false;
 }
 
-
-test_Synoloader_QuickConnect_get.description = 'test_Synoloader_QuickConnect_get';
-test_Synoloader_QuickConnect_get.priority = 'must';
-
-function test_Synoloader_QuickConnect_get() {
-
-    myconnect = QuickConnect(5000, 5000, "http://", 5050);
-    myresponse = {};
-    var loaded = {
-        value: false
-    };
-    var setdone = function(response) {
-        myresponse = response;
-        loaded.value = true;
-    };
-    myconnect.get('lemutar', setdone);
-    utils.wait(loaded);
-    assert.equals(true, myresponse.success);
-    assert.equals("192.168.0.201", myresponse.ip);
-}
-
-
-test_Synoloader_QuickConnect_get.description = 'test_Synoloader_QuickConnect_get';
-test_Synoloader_QuickConnect_get.priority = 'must';
-
-function test_Synoloader_QuickConnect_get() {
-
-    myconnect = QuickConnect(5000, 5000, "http://", 5050);
-    myresponse = {};
-    var loaded = {
-        value: false
-    };
-    var setdone = function(response) {
-        myresponse = response;
-        loaded.value = true;
-    };
-    myconnect.get('192.168.0.201', setdone);
-    utils.wait(loaded);
-    assert.equals(false, myresponse.success);
-    assert.equals("192.168.0.201", myresponse.ip);
-}
-
-
 test_Synoloader_QuickConnect_get_servers.description = 'test_Synoloader_QuickConnect_get_servers';
 test_Synoloader_QuickConnect_get_servers.priority = 'must';
 
@@ -103,6 +60,7 @@ function test_Synoloader_QuickConnect_get_server_detail() {
         myresponse = response;
         loaded.value = true;
     };
+    myconnect.getServerInfo("https://dec.quickconnect.to/Serv.php", "lemutar", setdone);
     myconnect.getServerInfo("dec.quickconnect.to", "lemutar", setdone);
     utils.wait(loaded);
     assert.equals(true, myresponse.success);
@@ -126,25 +84,4 @@ function test_Synoloader_QuickConnect_get_connections() {
     myconnect.getConnections("lemutar", setdone);
     utils.wait(loaded);
     assert.equals(true, myresponse.success);
-}
-
-test_Synoloader_QuickConnect_get_tunnel.description = 'test_Synoloader_QuickConnect_get_tunnel';
-test_Synoloader_QuickConnect_get_tunnel.priority = 'never';
-
-function test_Synoloader_QuickConnect_get_tunnel() {
-
-    myconnect = QuickConnect(5000, 5000, "http://", 5050);
-    myresponse = {};
-    var loaded = {
-        value: false
-    };
-    var setdone = function(response) {
-        myresponse = response;
-        loaded.value = true;
-    };
-    myconnect.getServerTunnelInfo("dec.quickconnect.to", "lemutar", setdone);
-    utils.wait(loaded);
-    assert.equals(true, myresponse.success);
-    assert.equals(true, myresponse.ip = "lemutar.dec.quickconnect.to");
-    assert.equals(true, myresponse.port = "443");
 }
