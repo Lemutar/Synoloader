@@ -61,7 +61,6 @@ function test_Synoloader_QuickConnect_get_server_detail() {
         loaded.value = true;
     };
     myconnect.getServerInfo("https://dec.quickconnect.to/Serv.php", "lemutar", setdone);
-    myconnect.getServerInfo("dec.quickconnect.to", "lemutar", setdone);
     utils.wait(loaded);
     assert.equals(true, myresponse.success);
 
