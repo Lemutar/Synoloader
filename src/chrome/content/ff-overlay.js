@@ -6,19 +6,6 @@ if (typeof SL_Overlay === "undefined") {
     var SL_Overlay = {};
 
     (function() {
-        this.firstRun = (extensions) => {
-            let firstRunPref = "extensions.SynoLoader.firstRunDone";
-
-            if (!Application.prefs.getValue(firstRunPref, false)) {
-                Application.prefs.setValue(firstRunPref, true);
-
-                let toolbar = document.getElementById("nav-bar");
-                toolbar.insertItem("sl-toolbar", null);
-                toolbar.setAttribute("currentset", toolbar.currentSet);
-                document.persist(toolbar.id, "currentset");
-            }
-        };
-
         this.updateListPanel = () => {
             let panel = document.getElementById("sl-toolbar-panel"),
                 label = document.getElementById("sl-toolbar-panel-label"),
@@ -69,11 +56,6 @@ if (typeof SL_Overlay === "undefined") {
 
         this.onLoad = () => {
             Util.log("SL_Overlay loaded");
-            if (Application.extensions) {
-                this.firstRun(Application.extensions);
-            } else {
-                Application.getExtensions(this.firstRun);
-            }
 
             document.getElementById("contentAreaContextMenu")
                 .addEventListener("popupshowing", (event) => {
