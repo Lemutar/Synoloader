@@ -11,8 +11,8 @@ env:
   matrix:
     - FirefoxVersion=31.8.0esr
     - FirefoxVersion=38.2.1esr
-    - FirefoxVersion=40.0
-    - FirefoxVersion=44.0
+    - FirefoxVersion=45.0.2esr
+    - FirefoxVersion=47.0.1
 
 cache:
   directories:
