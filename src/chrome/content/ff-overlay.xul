@@ -7,12 +7,12 @@
 <overlay id="sl-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="ff-overlay.js"/>
   <toolbarpalette id="BrowserToolbarPalette">
-    <toolbarbutton id="sl-toolbar" type="panel" label="SynoLoader" tooltiptext="Synology Download" class="toolbarbutton-1 chromeclass-toolbar-additional custombutton">
+    <toolbarbutton id="sl-toolbar" type="panel" label="&SynoLoaderOverlay.toolbarTitle;" tooltiptext="&SynoLoaderOverlay.toolbarTooltip;" class="toolbarbutton-1 chromeclass-toolbar-additional custombutton">
       <panel id="sl-toolbar-panel" type="arrow" onpopuphidden="SL_Overlay.onToolBarDownloadInfoHidden(event);" onpopupshowing="SL_Overlay.onToolBarDownloadInfo(event);">
         <vbox>
           <hbox pack="center" height="40px">
             <vbox pack="start">
-              <label align="start" id="sl-toolbar-panel-title" value="SynoLoader"/>
+              <label align="start" id="sl-toolbar-panel-title" value="&SynoLoaderOverlay.panelTitle;"/>
             </vbox>
           </hbox>
           <separator orient="horizontal" class="groove"/>
@@ -21,15 +21,21 @@
               <richlistbox minheight="300px" maxheight="500px" width="500px" id="sl-toolbar-panel-list"/>
               <hbox pack="center" height="80px" id="sl-toolbar-panel-box">
                 <vbox pack="center">
-                  <label align="center" value="Loading..." id="sl-toolbar-panel-label"/>
+                  <label align="center" value="&SynoLoaderOverlay.loading;" id="sl-toolbar-panel-label"/>
                 </vbox>
               </hbox>
             </stack>
           </hbox>
           <separator orient="horizontal" class="groove"/>
-          <hbox pack="end">
-            <vbox pack="end">
-              <toolbarbutton id="sl-toolbar-panel-options" oncommand="SL_Overlay.showOptions();"/>
+          <hbox>
+            <vbox flex="1">
+              <textbox id="sl-custom-url-input" placeholder="&SynoLoaderOverlay.customUrlInputPlaceholder;"/>
+            </vbox>
+            <vbox>
+              <toolbarbutton id="sl-custom-url-add" class="toolbar-button" oncommand="SL_Overlay.addDownloadLink();"/>
+            </vbox>
+            <vbox>
+              <toolbarbutton id="sl-toolbar-panel-options" class="toolbar-button" oncommand="SL_Overlay.showOptions();"/>
             </vbox>
           </hbox>
         </vbox>

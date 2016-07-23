@@ -17,11 +17,23 @@ toolbar[iconsize="small"] #sl-toolbar {
   text-align: center;
 }
 
-#sl-toolbar-panel-options {
-  list-style-image: url(chrome://Synoloader/skin/settings.png);
+.toolbar-button {
   width: 35px;
   height: 35px;
-  float: right;
+  cursor: pointer;
+}
+
+#sl-custom-url-input {
+  height: 35px;
+  margin: 0;
+}
+
+#sl-custom-url-add {
+  list-style-image: url(chrome://Synoloader/skin/add.png);
+}
+
+#sl-toolbar-panel-options {
+  list-style-image: url(chrome://Synoloader/skin/settings.png);
 }
 
 /* List items. */
