@@ -67,8 +67,8 @@ if (typeof SL_Overlay === "undefined") {
         this.addDownloadLink = () => {
             let urlInput = document.getElementById("sl-custom-url-input");
             if (urlInput.value !== "") {
-                DownloadManager.transferToNas(urlInput.value, {}, (success) => {
-                    if (success) {
+                DownloadManager.transferToNas(urlInput.value, {}, (response) => {
+                    if (response.success) {
                         urlInput.value = "";
                     }
                 });
