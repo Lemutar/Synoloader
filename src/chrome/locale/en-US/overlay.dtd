@@ -2,3 +2,8 @@
 <!ENTITY SynoLoaderContext.linklabel "DownloadStation">
 <!ENTITY SynoLoaderContext.accesskey "Y">
 <!ENTITY SynoLoaderContext.linkaccesskey "L">
+<!ENTITY SynoLoaderOverlay.panelTitle "SynoLoader">
+<!ENTITY SynoLoaderOverlay.toolbarTitle "SynoLoader">
+<!ENTITY SynoLoaderOverlay.toolbarTooltip "Synology Download">
+<!ENTITY SynoLoaderOverlay.loading "Loading...">
+<!ENTITY SynoLoaderOverlay.customUrlInputPlaceholder "Enter URL to add to DownloadStation...">

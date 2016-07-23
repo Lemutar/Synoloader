@@ -110,7 +110,7 @@ if (typeof DownloadManager === "undefined") {
             });
         };
 
-        this.transferToNas = (link, file) => {
+        this.transferToNas = (link, file, transferFinishedCB) => {
             link = Util.defaultFor(link, "");
             file = Util.defaultFor(file, {});
 
@@ -141,6 +141,7 @@ if (typeof DownloadManager === "undefined") {
                                 } else {
                                     Notification.show("Send link failed", response.error_text);
                                 }
+                                transferFinishedCB(response);
                                 // Remove the local temporary file.
                                 try {
                                     torrentFile.remove(0);
@@ -161,6 +162,7 @@ if (typeof DownloadManager === "undefined") {
                         } else {
                             Notification.show("Send link failed", response.error_text);
                         }
+                        transferFinishedCB(response);
                     },
                     "addurl",
                     link

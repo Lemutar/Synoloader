@@ -64,6 +64,17 @@ if (typeof SL_Overlay === "undefined") {
             DownloadManager.connectToNas();
         };
 
+        this.addDownloadLink = () => {
+            let urlInput = document.getElementById("sl-custom-url-input");
+            if (urlInput.value !== "") {
+                DownloadManager.transferToNas(urlInput.value, {}, (response) => {
+                    if (response.success) {
+                        urlInput.value = "";
+                    }
+                });
+            }
+        };
+
         this.onMenuItemLinkCommand = (event) => {
             if (DownloadManager.isConnected) {
                 window.open(DownloadManager.urlToConnect + "/webman/index.cgi?launchApp=SYNO.SDS.DownloadStation.Application", "Diskstation", this.strWindowFeatures);
