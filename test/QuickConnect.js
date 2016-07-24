@@ -38,7 +38,7 @@ function test_quick_connect_get_nas_info() {
 
     quickConnect = QuickConnect(1000, 200, "http://", 4445);
     quickConnect.relayServer = "http://localhost:4445/relayServer.php";
-    quickConnect.getServerInfo("QuickConnectID", cb);
+    quickConnect.getServerInfo("http://localhost:4445/relayServer.php", "QuickConnectID", cb);
 
     utils.wait(loaded);
     assert.equals(true, response.success);
@@ -61,7 +61,7 @@ function test_quick_connect_get_nas_info_fail() {
 
     quickConnect = QuickConnect(1000, 200, "http://", 4445);
     quickConnect.relayServer = "http://localhost:4445/relayServer.php";
-    quickConnect.getServerInfo("QuickConnectID", cb);
+    quickConnect.getServerInfo("http://localhost:4445/relayServer.php", "QuickConnectID", cb);
 
     utils.wait(loaded);
     assert.equals(false, response.success);
@@ -72,7 +72,7 @@ test_quick_connect_get_nas_info_fail_no_answer.description = "test_quick_connect
 function test_quick_connect_get_nas_info_fail_no_answer() {
     quickConnect = QuickConnect(1000, 200, "http://", 4445);
     quickConnect.relayServer = "http://localhost:4445/relayServer.php";
-    quickConnect.getServerInfo("QuickConnectID", cb);
+    quickConnect.getServerInfo("http://localhost:4445/relayServer.php", "QuickConnectID", cb);
 
     utils.wait(loaded);
     assert.equals(false, response.success);
@@ -141,7 +141,7 @@ test_quick_connect_internal.description = "test_quick_connect_internal";
 function test_quick_connect_internal() {
     quickConnect = QuickConnect(1000, 200);
 
-    quickConnect.getServerInfo = (id, callback) => {
+    quickConnect.getServerInfo = (url, id, callback) => {
         let serverInfoResponse = {
             success: true,
             internalIP: ["1", "2"],
@@ -172,7 +172,7 @@ test_quick_connect_server_info_fail.description = "test_quick_connect_server_inf
 function test_quick_connect_server_info_fail() {
     quickConnect = QuickConnect(1000, 200);
 
-    quickConnect.getServerInfo = (id, callback) => {
+    quickConnect.getServerInfo = (url, id, callback) => {
         let serverInfoResponse = {
             success: false,
             internalIP: ["1", "2"],
@@ -194,7 +194,7 @@ test_quick_connect_external.description = "test_quick_connect_external";
 function test_quick_connect_external() {
     quickConnect = QuickConnect(1000, 200);
 
-    quickConnect.getServerInfo = (id, callback) => {
+    quickConnect.getServerInfo = (url, id, callback) => {
         let serverInfoResponse = {
             success: true,
             internalIP: ["1", "2"],
